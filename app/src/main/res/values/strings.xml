@@ -1,3 +1,20 @@
 <resources>
     <string name="app_name">TimerApp</string>
+    <string name="delete">削除</string>
+    <string name="cancel">キャンセル</string>
+    <string name="save">保存</string>
+    <string name="caution">タイマーが設定されていません</string>
+    <string name="ok">OK</string>
+    <string name="timer_setting">タイマーを表示したままにする</string>
+    <string name="initial_use">ご利用頂きありがとうございます。/n
+        「+」ボタンを押してタイマーを作成しましょう。</string>
+    <string name="initial_set_preset">「+」ボタンを押してタイマーの設定を行いましょう。</string>
+    <string name="timer_name">タイマーの名前</string>
+    <string name="preset_timer_name">プリセットタイマーの名前</string>
+    <string name="total_time">全体の残り時間</string>
+    <string name="hour">時間</string>
+    <string name="min">分</string>
+    <string name="sec">秒</string>
+    <string name="setting_preset">事前通知設定</string>
+    <string name="setting_preset_tv">%d %s前に通知する</string>
 </resources>
