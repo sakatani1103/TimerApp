@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/timerListFragment">
+
+    <fragment
+        android:id="@+id/timerListFragment"
+        android:name="com.example.timerapp.TimerListFragment"
+        android:label="fragment_timer_list"
+        tools:layout="@layout/fragment_timer_list" >
+        <action
+            android:id="@+id/action_timerListFragment_to_presetTimerListFragment"
+            app:destination="@id/presetTimerListFragment" />
+        <action
+            android:id="@+id/action_timerListFragment_to_timerFragment"
+            app:destination="@id/timerFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/presetTimerListFragment"
+        android:name="com.example.timerapp.presettimer.PresetTimerListFragment"
+        android:label="fragment_preset_timer_list"
+        tools:layout="@layout/fragment_preset_timer_list" >
+        <action
+            android:id="@+id/action_presetTimerListFragment_to_timerFragment"
+            app:destination="@id/timerFragment" />
+        <action
+            android:id="@+id/action_presetTimerListFragment_to_timerListFragment"
+            app:destination="@id/timerListFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/timerFragment"
+        android:name="com.example.timerapp.timer.TimerFragment"
+        android:label="fragment_timer"
+        tools:layout="@layout/fragment_timer" >
+        <action
+            android:id="@+id/action_timerFragment_to_presetTimerListFragment"
+            app:destination="@id/presetTimerListFragment" />
+        <action
+            android:id="@+id/action_timerFragment_to_timerListFragment"
+            app:destination="@id/timerListFragment" />
+    </fragment>
+</navigation>
