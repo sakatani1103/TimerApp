@@ -17,6 +17,5 @@
     <string name="sec">秒</string>
     <string name="setting_preset">事前通知設定</string>
     <string name="setting_preset_tv">%d %s前に通知する</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="preset_timer_detail">プリセットタイマーの詳細</string>>
 </resources>

@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/timerListFragment"
-        android:name="com.example.timerapp.TimerListFragment"
+        android:name="com.example.timerapp.ui.TimerListFragment"
         android:label="fragment_timer_list"
         tools:layout="@layout/fragment_timer_list" >
         <action
@@ -19,7 +19,7 @@
     </fragment>
     <fragment
         android:id="@+id/presetTimerListFragment"
-        android:name="com.example.timerapp.presettimer.PresetTimerListFragment"
+        android:name="com.example.timerapp.ui.PresetTimerListFragment"
         android:label="fragment_preset_timer_list"
         tools:layout="@layout/fragment_preset_timer_list" >
         <action
@@ -31,7 +31,7 @@
     </fragment>
     <fragment
         android:id="@+id/timerFragment"
-        android:name="com.example.timerapp.timer.TimerFragment"
+        android:name="com.example.timerapp.ui.TimerFragment"
         android:label="fragment_timer"
         tools:layout="@layout/fragment_timer" >
         <action
