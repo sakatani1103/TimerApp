@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import com.example.timerapp.R
 import com.example.timerapp.adapter.TimerListAdapter
+import com.example.timerapp.database.ListType
 import com.example.timerapp.database.Timer
 import com.example.timerapp.databinding.FragmentTimerListBinding
 
@@ -21,19 +22,19 @@ class TimerListFragment : Fragment() {
 
         val list: MutableList<Timer> = mutableListOf()
         list.add(Timer(1, "Timer1", "2時間30分", "詳細\n詳細\n詳細\n",
-        1,false, "10分", false))
+        ListType.SIMPLE_LAYOUT,false, "10分", false))
         list.add(Timer(1, "Timer2", "2時間30分", "詳細\n詳細\n詳細\n",
-            3,false, "10分", false))
+            ListType.DETAIL_LAYOUT,false, "10分", false))
         list.add(Timer(1, "Timer3", "2時間30分", "詳細\n詳細\n詳細\n",
-            3,false, "10分", false))
+            ListType.DETAIL_LAYOUT,false, "10分", false))
         list.add(Timer(1, "Timer4", "2時間30分", "詳細\n詳細\n詳細\n",
-            2,false, "10分", false))
+            ListType.DETAIL_LAYOUT,false, "10分", false))
         list.add(Timer(1, "Timer5", "2時間30分", "詳細\n詳細\n詳細\n",
-            1,false, "10分", false))
+            ListType.SIMPLE_LAYOUT,false, "10分", false))
         list.add(Timer(1, "Timer1", "2時間30分", "詳細\n詳細\n詳細\n",
-            2,false, "10分", false))
+            ListType.SIMPLE_LAYOUT,false, "10分", false))
         list.add(Timer(1, "Timer1", "2時間30分", "詳細\n詳細\n詳細\n",
-            3,false, "10分", false))
+            ListType.SIMPLE_LAYOUT,false, "10分", false))
 
         val timerListAdapter = TimerListAdapter()
         binding.timerList.adapter = timerListAdapter

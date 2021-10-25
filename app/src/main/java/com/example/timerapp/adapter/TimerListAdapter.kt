@@ -1,22 +1,24 @@
 package com.example.timerapp.adapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.RotateAnimation
+import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.timerapp.database.ListType
 import com.example.timerapp.database.Timer
 import com.example.timerapp.databinding.ListItemBinding
+import com.example.timerapp.databinding.SimpleListItemBinding
 
 
 class TimerListAdapter :
-    ListAdapter<Timer, TimerListAdapter.ViewHolder>(TimerDiffCallback()) {
+    ListAdapter<Timer, TimerListAdapter.TimerViewHolder>(TimerDiffCallback()) {
 
-    class ViewHolder private constructor(val binding: ListItemBinding) :
-        RecyclerView.ViewHolder(binding.root) {
+    class DetailViewHolder private constructor(val binding: ListItemBinding) :
+        TimerViewHolder(binding) {
 
         private var currentItem: Timer? = null
 
@@ -47,7 +49,7 @@ class TimerListAdapter :
                 }
             }
 
-        fun bind(timer: Timer) {
+        override fun bind(timer: Timer) {
             currentItem = timer
 
             binding.timer = currentItem
@@ -64,21 +66,52 @@ class TimerListAdapter :
         }
 
         companion object {
-            fun from(parent: ViewGroup): ViewHolder {
+            fun from(parent: ViewGroup): DetailViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
                 val binding = ListItemBinding.inflate(layoutInflater, parent, false)
-                return ViewHolder(binding)
+                return DetailViewHolder(binding)
             }
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder.from(parent)
+    class SimpleViewHolder private constructor(val binding: SimpleListItemBinding):
+        TimerViewHolder(binding){
+
+        override fun bind(timer: Timer) {
+            binding.timer = timer
+            binding.executePendingBindings()
+        }
+
+        companion object {
+            fun from(parent: ViewGroup): SimpleViewHolder {
+                val layoutInflater = LayoutInflater.from(parent.context)
+                val binding = SimpleListItemBinding.inflate(layoutInflater, parent, false)
+                return SimpleViewHolder(binding)
+            }
+        }
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TimerViewHolder {
+        val type = ListType.values()[viewType]
+        return when(type) {
+            ListType.DETAIL_LAYOUT -> DetailViewHolder.from(parent)
+            ListType.SIMPLE_LAYOUT -> SimpleViewHolder.from(parent)
+        }
+    }
+
+    override fun onBindViewHolder(holder: TimerViewHolder, position: Int) {
         val timer = getItem(position)
         holder.bind(timer)
+    }
+
+    // ordinalはenumで定義したViewtypeのIntを返す
+    override fun getItemViewType(position: Int): Int {
+        return getItem(position).listType.ordinal
+    }
+
+    abstract class TimerViewHolder(binding: ViewDataBinding) :
+        RecyclerView.ViewHolder(binding.root){
+        abstract fun bind(timer: Timer)
     }
 }
 
@@ -87,8 +120,10 @@ class TimerDiffCallback : DiffUtil.ItemCallback<Timer>() {
         return oldItem.id == newItem.id
     }
 
+
     override fun areContentsTheSame(oldItem: Timer, newItem: Timer): Boolean {
         return oldItem == newItem
     }
 
 }
+
