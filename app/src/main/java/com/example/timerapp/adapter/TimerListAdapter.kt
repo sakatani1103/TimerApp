@@ -1,7 +1,7 @@
 package com.example.timerapp.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.RotateAnimation
@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.timerapp.database.Timer
 import com.example.timerapp.databinding.ListItemBinding
+
 
 class TimerListAdapter :
     ListAdapter<Timer, TimerListAdapter.ViewHolder>(TimerDiffCallback()) {
@@ -20,44 +21,45 @@ class TimerListAdapter :
         private var currentItem: Timer? = null
 
         init {
-            binding.expandArrow.setOnClickListener {
-                currentItem?.let {
-                    val expanded = it.isExpanded
-                    it.isExpanded = expanded.not()
-                    // 初期で開いておくところを表示
-                    binding.topTopic.isSelected = expanded.not()
-                    binding.startBtn.isSelected = expanded.not()
+                binding.detailTitle.setOnClickListener {
+                    currentItem?.let {
+                        val expanded = it.isExpanded
+                        it.isExpanded = expanded.not()
+                        // 初期で開いておくところを表示
+                        binding.topTopic.isSelected = expanded.not()
+                        binding.startBtn.isSelected = expanded.not()
 
-                    binding.expandableLayout.toggle()
+                        binding.expandableLayout.toggle()
 
-                    val anim = RotateAnimation(
-                        0f, // 回転の開始角度
-                        180f, // 回転の終了角度
-                        Animation.RELATIVE_TO_SELF,
-                        0.5f,
-                        Animation.RELATIVE_TO_SELF,
-                        0.5f
-                    ).apply {
-                        duration = 300
-                        fillAfter = true
+                        val anim = RotateAnimation(
+                            0f, // 回転の開始角度
+                            180f, // 回転の終了角度
+                            Animation.RELATIVE_TO_SELF,
+                            0.5f,
+                            Animation.RELATIVE_TO_SELF,
+                            0.5f
+                        ).apply {
+                            duration = 300
+                            fillAfter = true
+                        }
+                        binding.expandArrow.startAnimation(anim)
                     }
-                    binding.expandArrow.startAnimation(anim)
                 }
             }
-        }
 
         fun bind(timer: Timer) {
             currentItem = timer
+
             binding.timer = currentItem
+
             val expandableLayout = binding.expandableLayout
-            binding.titleLayout.setOnClickListener {
-                if (timer.isExpanded) {
-                    expandableLayout.expand(false)
-                } else {
-                    expandableLayout.collapse(false)
-                }
-                binding.expandArrow.isSelected = !timer.isExpanded.not()
+            if (timer.isExpanded) {
+                expandableLayout.expand(false)
+            } else {
+                expandableLayout.collapse(false)
             }
+            binding.expandArrow.isSelected = !timer.isExpanded.not()
+
             binding.executePendingBindings()
         }
 
@@ -78,7 +80,6 @@ class TimerListAdapter :
         val timer = getItem(position)
         holder.bind(timer)
     }
-
 }
 
 class TimerDiffCallback : DiffUtil.ItemCallback<Timer>() {

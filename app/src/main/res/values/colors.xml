@@ -9,4 +9,6 @@
   <color name="primaryTextColor">#ffffff</color>
   <color name="secondaryTextColor">#ffffff</color>
   <color name="black">#111111</color>
+  <color name="white">#ffffff</color>
+  <color name="dark_blue">#000051</color>
 </resources>

@@ -17,5 +17,6 @@
     <string name="sec">秒</string>
     <string name="setting_preset">事前通知設定</string>
     <string name="setting_preset_tv">%d %s前に通知する</string>
-    <string name="preset_timer_detail">プリセットタイマーの詳細</string>>
+    <string name="preset_timer_detail">プリセットタイマーの詳細</string>
+    <string name="content_description_delete">リストの削除</string>
 </resources>

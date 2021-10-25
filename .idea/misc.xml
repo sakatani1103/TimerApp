@@ -4,12 +4,15 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/AndroidStudioProject/MyPractice/TimerApp/app/src/main/res/drawable/expand_arrow.xml" value="0.1" />
+        <entry key="..\:/AndroidStudioProject/MyPractice/TimerApp/app/src/main/res/drawable/fab_background.xml" value="0.1" />
         <entry key="..\:/AndroidStudioProject/MyPractice/TimerApp/app/src/main/res/drawable/ic_play_arrow.xml" value="0.2640625" />
         <entry key="..\:/AndroidStudioProject/MyPractice/TimerApp/app/src/main/res/layout/activity_main.xml" value="0.22037037037037038" />
         <entry key="..\:/AndroidStudioProject/MyPractice/TimerApp/app/src/main/res/layout/fragment_preset_timer_list.xml" value="0.31640625" />
         <entry key="..\:/AndroidStudioProject/MyPractice/TimerApp/app/src/main/res/layout/fragment_timer.xml" value="0.22037037037037038" />
-        <entry key="..\:/AndroidStudioProject/MyPractice/TimerApp/app/src/main/res/layout/fragment_timer_list.xml" value="0.24791666666666667" />
+        <entry key="..\:/AndroidStudioProject/MyPractice/TimerApp/app/src/main/res/layout/fragment_timer_list.xml" value="0.264" />
         <entry key="..\:/AndroidStudioProject/MyPractice/TimerApp/app/src/main/res/layout/list_item.xml" value="0.2" />
+        <entry key="..\:/AndroidStudioProject/MyPractice/TimerApp/app/src/main/res/layout/simle_list_item.xml" value="0.2" />
+        <entry key="..\:/AndroidStudioProject/MyPractice/TimerApp/app/src/main/res/menu/bottom_app_bar.xml" value="0.1" />
       </map>
     </option>
   </component>

@@ -1,4 +1,4 @@
-package com.example.timerapp.timer
+package com.example.timerapp.ui
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,17 +7,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import com.example.timerapp.R
-import com.example.timerapp.databinding.FragmentTimerBinding
+import com.example.timerapp.databinding.FragmentTimerListBinding
 
 
-class TimerFragment : Fragment() {
+class PresetTimerListFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val binding = DataBindingUtil.inflate<FragmentTimerBinding>(
-            inflater,R.layout.fragment_timer,container,false)
+        val binding = DataBindingUtil.inflate<FragmentTimerListBinding>(
+            inflater, R.layout.fragment_preset_timer_list, container, false)
         return binding.root
     }
 

@@ -5,6 +5,7 @@ data class Timer(
     val name: String,
     val total: String,
     val detail: String,
+    val sum_preset: Int,
     val is_notification: Boolean,
     val notification_time: String,
     var isExpanded: Boolean = false

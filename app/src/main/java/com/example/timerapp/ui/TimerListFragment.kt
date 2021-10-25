@@ -21,19 +21,19 @@ class TimerListFragment : Fragment() {
 
         val list: MutableList<Timer> = mutableListOf()
         list.add(Timer(1, "Timer1", "2時間30分", "詳細\n詳細\n詳細\n",
-        false, "10分", false))
+        1,false, "10分", false))
         list.add(Timer(1, "Timer2", "2時間30分", "詳細\n詳細\n詳細\n",
-            false, "10分", false))
+            3,false, "10分", false))
         list.add(Timer(1, "Timer3", "2時間30分", "詳細\n詳細\n詳細\n",
-            false, "10分", false))
+            3,false, "10分", false))
         list.add(Timer(1, "Timer4", "2時間30分", "詳細\n詳細\n詳細\n",
-            false, "10分", false))
+            2,false, "10分", false))
         list.add(Timer(1, "Timer5", "2時間30分", "詳細\n詳細\n詳細\n",
-            false, "10分", false))
+            1,false, "10分", false))
         list.add(Timer(1, "Timer1", "2時間30分", "詳細\n詳細\n詳細\n",
-            false, "10分", false))
+            2,false, "10分", false))
         list.add(Timer(1, "Timer1", "2時間30分", "詳細\n詳細\n詳細\n",
-            false, "10分", false))
+            3,false, "10分", false))
 
         val timerListAdapter = TimerListAdapter()
         binding.timerList.adapter = timerListAdapter
