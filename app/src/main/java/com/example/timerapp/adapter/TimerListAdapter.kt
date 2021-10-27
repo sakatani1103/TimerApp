@@ -65,7 +65,9 @@ class TimerListAdapter :
                 expandableLayout.collapse(false)
             }
             binding.expandArrow.isSelected = !timer.isExpanded.not()
-
+            binding.topTopic.setOnClickListener(
+                Navigation.createNavigateOnClickListener(R.id.action_timerListFragment_to_presetTimerListFragment)
+            )
             binding.executePendingBindings()
         }
 

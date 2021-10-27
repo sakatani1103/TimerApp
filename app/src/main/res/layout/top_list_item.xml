@@ -9,7 +9,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:padding="@dimen/standard_margin">
 
         <TextView
             android:id="@+id/timer_name"
@@ -20,6 +21,7 @@
             app:layout_constraintBottom_toTopOf="@+id/divider1"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            android:text="基本情報技術者午前試験"
             tools:text="基本情報技術者午前試験" />
 
         <View
@@ -61,10 +63,10 @@
 
         <com.google.android.material.switchmaterial.SwitchMaterial
             android:id="@+id/setting_display_title"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/standard_margin"
-            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="@dimen/standard_margin"
             android:checked="true"
             android:text="@string/timer_setting"
             app:layout_constraintBottom_toTopOf="@+id/setting_sound_title"
@@ -96,7 +98,10 @@
             android:id="@+id/divider2"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_margin="@dimen/standard_margin"
+            android:layout_marginStart="@dimen/standard_margin"
+            android:layout_marginEnd="@dimen/standard_margin"
+            android:layout_marginTop="@dimen/setting_margin"
+            android:layout_marginBottom="@dimen/setting_margin"
             android:background="?android:attr/listDivider"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
