@@ -46,7 +46,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-                        android:text="@{presetTimerItem.PresetTimerItem}"
+                        android:text="@{presetTimerItem.presetTimer.presetName.toString()}"
                         tools:text="設問2-5" />
 
                     <LinearLayout
@@ -60,7 +60,7 @@
                             android:layout_height="wrap_content"
                             android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
                             android:layout_weight="1"
-                            android:text="@{presetTimerItem.PresetTimerItem}"
+                            android:text="@{presetTimerItem.presetTimer.presetTime.toString()}"
                             tools:text="20分" />
 
                         <TextView
@@ -69,7 +69,7 @@
                             android:layout_marginStart="@dimen/card_margin"
                             android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
                             android:layout_weight="1"
-                            android:text="@{presetTimerItem.PresetTimerItem}"
+                            android:text="@{presetTimerItem.presetTimer.notificationTime.toString()}"
                             tools:text="通知 : 5分前" />
 
                         <ImageView

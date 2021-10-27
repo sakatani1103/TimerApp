@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:apps="http://schemas.android.com/apk/res-auto">
+    xmlns:apps="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -18,9 +18,9 @@
             android:clipToPadding="false">
 
             <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/preset_timer_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:id="@+id/preset_timer_list"
                 android:scrollbars="vertical"
                 apps:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
@@ -32,8 +32,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            apps:navigationIcon="@drawable/ic_back"
-            apps:menu="@menu/bottom_app_bar" />
+            apps:menu="@menu/bottom_app_bar"
+            apps:navigationIcon="@drawable/ic_back" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:layout_width="wrap_content"

@@ -5,13 +5,17 @@ import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.RotateAnimation
 import androidx.databinding.ViewDataBinding
+import androidx.navigation.Navigation
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.timerapp.R
 import com.example.timerapp.database.ListType
 import com.example.timerapp.database.Timer
 import com.example.timerapp.databinding.ListItemBinding
 import com.example.timerapp.databinding.SimpleListItemBinding
+import com.example.timerapp.ui.TimerFragmentDirections
 
 
 class TimerListAdapter :
@@ -79,6 +83,9 @@ class TimerListAdapter :
 
         override fun bind(timer: Timer) {
             binding.timer = timer
+            binding.topTopic.setOnClickListener(
+                Navigation.createNavigateOnClickListener(R.id.action_timerListFragment_to_presetTimerListFragment)
+            )
             binding.executePendingBindings()
         }
 

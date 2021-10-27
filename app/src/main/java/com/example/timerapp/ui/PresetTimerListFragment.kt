@@ -29,9 +29,11 @@ class PresetTimerListFragment : Fragment() {
         )
         list.add(PresetTimer(2,"基本情報技術者午前試験", "設問2-5", "30分",
             "10分前"))
-        list.add(PresetTimer(2,"基本情報技術者午前試験", "設問2-5", "30分",
+        list.add(PresetTimer(3,"基本情報技術者午前試験", "設問2-5", "30分",
             "10分前"))
-        list.add(PresetTimer(2,"基本情報技術者午前試験", "設問2-5", "30分",
+        list.add(PresetTimer(4,"基本情報技術者午前試験", "設問2-5", "30分",
+            "10分前"))
+        list.add(PresetTimer(5,"基本情報技術者午前試験", "設問2-5", "30分",
             "10分前"))
 
         val presetTimerListAdapter = PresetTimerListAdapter()

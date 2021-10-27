@@ -3,11 +3,9 @@ package com.example.timerapp.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import androidx.room.Database
 import com.example.timerapp.database.PresetTimer
 import com.example.timerapp.databinding.PresetTimerListItemBinding
 import com.example.timerapp.databinding.TopListItemBinding
