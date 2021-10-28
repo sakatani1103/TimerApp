@@ -11,8 +11,7 @@
     <string name="initial_set_preset">「+」ボタンを押してタイマーの設定を行いましょう。</string>
     <string name="timer_name">タイマーの名前</string>
     <string name="preset_timer_name">プリセットタイマーの名前</string>
-    <string name="total_time">全体の残り時間</string>
-    <string name="hour">時間</string>
+    <string name="total_time_title">全体の残り時間</string>
     <string name="min">分</string>
     <string name="sec">秒</string>
     <string name="setting_title">設定</string>
@@ -21,4 +20,6 @@
     <string name="setting_preset_tv">%d %s前に通知する</string>
     <string name="preset_timer_detail">プリセットタイマーの詳細</string>
     <string name="content_description_delete">リストの削除</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

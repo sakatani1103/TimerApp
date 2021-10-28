@@ -8,41 +8,47 @@
 
     </data>
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <androidx.core.widget.NestedScrollView
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/preset_timer_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:clipToPadding="false">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/preset_timer_list"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scrollbars="vertical"
-                apps:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-
-        </androidx.core.widget.NestedScrollView>
-
-        <com.google.android.material.bottomappbar.BottomAppBar
-            android:id="@+id/bottomAppBar"
-            style="@style/Widget.MaterialComponents.BottomAppBar.Colored"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            apps:menu="@menu/bottom_app_bar"
-            apps:navigationIcon="@drawable/ic_back" />
+            android:scrollbars="vertical"
+            apps:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            apps:layout_constraintBottom_toBottomOf="parent"
+            apps:layout_constraintEnd_toEndOf="parent"
+            apps:layout_constraintStart_toStartOf="parent"
+            apps:layout_constraintTop_toTopOf="parent" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/add_list"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/icon_margin"
+            android:layout_marginBottom="@dimen/icon_margin"
+            android:elevation="10dp"
+            apps:layout_constraintBottom_toBottomOf="parent"
+            apps:layout_constraintEnd_toEndOf="parent"
+            apps:srcCompat="@drawable/ic_add" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/delete_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="30dp"
+            android:layout_marginBottom="@dimen/icon_margin"
             android:backgroundTint="@color/white"
             android:elevation="10dp"
             apps:borderWidth="2dp"
-            apps:layout_anchor="@id/bottomAppBar"
-            apps:srcCompat="@drawable/ic_add"
-            apps:tint="@color/dark_blue" />
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+            apps:layout_constraintBottom_toBottomOf="parent"
+            apps:layout_constraintEnd_toStartOf="@+id/add_list"
+            apps:srcCompat="@drawable/ic_delete"
+            apps:tint="@color/secondaryColor" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 </layout>

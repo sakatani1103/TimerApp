@@ -9,7 +9,7 @@
 
 ### 画面遷移図
 
-![タイマーアプリ画面遷移図横](https://user-images.githubusercontent.com/60771916/138843445-2b52b628-61ba-4c1d-a8b7-70590baa4945.jpg)
+![タイマーアプリ画面遷移図横](https://user-images.githubusercontent.com/60771916/139251588-ace1d2d6-86c9-4b07-b268-787d36fb5652.png)
 
 <ol>
     <li>Home/TimerListFragment</li>
