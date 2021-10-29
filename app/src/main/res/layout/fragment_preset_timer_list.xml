@@ -5,15 +5,15 @@
 
     <data>
 
+
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/timer_list"
+            android:id="@+id/preset_timer_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scrollbars="vertical"
@@ -47,6 +47,7 @@
             apps:layout_constraintEnd_toStartOf="@+id/add_list"
             apps:srcCompat="@drawable/ic_delete"
             apps:tint="@color/secondaryColor" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 

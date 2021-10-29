@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="standard_margin">8dp</dimen>
+    <dimen name="card_padding">16dp</dimen>
+    <dimen name="card_margin">16dp</dimen>
+    <dimen name="setting_margin">32dp</dimen>
+    <dimen name="icon_padding">5dp</dimen>
+    <dimen name="icon_margin">30dp</dimen>
+    <dimen name="timer_padding">24dp</dimen>
+    <dimen name="timer_margin">20dp</dimen>
+</resources>

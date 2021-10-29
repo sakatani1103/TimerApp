@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="sound_items">
+        <item>バイブレーション</item>
+        <item>アラーム</item>>
+    </string-array>
+</resources>

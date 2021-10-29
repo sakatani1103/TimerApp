@@ -9,7 +9,14 @@
 
 ### 画面遷移図
 
-![タイマーアプリ画面遷移図横](https://user-images.githubusercontent.com/60771916/138083416-f4cfe5c3-6121-4cc5-9474-962585357235.jpg)
+![タイマーアプリ画面遷移図横](https://user-images.githubusercontent.com/60771916/139251588-ace1d2d6-86c9-4b07-b268-787d36fb5652.png)
+
+<ol>
+    <li>Home/TimerListFragment</li>
+    <li>PresetTimerListFragment</li>
+    <li>SetTimerFragment</li>
+</ol>
+- A TimerFragment
 
 ### 機能
 
@@ -24,7 +31,7 @@
         <ul>
         <li>タイマー通知の音もしくはバイブ設定機能</li>
 	    <li>タイマー稼働中の画面表示設定機能</li>
-        <li>タイマー削除機能</li>
+        <li>タイマー削除機能(ボタン,スワイプ)</li>
         </ul>
     <li>プリセットタイマー作成機能</li>
         <ul>
@@ -32,7 +39,7 @@
         <li>事前通知設定機能</li>
         <li>プリセットタイマー順番変更機能</li>
         <li>プリセットタイマー複製機能</li>
-        <li>プリセットタイマー削除機能</li>
+        <li>プリセットタイマー削除機能(ボタン,スワイプ)</li>
         </ul>
 </ul>
 

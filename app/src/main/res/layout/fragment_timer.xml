@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:apps="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="@dimen/timer_padding">
+
+
+        <TextView
+            android:id="@+id/total_time_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:text="@string/total_time_title"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+            apps:layout_constraintEnd_toEndOf="parent"
+            apps:layout_constraintStart_toStartOf="parent"
+            apps:layout_constraintTop_toTopOf="parent" />
+
+
+        <TextView
+            android:id="@+id/min"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/timer_margin"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline4"
+            apps:layout_constraintEnd_toStartOf="@+id/min_unit"
+            apps:layout_constraintHorizontal_chainStyle="packed"
+            apps:layout_constraintStart_toStartOf="parent"
+            apps:layout_constraintTop_toBottomOf="@+id/total_time_title"
+            tools:text="000" />
+
+        <TextView
+            android:id="@+id/min_unit"
+            android:layout_width="wrap_content"
+            android:layout_height="43dp"
+            android:layout_marginTop="@dimen/timer_margin"
+            android:gravity="bottom"
+            android:text="@string/min"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+            apps:layout_constraintEnd_toStartOf="@+id/sec"
+            apps:layout_constraintStart_toEndOf="@+id/min"
+            apps:layout_constraintTop_toBottomOf="@+id/total_time_title" />
+
+        <TextView
+            android:id="@+id/sec"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/timer_margin"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline4"
+            apps:layout_constraintEnd_toStartOf="@+id/sec_unit"
+            apps:layout_constraintStart_toEndOf="@+id/min_unit"
+            apps:layout_constraintTop_toBottomOf="@+id/total_time_title"
+            tools:text="00" />
+
+        <TextView
+            android:id="@+id/sec_unit"
+            android:layout_width="wrap_content"
+            android:layout_height="43dp"
+            android:layout_marginTop="@dimen/timer_margin"
+            android:gravity="bottom"
+            android:text="@string/sec"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+            apps:layout_constraintEnd_toEndOf="parent"
+            apps:layout_constraintStart_toEndOf="@+id/sec"
+            apps:layout_constraintTop_toBottomOf="@+id/total_time_title" />
+
+        <TextView
+            android:id="@+id/preset_timer_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+            apps:layout_constraintStart_toStartOf="@+id/preset_min"
+            apps:layout_constraintTop_toBottomOf="@+id/min_unit"
+            tools:text="設問1" />
+
+        <TextView
+            android:id="@+id/preset_min"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline1"
+            apps:layout_constraintEnd_toStartOf="@+id/preset_min_unit"
+            apps:layout_constraintHorizontal_bias="0.5"
+            apps:layout_constraintStart_toStartOf="parent"
+            apps:layout_constraintTop_toBottomOf="@+id/preset_timer_title"
+            tools:text="000" />
+
+        <TextView
+            android:id="@+id/preset_min_unit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/min"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline4"
+            apps:layout_constraintBottom_toBottomOf="@+id/preset_min"
+            apps:layout_constraintEnd_toStartOf="@+id/preset_sec"
+            apps:layout_constraintHorizontal_bias="0.5"
+            apps:layout_constraintStart_toEndOf="@+id/preset_min" />
+
+        <TextView
+            android:id="@+id/preset_sec"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline1"
+            apps:layout_constraintBottom_toBottomOf="@+id/preset_min_unit"
+            apps:layout_constraintEnd_toStartOf="@+id/preset_sec_unit"
+            apps:layout_constraintHorizontal_bias="0.5"
+            apps:layout_constraintStart_toEndOf="@+id/preset_min_unit"
+            tools:text="00" />
+
+        <TextView
+            android:id="@+id/preset_sec_unit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sec"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline4"
+            apps:layout_constraintBottom_toBottomOf="@+id/preset_sec"
+            apps:layout_constraintEnd_toEndOf="parent"
+            apps:layout_constraintStart_toEndOf="@+id/preset_sec" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/start_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|end"
+            android:layout_margin="@dimen/card_margin"
+            android:layout_marginEnd="243dp"
+            apps:backgroundTint="#ffffff"
+            apps:borderWidth="0dp"
+            apps:layout_constraintBottom_toBottomOf="parent"
+            apps:layout_constraintEnd_toStartOf="@+id/stop_btn"
+            apps:layout_constraintHorizontal_bias="0.5"
+            apps:layout_constraintStart_toStartOf="parent"
+            apps:layout_constraintTop_toBottomOf="@+id/preset_min"
+            apps:srcCompat="@drawable/ic_stop"
+            apps:tint="#111111" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/stop_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|end"
+            android:layout_margin="@dimen/card_margin"
+            apps:backgroundTint="#ffffff"
+            apps:borderWidth="0dp"
+            apps:layout_constraintBottom_toBottomOf="parent"
+            apps:layout_constraintEnd_toEndOf="parent"
+            apps:layout_constraintHorizontal_bias="0.5"
+            apps:layout_constraintStart_toEndOf="@+id/start_btn"
+            apps:layout_constraintTop_toBottomOf="@+id/preset_sec"
+            apps:srcCompat="@drawable/ic_pause"
+            apps:tint="#111111" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>
