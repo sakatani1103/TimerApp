@@ -35,7 +35,7 @@
             apps:layout_constraintHorizontal_chainStyle="packed"
             apps:layout_constraintStart_toStartOf="parent"
             apps:layout_constraintTop_toBottomOf="@+id/total_time_title"
-            tools:text="00" />
+            tools:text="000" />
 
         <TextView
             android:id="@+id/min_unit"
@@ -91,7 +91,7 @@
             apps:layout_constraintHorizontal_bias="0.5"
             apps:layout_constraintStart_toStartOf="parent"
             apps:layout_constraintTop_toBottomOf="@+id/preset_timer_title"
-            tools:text="00" />
+            tools:text="000" />
 
         <TextView
             android:id="@+id/preset_min_unit"
