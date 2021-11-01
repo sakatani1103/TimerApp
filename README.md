@@ -16,7 +16,7 @@
     <li>PresetTimerListFragment</li>
     <li>SetTimerFragment</li>
 </ol>
-- A TimerFragment
+    A. TimerFragment
 
 ### 機能
 
