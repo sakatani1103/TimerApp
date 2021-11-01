@@ -1,17 +1,29 @@
 package com.example.timerapp.database
 
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
 enum class ListType {
     SIMPLE_LAYOUT,
     DETAIL_LAYOUT
 }
 
+enum class NotificationType {
+    VIBRATION,
+    ALARM
+}
+
+@Entity
 data class Timer(
-    val id: Int,
+    @PrimaryKey(autoGenerate = false)
     val name: String,
-    val total: String,
-    val detail: String,
-    val listType: ListType,
-    val is_notification: Boolean,
-    val notification_time: String,
+    @ColumnInfo
+    val total: Int = 0,
+    @ColumnInfo
+    val listType: ListType = ListType.SIMPLE_LAYOUT,
+    @ColumnInfo
+    val notificationType: NotificationType = NotificationType.VIBRATION,
+    @ColumnInfo
     var isExpanded: Boolean = false
 )
