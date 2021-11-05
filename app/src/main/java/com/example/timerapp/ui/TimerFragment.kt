@@ -14,13 +14,23 @@ import com.example.timerapp.databinding.FragmentTimerBinding
 
 class TimerFragment : Fragment() {
 
+    private var _binding: FragmentTimerBinding? = null
+    private val binding: FragmentTimerBinding
+        get() = _binding!!
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val binding = DataBindingUtil.inflate<FragmentTimerBinding>(
+        _binding = DataBindingUtil.inflate<FragmentTimerBinding>(
             inflater,R.layout.fragment_timer,container,false)
+
         return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding= null
     }
 
 }
