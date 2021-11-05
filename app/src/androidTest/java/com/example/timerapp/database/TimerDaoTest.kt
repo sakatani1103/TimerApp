@@ -42,7 +42,7 @@ class TimerDaoTest {
 
     @Test
     fun insertTimer() = runBlockingTest {
-        val timerItem = Timer("test1")
+        val timerItem = Timer("test1") // 最初はtimer名のみを入力
         dao.insertTimer(timerItem)
 
         val allTimerItems = dao.observeAllTimer().getOrAwaitValueTest()
