@@ -23,7 +23,5 @@ data class Timer(
     @ColumnInfo
     val listType: ListType = ListType.SIMPLE_LAYOUT,
     @ColumnInfo
-    val notificationType: NotificationType = NotificationType.VIBRATION,
-    @ColumnInfo
-    var isExpanded: Boolean = false
+    val notificationType: NotificationType = NotificationType.VIBRATION
 )
