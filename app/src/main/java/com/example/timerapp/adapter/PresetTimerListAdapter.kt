@@ -3,35 +3,22 @@ package com.example.timerapp.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.timerapp.database.PresetTimer
 import com.example.timerapp.databinding.PresetTimerListItemBinding
 import com.example.timerapp.databinding.TopListItemBinding
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.lang.ClassCastException
 
 private val ITEM_VIEW_TYPE_HEADER = 0
 private val ITEM_VIEW_TYPE_ITEM = 1
 
-class PresetTimerListAdapter :
-    ListAdapter<DataItem, RecyclerView.ViewHolder>(PresetTimerDiffCallback()) {
+class PresetTimerListAdapter(private val _testData: MutableList<PresetTimer>) :
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private val adapterScope = CoroutineScope(Dispatchers.Default)
-
-    fun addHeaderToSubmitList(list: List<PresetTimer>?){
-        adapterScope.launch {
-            val items = when (list) {
-                null -> listOf(DataItem.Header)
-                else -> listOf(DataItem.Header) + list.map { DataItem.PresetTimerItem(it) }
-            }
-            withContext(Dispatchers.Main) {
-                submitList(items)
-            }
+    private fun addHeaderToSubmitList(list: List<PresetTimer>?): List<DataItem> {
+        return when (list) {
+            null -> listOf(DataItem.Header)
+            else -> listOf(DataItem.Header) + list.map { DataItem.PresetTimerItem(it) }
         }
     }
 
@@ -73,9 +60,10 @@ class PresetTimerListAdapter :
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        val items = addHeaderToSubmitList(_testData)
         when (holder) {
             is ViewHolder -> {
-                val item = getItem(position) as DataItem.PresetTimerItem
+                val item = items[position] as DataItem.PresetTimerItem
                 holder.bind(presetTimer = item)
             }
         }
@@ -88,28 +76,22 @@ class PresetTimerListAdapter :
             ITEM_VIEW_TYPE_ITEM
         }
     }
-}
 
-class PresetTimerDiffCallback : DiffUtil.ItemCallback<DataItem>() {
-    override fun areItemsTheSame(oldItem: DataItem, newItem: DataItem): Boolean {
-        return oldItem.id == newItem.id
-    }
-
-    override fun areContentsTheSame(oldItem: DataItem, newItem: DataItem): Boolean {
-        return oldItem == newItem
+    override fun getItemCount(): Int {
+        return _testData.size + 1
     }
 }
 
 // sealedを使用するとDataclassをobjectを一緒に管理することができる
 sealed class DataItem {
     data class PresetTimerItem(val presetTimer: PresetTimer) : DataItem() {
-        override val id = presetTimer.id
+        override val id = presetTimer.presetTimerId
     }
 
     object Header : DataItem() {
         override val id = Long.MIN_VALUE
     }
 
-    abstract val id: Long
+    abstract val id: Long?
 }
 
