@@ -70,7 +70,6 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@{timer.total}"
                             android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
                             tools:text="計  2時間30分" />
 
@@ -79,7 +78,6 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/card_margin"
                             android:drawablePadding="@dimen/icon_padding"
-                            android:text="@{timer.notification_time}"
                             android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
                             tools:drawableLeft="@drawable/ic_notifications"
                             tools:text="通知" />
@@ -125,7 +123,6 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/card_margin"
                         android:layout_marginTop="@dimen/standard_margin"
-                        android:text="@{timer.detail}"
                         android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
                         tools:text="設問1　20分　　通知：5分前\n設問2-5   30分　通知：5分前\n設問2-5   30分　通知：5分前\n
 設問6     45分     通知：10分前\n設問7      35分　通知：10分前" />
