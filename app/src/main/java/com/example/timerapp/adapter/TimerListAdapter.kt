@@ -18,20 +18,22 @@ import com.example.timerapp.databinding.SimpleListItemBinding
 import com.example.timerapp.ui.TimerFragmentDirections
 
 
-class TimerListAdapter :
-    ListAdapter<Timer, TimerListAdapter.TimerViewHolder>(TimerDiffCallback()) {
+class TimerListAdapter(private val _testData: MutableList<Timer>) :
+    RecyclerView.Adapter<TimerListAdapter.TimerViewHolder>() {
+
+    private var listItems = _testData
 
     class DetailViewHolder private constructor(val binding: ListItemBinding) :
         TimerViewHolder(binding) {
 
-        private var currentItem: Timer? = null
+        private var expanded: Boolean = false
 
         init {
                 binding.detailTitle.setOnClickListener {
-                    currentItem?.let {
-                        val expanded = it.isExpanded
-                        it.isExpanded = expanded.not()
-                        // 初期で開いておくところを表示
+
+                        expanded = !expanded
+                        // expandedしないところ
+                        //　設定しないとanimationの矢印が一周してしまう
                         binding.topTopic.isSelected = expanded.not()
                         binding.startBtn.isSelected = expanded.not()
 
@@ -50,21 +52,13 @@ class TimerListAdapter :
                         }
                         binding.expandArrow.startAnimation(anim)
                     }
-                }
+
             }
 
         override fun bind(timer: Timer) {
-            currentItem = timer
 
-            binding.timer = currentItem
+            binding.timer = timer
 
-            val expandableLayout = binding.expandableLayout
-            if (timer.isExpanded) {
-                expandableLayout.expand(false)
-            } else {
-                expandableLayout.collapse(false)
-            }
-            binding.expandArrow.isSelected = !timer.isExpanded.not()
             binding.topTopic.setOnClickListener(
                 Navigation.createNavigateOnClickListener(R.id.action_timerListFragment_to_presetTimerListFragment)
             )
@@ -101,38 +95,30 @@ class TimerListAdapter :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TimerViewHolder {
-        val type = ListType.values()[viewType]
-        return when(type) {
+        return when(ListType.values()[viewType]) {
             ListType.DETAIL_LAYOUT -> DetailViewHolder.from(parent)
             ListType.SIMPLE_LAYOUT -> SimpleViewHolder.from(parent)
         }
     }
 
     override fun onBindViewHolder(holder: TimerViewHolder, position: Int) {
-        val timer = getItem(position)
+        val timer = listItems[position]
         holder.bind(timer)
     }
 
     // ordinalはenumで定義したViewtypeのIntを返す
     override fun getItemViewType(position: Int): Int {
-        return getItem(position).listType.ordinal
+        return listItems[position].listType.ordinal
     }
 
     abstract class TimerViewHolder(binding: ViewDataBinding) :
         RecyclerView.ViewHolder(binding.root){
         abstract fun bind(timer: Timer)
     }
+
+    override fun getItemCount(): Int {
+        return _testData.size
+    }
 }
 
-class TimerDiffCallback : DiffUtil.ItemCallback<Timer>() {
-    override fun areItemsTheSame(oldItem: Timer, newItem: Timer): Boolean {
-        return oldItem.id == newItem.id
-    }
-
-
-    override fun areContentsTheSame(oldItem: Timer, newItem: Timer): Boolean {
-        return oldItem == newItem
-    }
-
-}
 
