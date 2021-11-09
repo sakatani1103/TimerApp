@@ -42,11 +42,17 @@ class TimerDaoTest {
 
     @Test
     fun insertTimer() = runBlockingTest {
-        val timerItem = Timer("test1") // 最初はtimer名のみを入力
-        dao.insertTimer(timerItem)
+        val timerItem1 = Timer("test1") // 最初はtimer名のみを入力
+        val timerItem2 = Timer("test2")
+        val timerItem3 = Timer("test3")
+        dao.insertTimer(timerItem1)
+        dao.insertTimer(timerItem2)
+        dao.insertTimer(timerItem3)
 
         val allTimerItems = dao.observeAllTimer().getOrAwaitValueTest()
-        assertThat(allTimerItems).contains(timerItem)
+        assertThat(allTimerItems).contains(timerItem1)
+        assertThat(allTimerItems).contains(timerItem2)
+        assertThat(allTimerItems).contains(timerItem3)
     }
 
     @Test
@@ -141,4 +147,37 @@ class TimerDaoTest {
 
         assertThat(allCurrentTimer).isEqualTo(timerItem1)
     }
+
+    @Test
+    fun getCurrentPresetTimer() = runBlockingTest {
+        val presetTimer1 = PresetTimer("test1", "presetTimer1", 30,
+            10, 1L)
+        val presetTimer2 = PresetTimer("test1", "presetTimer2", 30,
+            10, 2L)
+        val presetTimer3 = PresetTimer("test1", "presetTimer3", 30,
+            10, 3L)
+        dao.insertPresetTimer(presetTimer1)
+        dao.insertPresetTimer(presetTimer2)
+        dao.insertPresetTimer(presetTimer3)
+
+        val currentPresetTimer = dao.getCurrentPresetTimer(1L)
+        assertThat(currentPresetTimer).isEqualTo(presetTimer1)
+    }
+
+    @Test
+    fun getNumberOfPresetTimer() = runBlockingTest {
+        val presetTimer1 = PresetTimer("test1", "presetTimer1", 30,
+            10, 1L)
+        val presetTimer2 = PresetTimer("test1", "presetTimer2", 30,
+            10, 2L)
+        val presetTimer3 = PresetTimer("test2", "presetTimer3", 30,
+            10, 3L)
+        dao.insertPresetTimer(presetTimer1)
+        dao.insertPresetTimer(presetTimer2)
+        dao.insertPresetTimer(presetTimer3)
+
+        val numberOfPresetTimer = dao.getNumberOfPresetTimers("test1")
+        assertThat(numberOfPresetTimer).isEqualTo(2)
+    }
+
 }

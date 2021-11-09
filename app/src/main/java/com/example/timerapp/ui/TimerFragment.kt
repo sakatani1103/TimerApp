@@ -7,12 +7,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.timerapp.R
 import com.example.timerapp.databinding.FragmentTimerBinding
 
 
 class TimerFragment : Fragment() {
+    private lateinit var viewModel: TimerViewModel
 
     private var _binding: FragmentTimerBinding? = null
     private val binding: FragmentTimerBinding
@@ -26,6 +28,11 @@ class TimerFragment : Fragment() {
             inflater,R.layout.fragment_timer,container,false)
 
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewModel = ViewModelProvider(requireActivity())[TimerViewModel::class.java]
     }
 
     override fun onDestroyView() {

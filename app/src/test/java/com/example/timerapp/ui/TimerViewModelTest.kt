@@ -29,12 +29,4 @@ class TimerViewModelTest {
         timerViewModel = TimerViewModel(FakeTimerRepository())
     }
 
-    @Test
-    fun `insert timer item with empty name, return error`() {
-        timerViewModel.insertTimer("")
-        val value = timerViewModel.insertTimerItemStatus.getOrAwaitValue()
-        assertThat(value.status).isEqualTo(Status.ERROR)
-    }
-
-
 }

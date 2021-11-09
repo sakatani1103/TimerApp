@@ -23,7 +23,16 @@ interface TimerRepository {
 
     suspend fun getCurrentTimer(name: String): Timer
 
+    suspend fun getCurrentPresetTimer(id: Long): PresetTimer
+
+    suspend fun getNumberOfPresetTimers(name: String): Int
+
     fun observeAllTimer(): LiveData<List<Timer>>
 
     fun observeAllPresetTimer(): LiveData<List<PresetTimer>>
+
+    fun observeNumberOfTimers(): LiveData<Int>
+
+    fun observeAllTimerNames(): LiveData<List<String>>
+
 }

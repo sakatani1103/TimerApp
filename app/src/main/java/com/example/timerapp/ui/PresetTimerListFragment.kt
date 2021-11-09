@@ -16,7 +16,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class PresetTimerListFragment : Fragment() {
-    lateinit var viewModel: TimerViewModel
+    private lateinit var viewModel: PresetTimerListViewModel
 
     private var _binding: FragmentPresetTimerListBinding? = null
     private val binding: FragmentPresetTimerListBinding
@@ -45,7 +45,7 @@ class PresetTimerListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProvider(requireActivity())[TimerViewModel::class.java]
+        viewModel = ViewModelProvider(requireActivity())[PresetTimerListViewModel::class.java]
     }
 
     override fun onDestroyView() {

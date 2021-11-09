@@ -1,11 +1,13 @@
 package com.example.timerapp.repository
 
 import androidx.lifecycle.LiveData
+import androidx.room.Query
 import com.example.timerapp.database.PresetTimer
 import com.example.timerapp.database.Timer
 import com.example.timerapp.database.TimerDao
 import com.example.timerapp.database.TimerWithPresetTimer
 import javax.inject.Inject
+import kotlin.concurrent.timer
 
 // repositoryにRoomDaoをinject
 // injectしたrepositoryの
@@ -44,12 +46,29 @@ class DefaultTimerRepository @Inject constructor(
         return timerDao.getCurrentTimer(name)
     }
 
+    override suspend fun getCurrentPresetTimer(id: Long): PresetTimer {
+        return timerDao.getCurrentPresetTimer(id)
+    }
+
+    override suspend fun getNumberOfPresetTimers(name: String): Int {
+        return timerDao.getNumberOfPresetTimers(name)
+    }
+
+
     override fun observeAllTimer(): LiveData<List<Timer>> {
         return timerDao.observeAllTimer()
     }
 
     override fun observeAllPresetTimer(): LiveData<List<PresetTimer>> {
         return timerDao.observeAllPresetTimer()
+    }
+
+    override fun observeNumberOfTimers(): LiveData<Int> {
+        return timerDao.observeNumberOfTimer()
+    }
+
+    override fun observeAllTimerNames(): LiveData<List<String>> {
+        return timerDao.observeAllTimerName()
     }
 
 }

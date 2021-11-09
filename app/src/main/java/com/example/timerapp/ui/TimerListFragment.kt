@@ -27,7 +27,7 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class TimerListFragment : Fragment() {
-    private lateinit var viewModel: TimerViewModel
+    private lateinit var viewModel: TimerListViewModel
 
     private var _binding: FragmentTimerListBinding? = null
     private val binding: FragmentTimerListBinding
@@ -45,7 +45,7 @@ class TimerListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProvider(requireActivity())[TimerViewModel::class.java]
+        viewModel = ViewModelProvider(requireActivity())[TimerListViewModel::class.java]
 
         val list = createTestList()
         setupRecyclerView(list)
