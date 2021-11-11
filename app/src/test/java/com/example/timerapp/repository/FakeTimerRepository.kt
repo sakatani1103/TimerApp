@@ -104,6 +104,10 @@ class FakeTimerRepository: TimerRepository {
         return observableTimerNamesList
     }
 
+    override fun observeCurrentTimer(name: String): LiveData<Timer> {
+        TODO("Not yet implemented")
+    }
+
     fun addTasks(vararg timers: Timer) {
         for (timer in timers){
             timerItems.add(timer)

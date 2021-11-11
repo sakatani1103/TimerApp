@@ -9,10 +9,11 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.example.timerapp.R
 import com.example.timerapp.databinding.FragmentSetTimerBinding
-import com.example.timerapp.databinding.FragmentTimerListBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class SetTimerFragment : Fragment() {
-    private lateinit var viewModel: SetTimerViewModel
+    private lateinit var viewModel: TimerViewModel
 
     private var _binding: FragmentSetTimerBinding? = null
     private val binding: FragmentSetTimerBinding
@@ -30,7 +31,7 @@ class SetTimerFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProvider(requireActivity())[SetTimerViewModel::class.java]
+        viewModel = ViewModelProvider(requireActivity())[TimerViewModel::class.java]
     }
 
     override fun onDestroyView() {

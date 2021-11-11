@@ -5,17 +5,15 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
 import com.example.timerapp.R
 import com.example.timerapp.databinding.FragmentTimerBinding
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class TimerFragment : Fragment() {
     private lateinit var viewModel: TimerViewModel
-
     private var _binding: FragmentTimerBinding? = null
     private val binding: FragmentTimerBinding
         get() = _binding!!

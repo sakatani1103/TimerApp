@@ -27,7 +27,15 @@
             app:destination="@id/timerFragment" />
         <action
             android:id="@+id/action_presetTimerListFragment_to_timerListFragment"
-            app:destination="@id/timerListFragment" />
+            app:destination="@id/timerListFragment"
+            app:popUpTo="@id/timerListFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_presetTimerListFragment_to_setTimerFragment"
+            app:destination="@id/setTimerFragment" />
+        <argument
+            android:name="name"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/timerFragment"
@@ -36,9 +44,29 @@
         tools:layout="@layout/fragment_timer" >
         <action
             android:id="@+id/action_timerFragment_to_presetTimerListFragment"
-            app:destination="@id/presetTimerListFragment" />
+            app:destination="@id/presetTimerListFragment"
+            app:popUpTo="@id/presetTimerListFragment"
+            app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_timerFragment_to_timerListFragment"
-            app:destination="@id/timerListFragment" />
+            app:destination="@id/timerListFragment"
+            app:popUpTo="@id/timerListFragment"
+            app:popUpToInclusive="true" />
+        <argument
+            android:name="name"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/setTimerFragment"
+        android:name="com.example.timerapp.ui.SetTimerFragment"
+        android:label="SetTimerFragment" >
+        <action
+            android:id="@+id/action_setTimerFragment_to_presetTimerListFragment"
+            app:destination="@id/presetTimerListFragment"
+            app:popUpTo="@id/presetTimerListFragment"
+            app:popUpToInclusive="true" />
+        <argument
+            android:name="id"
+            app:argType="long" />
     </fragment>
 </navigation>

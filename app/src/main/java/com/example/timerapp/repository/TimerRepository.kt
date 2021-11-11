@@ -35,4 +35,6 @@ interface TimerRepository {
 
     fun observeAllTimerNames(): LiveData<List<String>>
 
+    fun observeCurrentTimer(name: String): LiveData<Timer>
+
 }

@@ -4,6 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <variable
+            name="viewModel"
+            type="com.example.timerapp.ui.TimerViewModel" />
+        
+        <variable
+            name="timer"
+            type="com.example.timerapp.database.Timer" />
 
     </data>
 
@@ -26,7 +33,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/standard_margin"
-            android:text="基本情報技術者午前試験"
+            android:text="@{timer.name}"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
             app:layout_constraintBottom_toTopOf="@+id/divider1"
             app:layout_constraintStart_toStartOf="parent"

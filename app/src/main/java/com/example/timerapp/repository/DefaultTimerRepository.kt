@@ -71,4 +71,8 @@ class DefaultTimerRepository @Inject constructor(
         return timerDao.observeAllTimerName()
     }
 
+    override fun observeCurrentTimer(name: String): LiveData<Timer> {
+        return timerDao.observeCurrentTimer(name)
+    }
+
 }

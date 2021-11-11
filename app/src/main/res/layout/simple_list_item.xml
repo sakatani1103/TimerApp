@@ -7,6 +7,10 @@
         <variable
             name="timer"
             type="com.example.timerapp.database.Timer" />
+
+        <variable
+            name="clickListener"
+            type="com.example.timerapp.adapter.TimerListListener" />
     </data>
 
     <LinearLayout
@@ -46,6 +50,7 @@
 
                 <LinearLayout
                     android:id="@+id/top_topic"
+                    android:onClick="@{() -> clickListener.onClick(timer)}"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
@@ -56,6 +61,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+                        android:text="@{timer.name}"
                         tools:text="基本情報技術者午後試験" />
 
                     <LinearLayout

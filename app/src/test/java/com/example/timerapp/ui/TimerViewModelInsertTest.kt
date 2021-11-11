@@ -6,6 +6,8 @@ import com.example.timerapp.database.Timer
 import com.example.timerapp.getOrAwaitValue
 import com.example.timerapp.others.Status
 import com.example.timerapp.repository.FakeTimerRepository
+import com.example.timerapp.ui.TimerViewModel
+import com.google.common.truth.Truth
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -13,8 +15,9 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
+
 @ExperimentalCoroutinesApi
-class TimerListViewModelTest {
+class TimerViewModelInsertTest {
 
     @get:Rule
     var instantTaskExecutorRule = InstantTaskExecutorRule()
@@ -22,7 +25,7 @@ class TimerListViewModelTest {
     @get:Rule
     var mainCoroutineRule = MainCoroutineRule()
 
-    private lateinit var timerListViewModel: TimerListViewModel
+    private lateinit var timerViewModel: TimerViewModel
     private lateinit var timerRepository: FakeTimerRepository
 
     @Before
@@ -30,6 +33,7 @@ class TimerListViewModelTest {
         timerRepository = FakeTimerRepository()
     }
 
+    // InsertTest
     // タイマーの登録
     // 以下はエラー表示(このfunctionはnameのみの入力)
     // 空の入力
@@ -38,17 +42,17 @@ class TimerListViewModelTest {
     // タイマー数が15個登録されている
     @Test
     fun `insert timer item with empty name, return error`() {
-        timerListViewModel = TimerListViewModel(timerRepository)
-        timerListViewModel.insertTimer("")
-        val value = timerListViewModel.insertTimerItemStatus.getOrAwaitValue()
+        timerViewModel = TimerViewModel(timerRepository)
+        timerViewModel.insertTimer("")
+        val value = timerViewModel.insertTimerItemStatus.getOrAwaitValue()
         assertThat(value.status).isEqualTo(Status.ERROR)
     }
 
     @Test
     fun `insert timer item with too long name, return error`() {
-        timerListViewModel = TimerListViewModel(timerRepository)
-        timerListViewModel.insertTimer("VeryVeryVeryLongNameTimer")
-        val value = timerListViewModel.insertTimerItemStatus.getOrAwaitValue()
+        timerViewModel = TimerViewModel(timerRepository)
+        timerViewModel.insertTimer("VeryVeryVeryLongNameTimer")
+        val value = timerViewModel.insertTimerItemStatus.getOrAwaitValue()
         assertThat(value.status).isEqualTo(Status.ERROR)
     }
 
@@ -57,9 +61,9 @@ class TimerListViewModelTest {
         val timer1 = Timer("timer1")
         val timer2 = Timer("timer2")
         timerRepository.addTasks(timer1, timer2)
-        timerListViewModel = TimerListViewModel(timerRepository)
-        timerListViewModel.insertTimer("timer1")
-        val value = timerListViewModel.insertTimerItemStatus.getOrAwaitValue()
+        timerViewModel = TimerViewModel(timerRepository)
+        timerViewModel.insertTimer("timer1")
+        val value = timerViewModel.insertTimerItemStatus.getOrAwaitValue()
         assertThat(value.status).isEqualTo(Status.ERROR)
     }
 
@@ -81,20 +85,18 @@ class TimerListViewModelTest {
         val timer14 = Timer("timer14")
         val timer15 = Timer("timer15")
         timerRepository.addTasks(timer1, timer2, timer3, timer4, timer5, timer6,
-        timer7, timer8, timer9,  timer10, timer11, timer12, timer13, timer14, timer15)
-        timerListViewModel = TimerListViewModel(timerRepository)
-        timerListViewModel.insertTimer("timer16")
-        val value = timerListViewModel.insertTimerItemStatus.getOrAwaitValue()
+            timer7, timer8, timer9,  timer10, timer11, timer12, timer13, timer14, timer15)
+        timerViewModel = TimerViewModel(timerRepository)
+        timerViewModel.insertTimer("timer16")
+        val value = timerViewModel.insertTimerItemStatus.getOrAwaitValue()
         assertThat(value.status).isEqualTo(Status.ERROR)
     }
 
     @Test
     fun `insert timer item with valid input, return success`() {
-        timerListViewModel = TimerListViewModel(timerRepository)
-        timerListViewModel.insertTimer("timer")
-        val value = timerListViewModel.insertTimerItemStatus.getOrAwaitValue()
+        timerViewModel = TimerViewModel(timerRepository)
+        timerViewModel.insertTimer("timer")
+        val value = timerViewModel.insertTimerItemStatus.getOrAwaitValue()
         assertThat(value.status).isEqualTo(Status.SUCCESS)
     }
-
-
 }
