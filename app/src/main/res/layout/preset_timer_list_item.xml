@@ -6,9 +6,14 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
-            name="presetTimerItem"
-            type="com.example.timerapp.adapter.DataItem.PresetTimerItem" />
+            name="presetTimer"
+            type="com.example.timerapp.database.PresetTimer" />
+
+        <variable
+            name="clickListener"
+            type="com.example.timerapp.adapter.PresetTimerClickListener" />
 
     </data>
 
@@ -33,6 +38,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:onClick="@{() -> clickListener.onClick(presetTimer)}"
                 android:orientation="vertical">
 
                 <LinearLayout
@@ -45,6 +51,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:text="@{presetTimer.presetName}"
                         android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
                         tools:text="設問2-5" />
 
@@ -57,22 +64,24 @@
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
                             android:layout_weight="1"
+                            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                            app:customTime="@{presetTimer.presetTime}"
                             tools:text="20分" />
 
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/card_margin"
-                            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
                             android:layout_weight="1"
+                            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                            app:notificationTime="@{presetTimer.notificationTime}"
                             tools:text="通知 : 5分前" />
 
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:src="@drawable/ic_copy"/>
+                            android:src="@drawable/ic_copy" />
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>

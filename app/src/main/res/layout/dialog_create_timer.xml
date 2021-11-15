@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:id="@+id/layout_timer_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/setting_margin"
+        android:layout_marginStart="@dimen/dialog_margin"
+        android:layout_marginEnd="@dimen/dialog_margin"
+        android:layout_marginBottom="@dimen/setting_margin"
+        android:hint="@string/timer_name">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/et_timer_name"
+            android:inputType="text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+</LinearLayout>

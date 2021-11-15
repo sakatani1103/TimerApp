@@ -1,27 +1,136 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:apps="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
-
+        <variable
+            name="viewModel"
+            type="com.example.timerapp.ui.TimerViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/standard_margin">
+
+        <ImageButton
+            android:id="@+id/back_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/standard_margin"
+            android:src="@drawable/ic_back"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:background="@color/white"
+            android:clickable="true"
+            android:focusable="true" />
+
+        <TextView
+            android:id="@+id/timer_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/standard_margin"
+            android:text="@{viewModel.currentTimer.name}"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+            app:layout_constraintBottom_toTopOf="@+id/divider1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="基本情報技術者午前試験" />
+
+        <View
+            android:id="@+id/divider1"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginStart="@dimen/standard_margin"
+            android:layout_marginTop="@dimen/setting_margin"
+            android:layout_marginEnd="@dimen/standard_margin"
+            android:background="?android:attr/listDivider"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/start_btn" />
+
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/start_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/icon_margin"
+            android:layout_marginEnd="@dimen/standard_margin"
+            app:backgroundTint="#ffffff"
+            app:borderWidth="0dp"
+            app:fabSize="mini"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_play_arrow"
+            app:tint="#111111" />
+
+        <TextView
+            android:id="@+id/setting_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/standard_margin"
+            android:layout_marginTop="@dimen/setting_margin"
+            android:text="@string/setting_title"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/divider1" />
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/setting_display_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/standard_margin"
+            android:layout_marginEnd="@dimen/standard_margin"
+            android:checked="@{viewModel.currentTimer.display}"
+            android:text="@string/timer_setting"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/setting_title" />
+
+        <TextView
+            android:id="@+id/setting_sound_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/standard_margin"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp"
+            android:text="@string/setting_sound"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/setting_display_title" />
+
+        <Spinner
+            android:id="@+id/sounds_spinner"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            app:sound="@{viewModel.currentTimer.notificationType}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:entries="@array/sound_items"
+            app:layout_constraintBaseline_toBaselineOf="@+id/setting_sound_title"
+            app:layout_constraintEnd_toEndOf="@+id/setting_display_title" />
+
+        <View
+            android:id="@+id/divider2"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginStart="@dimen/standard_margin"
+            android:layout_marginTop="@dimen/setting_margin"
+            android:layout_marginEnd="@dimen/standard_margin"
+            android:background="?android:attr/listDivider"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/setting_sound_title" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/preset_timer_list"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
             android:scrollbars="vertical"
-            apps:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            apps:layout_constraintBottom_toBottomOf="parent"
-            apps:layout_constraintEnd_toEndOf="parent"
-            apps:layout_constraintStart_toStartOf="parent"
-            apps:layout_constraintTop_toTopOf="parent" />
+            android:layout_marginTop="@dimen/setting_margin"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/divider2" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/add_list"
@@ -30,23 +139,23 @@
             android:layout_marginEnd="@dimen/icon_margin"
             android:layout_marginBottom="@dimen/icon_margin"
             android:elevation="10dp"
-            apps:layout_constraintBottom_toBottomOf="parent"
-            apps:layout_constraintEnd_toEndOf="parent"
-            apps:srcCompat="@drawable/ic_add" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@drawable/ic_add" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/delete_list"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="30dp"
+            android:layout_marginEnd="@dimen/icon_margin"
             android:layout_marginBottom="@dimen/icon_margin"
             android:backgroundTint="@color/white"
             android:elevation="10dp"
-            apps:borderWidth="2dp"
-            apps:layout_constraintBottom_toBottomOf="parent"
-            apps:layout_constraintEnd_toStartOf="@+id/add_list"
-            apps:srcCompat="@drawable/ic_delete"
-            apps:tint="@color/secondaryColor" />
+            app:borderWidth="2dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/add_list"
+            app:srcCompat="@drawable/ic_delete"
+            app:tint="@color/secondaryColor" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

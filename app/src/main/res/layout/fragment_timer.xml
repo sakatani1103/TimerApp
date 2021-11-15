@@ -4,6 +4,9 @@
     xmlns:apps="http://schemas.android.com/apk/res-auto">
 
     <data>
+        <variable
+            name="viewModel"
+            type="com.example.timerapp.ui.TimerViewModel" />
 
     </data>
 
@@ -126,7 +129,7 @@
             apps:layout_constraintStart_toEndOf="@+id/preset_sec" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/start_btn"
+            android:id="@+id/cancel_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="top|end"
@@ -135,7 +138,7 @@
             apps:backgroundTint="#ffffff"
             apps:borderWidth="0dp"
             apps:layout_constraintBottom_toBottomOf="parent"
-            apps:layout_constraintEnd_toStartOf="@+id/stop_btn"
+            apps:layout_constraintEnd_toStartOf="@+id/stop_or_start_btn"
             apps:layout_constraintHorizontal_bias="0.5"
             apps:layout_constraintStart_toStartOf="parent"
             apps:layout_constraintTop_toBottomOf="@+id/preset_min"
@@ -143,7 +146,7 @@
             apps:tint="#111111" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/stop_btn"
+            android:id="@+id/stop_or_start_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="top|end"
@@ -153,7 +156,7 @@
             apps:layout_constraintBottom_toBottomOf="parent"
             apps:layout_constraintEnd_toEndOf="parent"
             apps:layout_constraintHorizontal_bias="0.5"
-            apps:layout_constraintStart_toEndOf="@+id/start_btn"
+            apps:layout_constraintStart_toEndOf="@+id/cancel_btn"
             apps:layout_constraintTop_toBottomOf="@+id/preset_sec"
             apps:srcCompat="@drawable/ic_pause"
             apps:tint="#111111" />

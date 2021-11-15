@@ -3,41 +3,39 @@ package com.example.timerapp.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.lifecycle.LifecycleOwner
+import androidx.recyclerview.widget.AsyncListDiffer
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.timerapp.database.PresetTimer
 import com.example.timerapp.databinding.PresetTimerListItemBinding
-import com.example.timerapp.databinding.TopListItemBinding
-import java.lang.ClassCastException
 
-private val ITEM_VIEW_TYPE_HEADER = 0
-private val ITEM_VIEW_TYPE_ITEM = 1
+class PresetTimerListAdapter(
+    val clickListener: PresetTimerClickListener,
+    private val viewLifeCycleOwner: LifecycleOwner) :
+    RecyclerView.Adapter<PresetTimerListAdapter.ViewHolder>() {
 
-class PresetTimerListAdapter(private val _testData: MutableList<PresetTimer>) :
-    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    private val diffCallback = object : DiffUtil.ItemCallback<PresetTimer>() {
+        override fun areItemsTheSame(oldItem: PresetTimer, newItem: PresetTimer): Boolean {
+            return oldItem.name == newItem.name && oldItem.presetName == newItem.presetName
+        }
 
-    private fun addHeaderToSubmitList(list: List<PresetTimer>?): List<DataItem> {
-        return when (list) {
-            null -> listOf(DataItem.Header)
-            else -> listOf(DataItem.Header) + list.map { DataItem.PresetTimerItem(it) }
+        override fun areContentsTheSame(oldItem: PresetTimer, newItem: PresetTimer): Boolean {
+            return oldItem.hashCode() == newItem.hashCode()
         }
     }
 
-    class HeaderViewHolder private constructor(val binding: TopListItemBinding) :
-        RecyclerView.ViewHolder(binding.root) {
+    private val differ = AsyncListDiffer(this, diffCallback)
 
-        companion object {
-            fun from(parent: ViewGroup): HeaderViewHolder {
-                val layoutInflater = LayoutInflater.from(parent.context)
-                val binding = TopListItemBinding.inflate(layoutInflater, parent, false)
-                return HeaderViewHolder(binding)
-            }
-        }
-    }
+    var presetTimers: List<PresetTimer>
+        get() = differ.currentList
+        set(value) = differ.submitList(value)
 
-    class ViewHolder private constructor(val binding: PresetTimerListItemBinding) :
-        RecyclerView.ViewHolder(binding.root) {
-        fun bind(presetTimer: DataItem.PresetTimerItem) {
-            binding.presetTimerItem = presetTimer
+    class ViewHolder constructor(val binding: PresetTimerListItemBinding)
+        : RecyclerView.ViewHolder(binding.root) {
+        fun bind(presetTimer: PresetTimer, viewLifeCycleOwner: LifecycleOwner) {
+            binding.presetTimer = presetTimer
+            binding.lifecycleOwner = viewLifeCycleOwner
             binding.executePendingBindings()
         }
 
@@ -50,48 +48,22 @@ class PresetTimerListAdapter(private val _testData: MutableList<PresetTimer>) :
         }
     }
 
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return when (viewType) {
-            ITEM_VIEW_TYPE_HEADER -> HeaderViewHolder.from(parent)
-            ITEM_VIEW_TYPE_ITEM -> ViewHolder.from(parent)
-            else -> throw ClassCastException("Unknown viewType ${viewType}")
-        }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        return ViewHolder.from(parent)
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val items = addHeaderToSubmitList(_testData)
-        when (holder) {
-            is ViewHolder -> {
-                val item = items[position] as DataItem.PresetTimerItem
-                holder.bind(presetTimer = item)
-            }
-        }
-    }
-
-    override fun getItemViewType(position: Int): Int {
-        return if (position == 0) {
-            ITEM_VIEW_TYPE_HEADER
-        } else {
-            ITEM_VIEW_TYPE_ITEM
-        }
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val presetTimer = presetTimers[position]
+        holder.bind(presetTimer, viewLifeCycleOwner)
     }
 
     override fun getItemCount(): Int {
-        return _testData.size + 1
+        return presetTimers.size
     }
 }
 
-// sealedを使用するとDataclassをobjectを一緒に管理することができる
-sealed class DataItem {
-    data class PresetTimerItem(val presetTimer: PresetTimer) : DataItem() {
-        override val id = presetTimer.presetTimerId
-    }
 
-    object Header : DataItem() {
-        override val id = Long.MIN_VALUE
-    }
-
-    abstract val id: Long?
+class PresetTimerClickListener(val clickListener: (timerName: String, presetName: String) -> Unit) {
+    fun onClick(presetTimer: PresetTimer) = clickListener(presetTimer.name, presetTimer.presetName)
 }
 

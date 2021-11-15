@@ -23,16 +23,16 @@ interface TimerRepository {
 
     suspend fun getCurrentTimer(name: String): Timer
 
-    suspend fun getCurrentPresetTimer(id: Long): PresetTimer
+    suspend fun getCurrentPresetTimer(timerName: String, presetName: String): PresetTimer
 
     suspend fun getNumberOfPresetTimers(name: String): Int
 
+    suspend fun getTimerNames(): List<String>
+
+    suspend fun getNumberOfTimers(): Int
+
     fun observeAllTimer(): LiveData<List<Timer>>
 
+    // dao testに必要
     fun observeAllPresetTimer(): LiveData<List<PresetTimer>>
-
-    fun observeNumberOfTimers(): LiveData<Int>
-
-    fun observeAllTimerNames(): LiveData<List<String>>
-
 }
