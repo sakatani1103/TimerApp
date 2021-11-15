@@ -7,12 +7,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.example.timerapp.R
 import com.example.timerapp.databinding.FragmentSetTimerBinding
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class SetTimerFragment : Fragment() {
+    val args: SetTimerFragmentArgs by navArgs()
+
     private lateinit var viewModel: TimerViewModel
 
     private var _binding: FragmentSetTimerBinding? = null
@@ -22,7 +26,7 @@ class SetTimerFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = DataBindingUtil.inflate(
             inflater, R.layout.fragment_set_timer, container, false
         )
@@ -32,11 +36,32 @@ class SetTimerFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(requireActivity())[TimerViewModel::class.java]
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = viewLifecycleOwner
+
+        setPresetTimerNameToEt()
+
+        binding.backBtn.setOnClickListener { this.findNavController().popBackStack() }
+        binding.saveButton.setOnClickListener{ this.findNavController().popBackStack() }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding= null
     }
+
+    private fun setPresetTimerNameToEt() {
+        // PresetTimerの+を押して遷移した場合はpresetTimer数字が表示され、
+        // PresetTimerを押して遷移した場合はpresetTimer名が表示される
+        if (args.presetName == null){
+            viewModel.getNumberOfPresetTimers(args.timerName)
+            val num = viewModel.currentNumberOfPresetTimers.value ?: 0
+            val newName = "presetTimer" + "${num + 1}"
+            binding.etPresetName.setText(newName)
+        } else {
+            binding.etPresetName.setText(args.presetName)
+        }
+    }
+
 
 }

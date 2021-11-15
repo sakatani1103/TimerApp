@@ -11,7 +11,7 @@
 
         <variable
             name="clickListener"
-            type="com.example.timerapp.adapter.TimerListListener"/>
+            type="com.example.timerapp.adapter.TimerListListener" />
 
     </data>
 
@@ -30,8 +30,8 @@
             android:checkable="true"
             android:clickable="true"
             android:focusable="true"
-            app:cardElevation="10dp"
-            app:cardCornerRadius="8dp">
+            app:cardCornerRadius="8dp"
+            app:cardElevation="10dp">
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/start_btn"
@@ -39,6 +39,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="top|end"
                 android:layout_margin="@dimen/card_margin"
+                android:onClick="@{() -> clickListener.onStartClick(timer)}"
                 app:backgroundTint="#ffffff"
                 app:borderWidth="0dp"
                 app:fabSize="mini"
@@ -52,9 +53,9 @@
 
                 <LinearLayout
                     android:id="@+id/top_topic"
-                    android:onClick="@{() -> clickListener.onClick(timer)}"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:onClick="@{() -> clickListener.onClick(timer)}"
                     android:orientation="vertical"
                     android:padding="@dimen/card_padding">
 
@@ -76,15 +77,25 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-                            tools:text="計  2時間30分" />
+                            app:timerTotal="@{timer.total}"
+                            app:timerDetail="@{timer.detail}"
+                            tools:text="150分"/>
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/card_margin"
+                            android:layout_marginEnd="@dimen/standard_margin"
+                            app:notificationType="@{timer.notificationType}"
+                            app:timerDetail="@{timer.detail}"
+                            tools:src="@drawable/ic_vibration" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/card_margin"
                             android:drawablePadding="@dimen/icon_padding"
                             android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-                            tools:drawableLeft="@drawable/ic_notifications"
+                            app:notificationType="@{timer.notificationType}"
                             tools:text="通知" />
                     </LinearLayout>
 
@@ -128,6 +139,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/card_margin"
                         android:layout_marginTop="@dimen/standard_margin"
+                        android:text="@{timer.detail}"
                         android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
                         tools:text="設問1　20分　　通知：5分前\n設問2-5   30分　通知：5分前\n設問2-5   30分　通知：5分前\n
 設問6     45分     通知：10分前\n設問7      35分　通知：10分前" />

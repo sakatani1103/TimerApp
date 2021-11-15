@@ -1,6 +1,5 @@
 package com.example.timerapp.adapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.animation.Animation
@@ -16,13 +15,12 @@ import com.example.timerapp.databinding.ListItemBinding
 import com.example.timerapp.databinding.SimpleListItemBinding
 
 
-
 class TimerListAdapter(
     val clickListener: TimerListListener,
     private val viewLifeCycleOwner: LifecycleOwner
 ) : RecyclerView.Adapter<TimerListAdapter.TimerViewHolder>() {
 
-    private val diffCallback = object : DiffUtil.ItemCallback<Timer>(){
+    private val diffCallback = object : DiffUtil.ItemCallback<Timer>() {
         override fun areItemsTheSame(oldItem: Timer, newItem: Timer): Boolean {
             return oldItem.name == newItem.name
         }
@@ -70,7 +68,11 @@ class TimerListAdapter(
 
         }
 
-        override fun bind(timer: Timer, clickListener: TimerListListener, viewLifeCycleOwner: LifecycleOwner) {
+        override fun bind(
+            timer: Timer,
+            clickListener: TimerListListener,
+            viewLifeCycleOwner: LifecycleOwner
+        ) {
             binding.timer = timer
             binding.clickListener = clickListener
             binding.lifecycleOwner = viewLifeCycleOwner
@@ -90,7 +92,11 @@ class TimerListAdapter(
         val binding: SimpleListItemBinding
     ) : TimerViewHolder(binding) {
 
-        override fun bind(timer: Timer, clickListener: TimerListListener, viewLifeCycleOwner: LifecycleOwner) {
+        override fun bind(
+            timer: Timer,
+            clickListener: TimerListListener,
+            viewLifeCycleOwner: LifecycleOwner
+        ) {
             binding.timer = timer
             binding.clickListener = clickListener
             binding.lifecycleOwner = viewLifeCycleOwner
@@ -125,7 +131,11 @@ class TimerListAdapter(
 
     abstract class TimerViewHolder(binding: ViewDataBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        abstract fun bind(timer: Timer, clickListener: TimerListListener, viewLifeCycleOwner: LifecycleOwner)
+        abstract fun bind(
+            timer: Timer,
+            clickListener: TimerListListener,
+            viewLifeCycleOwner: LifecycleOwner
+        )
     }
 
     override fun getItemCount(): Int {
@@ -133,8 +143,12 @@ class TimerListAdapter(
     }
 }
 
-class TimerListListener(val clickListener: (name: String) -> Unit) {
+class TimerListListener(
+    val clickListener: (name: String) -> Unit,
+    val startTimer: (name: String) -> Unit
+) {
     fun onClick(timer: Timer) = clickListener(timer.name)
+    fun onStartClick(timer: Timer) = startTimer(timer.name)
 }
 
 

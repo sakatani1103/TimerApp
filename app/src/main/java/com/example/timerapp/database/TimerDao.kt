@@ -33,21 +33,18 @@ interface TimerDao {
     @Query("SELECT * FROM presettimer")
     fun observeAllPresetTimer(): LiveData<List<PresetTimer>>
 
-    @Query("SELECT name FROM timer")
-    fun observeAllTimerName(): LiveData<List<String>>
-
-    @Query("SELECT COUNT(*) FROM timer")
-    fun observeNumberOfTimer(): LiveData<Int>
-
     @Query("SELECT * FROM timer WHERE name = :name ")
     suspend fun getCurrentTimer(name: String) : Timer
 
-    @Query("SELECT * FROM timer WHERE name = :name")
-    fun observeCurrentTimer(name: String) : LiveData<Timer>
-
-    @Query("SELECT * FROM presettimer WHERE presetTimerId = :id")
-    suspend fun getCurrentPresetTimer(id: Long) : PresetTimer
+    @Query("SELECT * FROM presettimer WHERE (name = :timerName AND presetName = :presetName)")
+    suspend fun getCurrentPresetTimer(timerName: String, presetName: String) : PresetTimer
 
     @Query("SELECT COUNT(*) FROM presettimer WHERE name = :name")
     suspend fun getNumberOfPresetTimers(name: String) : Int
+
+    @Query("SELECT name FROM timer")
+    suspend fun getTimerNames(): List<String>
+
+    @Query("SELECT COUNT(*) FROM timer")
+    suspend fun getNumberOfTimers(): Int
 }

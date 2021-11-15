@@ -8,6 +8,7 @@ import androidx.test.filters.SmallTest
 import com.example.timerapp.getOrAwaitValueTest
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.After
 import org.junit.Before
@@ -178,6 +179,33 @@ class TimerDaoTest {
 
         val numberOfPresetTimer = dao.getNumberOfPresetTimers("test1")
         assertThat(numberOfPresetTimer).isEqualTo(2)
+    }
+
+    @Test
+    fun getTimerNames() = runBlocking {
+        val timerItem1 = Timer("test1")
+        val timerItem2 = Timer("test2")
+        val timerItem3 = Timer("test3")
+        dao.insertTimer(timerItem1)
+        dao.insertTimer(timerItem2)
+        dao.insertTimer(timerItem3)
+
+        val timerNamesList = dao.getTimerNames()
+
+        assertThat(timerNamesList).isEqualTo(listOf("test1", "test2", "test3"))
+    }
+
+    @Test
+    fun getNumberOfTimers() = runBlocking{
+        val timerItem1 = Timer("test1")
+        val timerItem2 = Timer("test2")
+        val timerItem3 = Timer("test3")
+        dao.insertTimer(timerItem1)
+        dao.insertTimer(timerItem2)
+        dao.insertTimer(timerItem3)
+
+        val numberOfTimers = dao.getNumberOfTimers()
+        assertThat(numberOfTimers).isEqualTo(3)
     }
 
 }
