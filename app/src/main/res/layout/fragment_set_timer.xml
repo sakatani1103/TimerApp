@@ -52,7 +52,7 @@
             android:layout_marginStart="@dimen/standard_margin"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/et_timer_name"
-            app:presetTime="@{viewModel.currentPresetTimer.presetTime}"
+            app:presetTime="@{viewModel.temporalPresetTime}"
             app:place="@{1}"/>
 
         <NumberPicker
@@ -65,7 +65,7 @@
             app:layout_constraintStart_toEndOf="@+id/numberPicker1"
             app:layout_constraintTop_toBottomOf="@+id/et_timer_name"
             app:layout_constraintVertical_bias="0.0"
-            app:presetTime="@{viewModel.currentPresetTimer.presetTime}"
+            app:presetTime="@{viewModel.temporalPresetTime}"
             app:place="@{2}"/>
 
         <NumberPicker
@@ -76,7 +76,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/numberPicker2"
             app:layout_constraintStart_toEndOf="@+id/numberPicker2"
             app:layout_constraintTop_toBottomOf="@+id/et_timer_name"
-            app:presetTime="@{viewModel.currentPresetTimer.presetTime}"
+            app:presetTime="@{viewModel.temporalPresetTime}"
             app:place="@{3}"/>
 
         <TextView
@@ -95,7 +95,7 @@
             android:layout_marginTop="@dimen/setting_margin"
             app:layout_constraintEnd_toStartOf="@+id/numberPicker5"
             app:layout_constraintTop_toBottomOf="@+id/et_timer_name"
-            app:presetTime="@{viewModel.currentPresetTimer.presetTime}"
+            app:presetTime="@{viewModel.temporalPresetTime}"
             app:place="@{4}"/>
 
         <NumberPicker
@@ -108,7 +108,7 @@
             app:layout_constraintTop_toBottomOf="@+id/et_timer_name"
             app:layout_constraintVertical_bias="0.0"
             android:layout_marginEnd="@dimen/standard_margin"
-            app:presetTime="@{viewModel.currentPresetTimer.presetTime}"
+            app:presetTime="@{viewModel.temporalPresetTime}"
             app:place="@{5}"/>
 
         <TextView
@@ -120,37 +120,39 @@
             app:layout_constraintEnd_toEndOf="@+id/numberPicker5"
             app:layout_constraintTop_toBottomOf="@+id/numberPicker5" />
 
-        <com.google.android.material.switchmaterial.SwitchMaterial
+        <Button
             android:id="@+id/pre_notification"
-            android:layout_width="0dp"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/setting_margin"
             android:text="@string/setting_preset"
-            android:layout_marginEnd="@dimen/long_margin"
-            app:layout_constraintEnd_toStartOf="@+id/save_button"
+            app:icon="@drawable/ic_add"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/min_unit"
-            app:preNotification ="@{viewModel.currentPresetTimer.notificationTime}" />
+            app:layout_constraintTop_toBottomOf="@+id/min_unit" />
 
         <TextView
             android:id="@+id/setting_preset"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/standard_margin"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/pre_notification"
-            app:notificationTime="@{viewModel.currentPresetTimer.notificationTime}"
+            app:notificationTime="@{viewModel.temporalNotificationTime}"
             tools:text="5分前に通知する" />
 
         <Button
             android:id="@+id/save_button"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/setting_margin"
             android:layout_marginTop="@dimen/setting_margin"
             android:text="@string/save"
-            android:textStyle="bold"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/pre_notification"
             app:layout_constraintTop_toBottomOf="@+id/sec_unit" />
 
 

@@ -1,9 +1,13 @@
 package com.example.timerapp.adapter
 
+import android.text.BoringLayout
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.RotateAnimation
+import android.widget.AdapterView
+import androidx.annotation.NonNull
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.AsyncListDiffer
@@ -11,16 +15,17 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.timerapp.database.ListType
 import com.example.timerapp.database.Timer
+import com.example.timerapp.databinding.DeleteListItemBinding
+import com.example.timerapp.databinding.DeleteSimpleListItemBinding
 import com.example.timerapp.databinding.ListItemBinding
 import com.example.timerapp.databinding.SimpleListItemBinding
 
+class DeleteTimerListAdapter(
+    val clickListener: DeleteTimerListListener,
+    val viewLifecycleOwner: LifecycleOwner)
+    : RecyclerView.Adapter<DeleteTimerListAdapter.DeleteTimerViewHolder>() {
 
-class TimerListAdapter(
-    val clickListener: TimerListListener,
-    private val viewLifeCycleOwner: LifecycleOwner
-) : RecyclerView.Adapter<TimerListAdapter.TimerViewHolder>() {
-
-    private val diffCallback = object : DiffUtil.ItemCallback<Timer>() {
+    private val diffCallback = object: DiffUtil.ItemCallback<Timer>(){
         override fun areItemsTheSame(oldItem: Timer, newItem: Timer): Boolean {
             return oldItem.name == newItem.name
         }
@@ -36,9 +41,9 @@ class TimerListAdapter(
         get() = differ.currentList
         set(value) = differ.submitList(value)
 
-    class DetailViewHolder constructor(
-        val binding: ListItemBinding
-    ) : TimerViewHolder(binding) {
+    class DeleteDetailViewHolder(
+        val binding: DeleteListItemBinding
+    ) : DeleteTimerListAdapter.DeleteTimerViewHolder(binding){
         private var expanded: Boolean = false
 
         init {
@@ -48,7 +53,6 @@ class TimerListAdapter(
                 // expandedしないところ
                 //　設定しないとanimationの矢印が一周してしまう
                 binding.topTopic.isSelected = expanded.not()
-                binding.startBtn.isSelected = expanded.not()
 
                 binding.expandableLayout.toggle()
 
@@ -65,90 +69,69 @@ class TimerListAdapter(
                 }
                 binding.expandArrow.startAnimation(anim)
             }
-
         }
 
-        override fun bind(
-            timer: Timer,
-            clickListener: TimerListListener,
-            viewLifeCycleOwner: LifecycleOwner
-        ) {
+        override fun bind(timer: Timer, viewLifecycleOwner: LifecycleOwner, clickListener: DeleteTimerListListener) {
             binding.timer = timer
             binding.clickListener = clickListener
-            binding.lifecycleOwner = viewLifeCycleOwner
+            binding.lifecycleOwner = viewLifecycleOwner
             binding.executePendingBindings()
         }
 
         companion object {
-            fun from(parent: ViewGroup): DetailViewHolder {
+            fun from(parent: ViewGroup): DeleteDetailViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
-                val binding = ListItemBinding.inflate(layoutInflater, parent, false)
-                return DetailViewHolder(binding)
+                val binding = DeleteListItemBinding.inflate(layoutInflater, parent, false)
+                return DeleteDetailViewHolder(binding)
             }
         }
     }
 
-    class SimpleViewHolder private constructor(
-        val binding: SimpleListItemBinding
-    ) : TimerViewHolder(binding) {
+    class DeleteSimpleViewHolder private constructor(
+        val binding: DeleteSimpleListItemBinding
+    ) : DeleteTimerListAdapter.DeleteTimerViewHolder(binding){
 
-        override fun bind(
-            timer: Timer,
-            clickListener: TimerListListener,
-            viewLifeCycleOwner: LifecycleOwner
-        ) {
+        override fun bind(timer: Timer, viewLifecycleOwner: LifecycleOwner, clickListener: DeleteTimerListListener) {
             binding.timer = timer
             binding.clickListener = clickListener
-            binding.lifecycleOwner = viewLifeCycleOwner
+            binding.lifecycleOwner = viewLifecycleOwner
             binding.executePendingBindings()
         }
-
         companion object {
-            fun from(parent: ViewGroup): SimpleViewHolder {
+            fun from(parent: ViewGroup): DeleteSimpleViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
-                val binding = SimpleListItemBinding.inflate(layoutInflater, parent, false)
-                return SimpleViewHolder(binding)
+                val binding = DeleteSimpleListItemBinding.inflate(layoutInflater, parent, false)
+                return DeleteSimpleViewHolder(binding)
             }
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TimerViewHolder {
-        return when (ListType.values()[viewType]) {
-            ListType.DETAIL_LAYOUT -> DetailViewHolder.from(parent)
-            ListType.SIMPLE_LAYOUT -> SimpleViewHolder.from(parent)
+    abstract class DeleteTimerViewHolder constructor(binding: ViewDataBinding) :
+            RecyclerView.ViewHolder(binding.root){
+                abstract fun bind(timer: Timer, viewLifecycleOwner: LifecycleOwner, clickListener: DeleteTimerListListener)
+            }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DeleteTimerViewHolder {
+        return when(ListType.values()[viewType]){
+            ListType.DETAIL_LAYOUT -> DeleteDetailViewHolder.from(parent)
+            ListType.SIMPLE_LAYOUT -> DeleteSimpleViewHolder.from(parent)
         }
     }
 
-    override fun onBindViewHolder(holder: TimerViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: DeleteTimerViewHolder, position: Int) {
         val timer = timerItems[position]
-        holder.bind(timer, clickListener, viewLifeCycleOwner)
-    }
-
-    // ordinalはenumで定義したViewtypeのIntを返す
-    override fun getItemViewType(position: Int): Int {
-        return timerItems[position].listType.ordinal
-    }
-
-    abstract class TimerViewHolder(binding: ViewDataBinding) :
-        RecyclerView.ViewHolder(binding.root) {
-        abstract fun bind(
-            timer: Timer,
-            clickListener: TimerListListener,
-            viewLifeCycleOwner: LifecycleOwner
-        )
+        holder.bind(timer, viewLifecycleOwner, clickListener)
     }
 
     override fun getItemCount(): Int {
         return timerItems.size
     }
+
+    override fun getItemViewType(position: Int): Int {
+        return timerItems[position].listType.ordinal
+    }
 }
 
-class TimerListListener(
-    val clickListener: (name: String) -> Unit,
-    val startTimer: (name: String) -> Unit
-) {
-    fun onClick(timer: Timer) = clickListener(timer.name)
-    fun onStartClick(timer: Timer) = startTimer(timer.name)
+class DeleteTimerListListener(val clickListener: (timer: Timer) -> Unit) {
+    fun onClick(timer: Timer) = clickListener(timer)
 }
-
-

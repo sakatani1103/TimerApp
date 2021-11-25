@@ -4,14 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <variable
-            name="timer"
-            type="com.example.timerapp.database.Timer" />
+            name="presetTimer"
+            type="com.example.timerapp.database.PresetTimer" />
 
         <variable
             name="clickListener"
-            type="com.example.timerapp.adapter.TimerListListener" />
+            type="com.example.timerapp.adapter.DeletePresetTimerListAdapter.DeletePresetTimerListListener" />
     </data>
 
     <LinearLayout
@@ -26,24 +25,13 @@
             android:layout_marginLeft="@dimen/card_margin"
             android:layout_marginTop="@dimen/standard_margin"
             android:layout_marginRight="@dimen/card_margin"
+            android:onClick="@{() -> clickListener.onClick(presetTimer)}"
             android:checkable="true"
             android:clickable="true"
             android:focusable="true"
+            app:selectedColor="@{presetTimer.isSelected}"
             app:cardCornerRadius="8dp"
             app:cardElevation="10dp">
-
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/start_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="top|end"
-                android:layout_margin="@dimen/card_margin"
-                android:onClick="@{() -> clickListener.onStartClick(timer)}"
-                app:backgroundTint="#ffffff"
-                app:borderWidth="0dp"
-                app:fabSize="mini"
-                app:srcCompat="@drawable/ic_play_arrow"
-                app:tint="#111111" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -54,51 +42,52 @@
                     android:id="@+id/top_topic"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:onClick="@{() -> clickListener.onClick(timer)}"
                     android:orientation="vertical"
                     android:padding="@dimen/card_padding">
 
-                    <TextView
-                        android:id="@+id/timer_name"
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@{timer.name}"
-                        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-                        tools:text="基本情報技術者午後試験" />
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_weight="1"
+                            android:text="@{presetTimer.presetName}"
+                            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+                            tools:text="設問2-5" />
+
+                        <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            app:selectedImage="@{presetTimer.isSelected}" />
+
+                    </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/standard_margin"
-                        android:layout_marginEnd="@dimen/setting_margin"
                         android:orientation="horizontal">
 
                         <TextView
                             android:layout_width="0dp"
+                            android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:layout_height="wrap_content"
                             android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-                            app:timerTotal="@{timer.total}"
-                            app:timerDetail="@{timer.detail}"
-                            tools:text="計  2時間30分" />
-
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/icon_margin"
-                            android:layout_marginEnd="@dimen/standard_margin"
-                            app:notificationType="@{timer.notificationType}"
-                            app:timerDetail="@{timer.detail}"
-                            tools:src="@drawable/ic_vibration"/>
+                            app:customTime="@{presetTimer.presetTime}"
+                            tools:text="20分" />
 
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/card_margin"
                             android:layout_weight="1"
-                            app:timerDetail="@{timer.detail}"
-                            android:drawablePadding="@dimen/icon_padding"
                             android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-                            tools:text="通知 : 10分50前" />
+                            app:notificationTime="@{presetTimer.notificationTime}"
+                            tools:text="通知 : 5分前" />
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>

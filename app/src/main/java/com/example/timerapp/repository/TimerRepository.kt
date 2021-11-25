@@ -11,25 +11,35 @@ interface TimerRepository {
 
     suspend fun insertPresetTimer(presetTimer: PresetTimer)
 
+    suspend fun insertTimerAndPresetTimers(timer: Timer, presetTimers: List<PresetTimer>)
+
     suspend fun updateTimer(timer: Timer)
 
-    suspend fun updatePresetTimer(presetTimer: PresetTimer)
+    suspend fun updateTimers(timers: List<Timer>)
+
+    suspend fun updatePresetTimers(presetTimers: List<PresetTimer>)
+
+    suspend fun updateTimerAndPresetTimers(timer: Timer, presetTimers: List<PresetTimer>)
 
     suspend fun deleteTimer(timer: Timer)
 
     suspend fun deletePresetTimer(presetTimer: PresetTimer)
 
+    suspend fun deletePresetTimers(presetTimers: List<PresetTimer>)
+
+    suspend fun deleteTimerAndPresetTimers(timer: Timer, presetTimers: List<PresetTimer>)
+
     suspend fun getPresetTimerWithTimer(name: String): TimerWithPresetTimer
 
     suspend fun getCurrentTimer(name: String): Timer
 
-    suspend fun getCurrentPresetTimer(timerName: String, presetName: String): PresetTimer
-
-    suspend fun getNumberOfPresetTimers(name: String): Int
+    suspend fun getCurrentPresetTimer(timerName: String, presetName: String, order:Int): PresetTimer
 
     suspend fun getTimerNames(): List<String>
 
-    suspend fun getNumberOfTimers(): Int
+    suspend fun getTotalTime(name: String): Int
+
+    suspend fun getMaxOrderPresetTimer(name: String) : Int
 
     fun observeAllTimer(): LiveData<List<Timer>>
 

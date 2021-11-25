@@ -27,5 +27,7 @@ data class Timer(
     @ColumnInfo
     val isDisplay: Boolean = true,
     @ColumnInfo
-    val detail: String = "no presetTimer"
+    val detail: String = "no presetTimer",
+    @ColumnInfo
+    val isSelected: Boolean = false
 )

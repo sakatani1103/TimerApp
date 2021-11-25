@@ -26,17 +26,29 @@
             android:clickable="true"
             android:focusable="true" />
 
-        <TextView
-            android:id="@+id/timer_name"
-            android:layout_width="wrap_content"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/timer_name_layout"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/standard_margin"
             android:layout_marginStart="@dimen/standard_margin"
-            android:text="@{viewModel.currentTimer.name}"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+            android:layout_marginTop="@dimen/standard_margin"
+            android:hint="@string/timer_name"
             app:layout_constraintBottom_toTopOf="@+id/divider1"
+            app:layout_constraintEnd_toStartOf="@+id/start_btn"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="基本情報技術者午前試験" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_timer_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@{viewModel.currentTimer.name}"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+                tools:text="基本情報技術者午前試験" />
+
+        </com.google.android.material.textfield.TextInputLayout>
 
         <View
             android:id="@+id/divider1"
@@ -112,25 +124,38 @@
             android:id="@+id/divider2"
             android:layout_width="match_parent"
             android:layout_height="1dp"
+            android:layout_marginTop="@dimen/standard_margin"
             android:layout_marginStart="@dimen/standard_margin"
-            android:layout_marginTop="@dimen/setting_margin"
             android:layout_marginEnd="@dimen/standard_margin"
             android:background="?android:attr/listDivider"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/setting_sound_title" />
+            app:layout_constraintTop_toBottomOf="@+id/save_update" />
+
+        <Button
+            android:id="@+id/save_update"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:text="@string/setting_update"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/btn_margin"
+            android:layout_marginTop="@dimen/setting_margin"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/sounds_spinner" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/preset_timer_list"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:scrollbars="vertical"
             android:layout_marginTop="@dimen/setting_margin"
+            android:scrollbars="vertical"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/divider2" />
+            app:layout_constraintTop_toBottomOf="@+id/divider2"
+            app:layout_constraintVertical_bias="1.0" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/add_list"
@@ -151,6 +176,7 @@
             android:layout_marginBottom="@dimen/icon_margin"
             android:backgroundTint="@color/white"
             android:elevation="10dp"
+            android:onClick="@{() -> viewModel.navigateToDeletePresetTimer()}"
             app:borderWidth="2dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/add_list"
