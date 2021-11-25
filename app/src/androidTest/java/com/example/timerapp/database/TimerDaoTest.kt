@@ -58,8 +58,7 @@ class TimerDaoTest {
 
     @Test
     fun insertPresetTimer() = runBlockingTest {
-        val presetTimer = PresetTimer("test1","preset1", 30,
-            10, 1)
+        val presetTimer = PresetTimer("test1","preset1", 1,6000000, 0)
         dao.insertPresetTimer(presetTimer)
 
         val allPresetTimer = dao.observeAllPresetTimer().getOrAwaitValueTest()
@@ -67,10 +66,23 @@ class TimerDaoTest {
     }
 
     @Test
+    fun insertTimerAndPresetTimers() = runBlockingTest {
+        val timerItem = Timer("test1")
+        val presetTimer1 = PresetTimer("test1","preset1", 1,6000000, 0)
+        val presetTimer2 = PresetTimer("test1","preset2", 2,6000000,0)
+        dao.insertTimerAndPresetTimers(timerItem, listOf(presetTimer1, presetTimer2))
+        val allTimerItems = dao.observeAllTimer().getOrAwaitValueTest()
+        assertThat(allTimerItems).contains(timerItem)
+        val allPresetTimer = dao.observeAllPresetTimer().getOrAwaitValueTest()
+        assertThat(allPresetTimer).contains(presetTimer1)
+        assertThat(allPresetTimer).contains(presetTimer2)
+    }
+
+    @Test
     fun updateTimer() = runBlockingTest {
         val timerItem1 = Timer("test1")
         dao.insertTimer(timerItem1)
-        val timerItem2 = Timer("test1", 40, ListType.DETAIL_LAYOUT, NotificationType.ALARM)
+        val timerItem2 = Timer("test1", 0, ListType.DETAIL_LAYOUT, NotificationType.ALARM)
         dao.updateTimer(timerItem2)
 
         val allTimerItems = dao.observeAllTimer().getOrAwaitValueTest()
@@ -79,17 +91,37 @@ class TimerDaoTest {
     }
 
     @Test
-    fun updatePresetTimer() = runBlockingTest {
-        val presetTimerItem1 = PresetTimer("test1", "preset1", 40,
-            20, 1)
+    fun updateTimers() = runBlockingTest {
+        val timerItem1 = Timer("test1")
+        val timerItem2 = Timer("test2")
+        dao.insertTimer(timerItem1)
+        dao.insertTimer(timerItem2)
+
+        val timerItem3 = Timer("test1", 0, ListType.DETAIL_LAYOUT, NotificationType.ALARM)
+        val timerItem4 = Timer("test2", 0, ListType.DETAIL_LAYOUT, NotificationType.ALARM)
+        dao.updateTimers(listOf(timerItem3, timerItem4))
+        val allTimerItems = dao.observeAllTimer().getOrAwaitValueTest()
+        assertThat(allTimerItems).doesNotContain(timerItem1)
+        assertThat(allTimerItems).contains(timerItem3)
+    }
+
+    @Test
+    fun updatePresetTimers() = runBlockingTest {
+        val presetTimerItem1 = PresetTimer("test1", "preset1", 1,
+            6000000, 0)
+        val presetTimerItem2 = PresetTimer("test1", "preset2", 2,
+            6000000, 0)
         dao.insertPresetTimer(presetTimerItem1)
-        val presetTimerItem2 = PresetTimer("test1", "preset2", 20,
-            10, 1)
-        dao.updatePresetTimer(presetTimerItem2)
+        dao.insertPresetTimer(presetTimerItem2)
+        val presetTimerItem3 = PresetTimer("test1", "preset1", 1,
+            10000000, 600000)
+        val presetTimerItem4 = PresetTimer("test1", "preset2", 2,
+            9000000, 0)
+        dao.updatePresetTimers(listOf(presetTimerItem3,presetTimerItem4))
 
         val allTimerItems = dao.observeAllPresetTimer().getOrAwaitValueTest()
         assertThat(allTimerItems).doesNotContain(presetTimerItem1)
-        assertThat(allTimerItems).contains(presetTimerItem2)
+        assertThat(allTimerItems).contains(presetTimerItem3)
     }
 
     @Test
@@ -104,7 +136,7 @@ class TimerDaoTest {
 
     @Test
     fun deletePresetTimer() = runBlockingTest {
-        val presetTimer = PresetTimer("test1","preset1", 30,10, null)
+        val presetTimer = PresetTimer("test1","preset1", 1,6000000, 0)
         dao.insertPresetTimer(presetTimer)
         dao.deletePresetTimer(presetTimer)
 
@@ -113,21 +145,44 @@ class TimerDaoTest {
     }
 
     @Test
+    fun deletePresetTimers() = runBlockingTest {
+        val presetTimer1 = PresetTimer("test1","preset1", 1,6000000, 0)
+        val presetTimer2 = PresetTimer("test1","preset2", 2,6000000, 0)
+        dao.insertPresetTimer(presetTimer1)
+        dao.insertPresetTimer(presetTimer2)
+        dao.deletePresetTimers(listOf(presetTimer1, presetTimer2))
+        val allPresetTimer = dao.observeAllPresetTimer().getOrAwaitValueTest()
+        assertThat(allPresetTimer).doesNotContain(presetTimer1)
+    }
+
+    @Test
+    fun deleteTimerAndPresetTimers() = runBlockingTest {
+        val timer = Timer("test1")
+        dao.insertTimer(timer)
+        val presetTimer1 = PresetTimer("test1","preset1", 1,6000000, 0)
+        val presetTimer2 = PresetTimer("test1","preset2", 2,6000000, 0)
+        dao.insertPresetTimer(presetTimer1)
+        dao.insertPresetTimer(presetTimer2)
+        dao.deleteTimerAndPresetTimers(timer, listOf(presetTimer1, presetTimer2))
+
+        val allTimerItems = dao.observeAllTimer().getOrAwaitValueTest()
+        assertThat(allTimerItems).doesNotContain(timer)
+        val allPresetTimers = dao.observeAllPresetTimer().getOrAwaitValueTest()
+        assertThat(allPresetTimers).doesNotContain(presetTimer1)
+    }
+
+    @Test
     fun getPresetTimerWithTimer() = runBlockingTest{
         val timerItem1 = Timer("test1")
         dao.insertTimer(timerItem1)
 
-        val presetTimerItem1 = PresetTimer("test1", "preset1", 40, 20, 1)
-        val presetTimerItem2 = PresetTimer("test1", "preset2", 30, 20, 2)
-        val presetTimerItem3 = PresetTimer("test2", "preset1", 20, 10, 3)
+        val presetTimerItem1 = PresetTimer("test1", "preset1", 1, 6000000, 0)
+        val presetTimerItem2 = PresetTimer("test1", "preset2", 2, 9000000, 600000)
+        val presetTimerItem3 = PresetTimer("test2", "preset1", 3, 6000000, 0)
         dao.insertPresetTimer(presetTimerItem1)
         dao.insertPresetTimer(presetTimerItem2)
         dao.insertPresetTimer(presetTimerItem3)
 
-        // TimerWithPresetTimer(
-        // timer=Timer(name=test1, total=0, listType=SIMPLE_LAYOUT, notificationType=VIBRATION, isExpanded=false),
-        // presetTimer=[PresetTimer(name=test1, presetName=preset1, presetTime=40, notificationTime=20, presetTimerId=1),
-        // PresetTimer(name=test1, presetName=preset2, presetTime=30, notificationTime=20, presetTimerId=2)])
         val timerWithPresetTimer = dao.getPresetTimerWithTimer("test1")
         val test1PresetTimer = timerWithPresetTimer.presetTimer[0]
         assertThat(test1PresetTimer).isEqualTo(presetTimerItem1)
@@ -151,34 +206,18 @@ class TimerDaoTest {
 
     @Test
     fun getCurrentPresetTimer() = runBlockingTest {
-        val presetTimer1 = PresetTimer("test1", "presetTimer1", 30,
-            10, 1L)
-        val presetTimer2 = PresetTimer("test1", "presetTimer2", 30,
-            10, 2L)
-        val presetTimer3 = PresetTimer("test1", "presetTimer3", 30,
-            10, 3L)
+        val presetTimer1 = PresetTimer("test1", "presetTimer1", 1,
+            6000000, 600000)
+        val presetTimer2 = PresetTimer("test1", "presetTimer2", 2,
+            9000000, 0)
+        val presetTimer3 = PresetTimer("test1", "presetTimer3", 3,
+            6000000, 0)
         dao.insertPresetTimer(presetTimer1)
         dao.insertPresetTimer(presetTimer2)
         dao.insertPresetTimer(presetTimer3)
 
-        val currentPresetTimer = dao.getCurrentPresetTimer(1L)
+        val currentPresetTimer = dao.getCurrentPresetTimer("test1","presetTimer1",1)
         assertThat(currentPresetTimer).isEqualTo(presetTimer1)
-    }
-
-    @Test
-    fun getNumberOfPresetTimer() = runBlockingTest {
-        val presetTimer1 = PresetTimer("test1", "presetTimer1", 30,
-            10, 1L)
-        val presetTimer2 = PresetTimer("test1", "presetTimer2", 30,
-            10, 2L)
-        val presetTimer3 = PresetTimer("test2", "presetTimer3", 30,
-            10, 3L)
-        dao.insertPresetTimer(presetTimer1)
-        dao.insertPresetTimer(presetTimer2)
-        dao.insertPresetTimer(presetTimer3)
-
-        val numberOfPresetTimer = dao.getNumberOfPresetTimers("test1")
-        assertThat(numberOfPresetTimer).isEqualTo(2)
     }
 
     @Test
@@ -196,16 +235,33 @@ class TimerDaoTest {
     }
 
     @Test
-    fun getNumberOfTimers() = runBlocking{
+    fun getTotalTime() = runBlocking{
         val timerItem1 = Timer("test1")
-        val timerItem2 = Timer("test2")
-        val timerItem3 = Timer("test3")
+        val presetTimer1 = PresetTimer("test1", "presetTimer1", 1,
+            6000000, 600000)
+        val presetTimer2 = PresetTimer("test1", "presetTimer2", 2,
+            9000000, 0)
         dao.insertTimer(timerItem1)
-        dao.insertTimer(timerItem2)
-        dao.insertTimer(timerItem3)
+        dao.insertPresetTimer(presetTimer1)
+        dao.insertPresetTimer(presetTimer2)
 
-        val numberOfTimers = dao.getNumberOfTimers()
-        assertThat(numberOfTimers).isEqualTo(3)
+        val numberOfTimers = dao.getTotalTime("test1")
+        assertThat(numberOfTimers).isEqualTo(15000000)
+    }
+
+    @Test
+    fun getMaxOrderPresetTimer() = runBlockingTest {
+        val timerItem1 = Timer("test1")
+        val presetTimer1 = PresetTimer("test1", "presetTimer1", 1,
+            6000000, 600000)
+        val presetTimer2 = PresetTimer("test1", "presetTimer2", 2,
+            9000000, 0)
+        dao.insertTimer(timerItem1)
+        dao.insertPresetTimer(presetTimer1)
+        dao.insertPresetTimer(presetTimer2)
+
+        val order = dao.getMaxOrderPresetTimer("test1")
+        assertThat(order).isEqualTo(2)
     }
 
 }

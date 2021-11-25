@@ -3,7 +3,7 @@
     <string name="delete">削除</string>
     <string name="cancel">キャンセル</string>
     <string name="save">保存</string>
-    <string name="caution">タイマーが登録されていません</string>
+    <string name="caution">タイマーが登録されていません。</string>
     <string name="ok">OK</string>
     <string name="timer_setting">タイマーを画面表示させたままにする</string>
     <string name="initial_use">ご利用頂きありがとうございます。/n
@@ -22,12 +22,7 @@
     <string name="preset_timer_detail">プリセットタイマーの詳細</string>
     <string name="content_description_delete">リストの削除</string>
     <string name="timer_stop_message">タイマーを終了しますか。</string>
+    <string name="setting_update">設定の変更を反映する</string>
 
-    <string name="one">1</string>
-    <string name="two">2</string>
-    <string name="three">3</string>
-    <string name="four">4</string>
-    <string name="five">5</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

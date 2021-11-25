@@ -2,6 +2,6 @@
 <resources>
     <string-array name="sound_items">
         <item>バイブレーション</item>
-        <item>アラーム</item>>
+        <item>アラーム</item>
     </string-array>
 </resources>

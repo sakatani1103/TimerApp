@@ -1,19 +1,18 @@
 package com.example.timerapp.database
 
-import androidx.collection.arraySetOf
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-// idはnullの時に自動生成
-@Entity(primaryKeys = ["name", "presetName"])
+@Entity(primaryKeys = ["name", "presetName", "timerOrder"])
 data class PresetTimer (
     val name: String,
     val presetName: String,
+    val timerOrder: Int,
     @ColumnInfo
-    val presetTime: Int,
+    val presetTime: Int = 0,
     @ColumnInfo
-    val notificationTime: Int,
-    //@PrimaryKey(autoGenerate = true)
-    //val presetTimerId: Long? = null,
+    val notificationTime: Int = 0,
+    @ColumnInfo
+    val isSelected: Boolean = false
 )

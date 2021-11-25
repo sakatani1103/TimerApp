@@ -22,12 +22,31 @@ class DefaultTimerRepository @Inject constructor(
         timerDao.insertPresetTimer(presetTimer)
     }
 
+    override suspend fun insertTimerAndPresetTimers(
+        timer: Timer,
+        presetTimers: List<PresetTimer>
+    ) {
+        timerDao.insertTimerAndPresetTimers(timer, presetTimers)
+    }
+
     override suspend fun updateTimer(timer: Timer) {
         timerDao.updateTimer(timer)
     }
 
-    override suspend fun updatePresetTimer(presetTimer: PresetTimer) {
-        timerDao.updatePresetTimer(presetTimer)
+    override suspend fun updateTimers(timers: List<Timer>) {
+        timerDao.updateTimers(timers)
+    }
+
+    override suspend fun updatePresetTimers(presetTimers: List<PresetTimer>) {
+        timerDao.updatePresetTimers(presetTimers)
+    }
+
+    override suspend fun updateTimerAndPresetTimers(timer: Timer, presetTimers: List<PresetTimer>) {
+         timerDao.updateTimerAndPresetTimers(timer, presetTimers)
+    }
+
+    override suspend fun deleteTimerAndPresetTimers(timer: Timer, presetTimers: List<PresetTimer>) {
+        timerDao.deleteTimerAndPresetTimers(timer, presetTimers)
     }
 
     override suspend fun deleteTimer(timer: Timer) {
@@ -38,6 +57,10 @@ class DefaultTimerRepository @Inject constructor(
         timerDao.deletePresetTimer(presetTimer)
     }
 
+    override suspend fun deletePresetTimers(presetTimers: List<PresetTimer>) {
+        timerDao.deletePresetTimers(presetTimers)
+    }
+
     override suspend fun getPresetTimerWithTimer(name: String): TimerWithPresetTimer {
         return timerDao.getPresetTimerWithTimer(name)
     }
@@ -46,14 +69,9 @@ class DefaultTimerRepository @Inject constructor(
         return timerDao.getCurrentTimer(name)
     }
 
-    override suspend fun getCurrentPresetTimer(timerName: String, presetName: String): PresetTimer {
-        return timerDao.getCurrentPresetTimer(timerName, presetName)
+    override suspend fun getCurrentPresetTimer(timerName: String, presetName: String, order:Int): PresetTimer {
+        return timerDao.getCurrentPresetTimer(timerName, presetName, order)
     }
-
-    override suspend fun getNumberOfPresetTimers(name: String): Int {
-        return timerDao.getNumberOfPresetTimers(name)
-    }
-
 
     override fun observeAllTimer(): LiveData<List<Timer>> {
         return timerDao.observeAllTimer()
@@ -63,13 +81,16 @@ class DefaultTimerRepository @Inject constructor(
         return timerDao.observeAllPresetTimer()
     }
 
-    override suspend fun getNumberOfTimers(): Int {
-        return timerDao.getNumberOfTimers()
+    override suspend fun getTotalTime(name: String): Int {
+        return timerDao.getTotalTime(name)
+    }
+
+    override suspend fun getMaxOrderPresetTimer(name: String): Int {
+        return timerDao.getMaxOrderPresetTimer(name)
     }
 
     override suspend fun getTimerNames(): List<String> {
         return timerDao.getTimerNames()
     }
-
 
 }

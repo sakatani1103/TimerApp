@@ -6,16 +6,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.timerapp.R
+import com.example.timerapp.databinding.DialogNotificationTimeBinding
 import com.example.timerapp.databinding.FragmentSetTimerBinding
+import com.example.timerapp.others.Status
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class SetTimerFragment : Fragment() {
-    val args: SetTimerFragmentArgs by navArgs()
+    private val args: SetTimerFragmentArgs by navArgs()
 
     private lateinit var viewModel: TimerViewModel
 
@@ -40,9 +45,11 @@ class SetTimerFragment : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
 
         setPresetTimerNameToEt()
+        subscribeToSetPresetTimerObservers()
 
         binding.backBtn.setOnClickListener { this.findNavController().popBackStack() }
-        binding.saveButton.setOnClickListener{ this.findNavController().popBackStack() }
+        binding.saveButton.setOnClickListener{ savePresetTimer() }
+        binding.preNotification.setOnClickListener{ createNotificationTimeDialog() }
     }
 
     override fun onDestroyView() {
@@ -54,8 +61,7 @@ class SetTimerFragment : Fragment() {
         // PresetTimerの+を押して遷移した場合はpresetTimer数字が表示され、
         // PresetTimerを押して遷移した場合はpresetTimer名が表示される
         if (args.presetName == null){
-            viewModel.getNumberOfPresetTimers(args.timerName)
-            val num = viewModel.currentNumberOfPresetTimers.value ?: 0
+            val num = viewModel.presetTimerList.value?.count() ?: 0
             val newName = "presetTimer" + "${num + 1}"
             binding.etPresetName.setText(newName)
         } else {
@@ -63,5 +69,73 @@ class SetTimerFragment : Fragment() {
         }
     }
 
+    private fun savePresetTimer() {
+        val presetTime = getMilliSeconds()
+        val presetName = binding.etPresetName.text.toString()
 
+        if (args.presetName == null){
+            // 新規登録の場合
+            viewModel.insertPresetTimer(presetName, presetTime)
+        } else {
+            // update
+            viewModel.updatePresetTimer(presetName, presetTime)
+        }
+    }
+
+    private fun getMilliSeconds(): Int {
+        val num1 = binding.numberPicker1.value
+        val num2 = binding.numberPicker2.value
+        val num3 = binding.numberPicker3.value
+        val num4 = binding.numberPicker4.value
+        val num5 = binding.numberPicker5.value
+
+        val min = num1 * 100 + num2 * 10 + num3
+        val sec = num4 * 10 + num5
+
+        val allTime = (min * 60 + sec) * 1000
+        viewModel.getTemporalPresetTime(allTime)
+        return allTime
+    }
+
+    private fun createNotificationTimeDialog(){
+        getMilliSeconds()
+        val inflater = requireActivity().layoutInflater
+        val binding = DataBindingUtil.inflate<DialogNotificationTimeBinding>(inflater, R.layout.dialog_notification_time, null, false)
+        val createSettingView = binding.root
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = viewLifecycleOwner
+
+        MaterialAlertDialogBuilder(requireContext())
+            .setView(createSettingView)
+            .setPositiveButton(R.string.save){ _, _ ->
+                val min = binding.numberPickerMin.value
+                val sec = binding.numberPickerSec.value
+                val allTime = (min * 60 + sec) * 1000
+                viewModel.getTemporalNotificationTime(allTime) }
+            .setNegativeButton(R.string.cancel){ dialog, _ -> dialog.dismiss() }
+            .show()
+    }
+
+    private fun subscribeToSetPresetTimerObservers() {
+        viewModel.insertAndUpdatePresetTimerStatus.observe(viewLifecycleOwner, Observer { it ->
+            it.getContentIfNotHandled()?.let { result ->
+                if(result.status == Status.SUCCESS) {
+                        this.findNavController().popBackStack() }
+                }
+        })
+        viewModel.timerNameStatus.observe(viewLifecycleOwner, Observer { it ->
+            it.getContentIfNotHandled()?.let { result ->
+                if(result.status == Status.ERROR){
+                    binding.etPresetName.setText(result.data)
+                    binding.etTimerName.error = result.message
+                }
+            }
+        })
+        viewModel.showTimerError.observe(viewLifecycleOwner, Observer { msg ->
+            msg?.let{
+                Snackbar.make(binding.root, msg, Snackbar.LENGTH_LONG).show()
+                viewModel.doneShowTimerError()
+            }
+        })
+    }
 }
