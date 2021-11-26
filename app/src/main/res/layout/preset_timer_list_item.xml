@@ -78,10 +78,6 @@
                             app:notificationTime="@{presetTimer.notificationTime}"
                             tools:text="通知 : 5分前" />
 
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:src="@drawable/ic_copy" />
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>

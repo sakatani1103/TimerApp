@@ -61,7 +61,9 @@ class SetTimerFragment : Fragment() {
         // PresetTimerの+を押して遷移した場合はpresetTimer数字が表示され、
         // PresetTimerを押して遷移した場合はpresetTimer名が表示される
         if (args.presetName == null){
-            val num = viewModel.presetTimerList.value?.count() ?: 0
+            val presetTimerList = viewModel.presetTimerList.value ?: listOf()
+            val num = if(presetTimerList.isEmpty()) {0}
+            else {presetTimerList.last().timerOrder}
             val newName = "presetTimer" + "${num + 1}"
             binding.etPresetName.setText(newName)
         } else {
@@ -123,7 +125,7 @@ class SetTimerFragment : Fragment() {
                         this.findNavController().popBackStack() }
                 }
         })
-        viewModel.timerNameStatus.observe(viewLifecycleOwner, Observer { it ->
+        viewModel.nameStatus.observe(viewLifecycleOwner, Observer { it ->
             it.getContentIfNotHandled()?.let { result ->
                 if(result.status == Status.ERROR){
                     binding.etPresetName.setText(result.data)

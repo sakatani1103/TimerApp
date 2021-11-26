@@ -12,6 +12,9 @@ interface TimerDao {
     suspend fun insertPresetTimer(presettimer: PresetTimer)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertPresetTimers(presettimers: List<PresetTimer>)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTimerAndPresetTimers(timer: Timer, presettimers: List<PresetTimer>)
 
     @Update
@@ -56,9 +59,6 @@ interface TimerDao {
 
     @Query("SELECT name FROM timer")
     suspend fun getTimerNames(): List<String>
-
-    @Query("SELECT SUM(presetTime) FROM presettimer WHERE name = :name")
-    suspend fun getTotalTime(name: String): Int
 
     @Query("SELECT MAX(timerOrder) FROM presettimer WHERE name = :name")
     suspend fun getMaxOrderPresetTimer(name: String): Int

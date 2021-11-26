@@ -11,6 +11,8 @@ interface TimerRepository {
 
     suspend fun insertPresetTimer(presetTimer: PresetTimer)
 
+    suspend fun insertPresetTimers(presetTimers: List<PresetTimer>)
+
     suspend fun insertTimerAndPresetTimers(timer: Timer, presetTimers: List<PresetTimer>)
 
     suspend fun updateTimer(timer: Timer)
@@ -36,8 +38,6 @@ interface TimerRepository {
     suspend fun getCurrentPresetTimer(timerName: String, presetName: String, order:Int): PresetTimer
 
     suspend fun getTimerNames(): List<String>
-
-    suspend fun getTotalTime(name: String): Int
 
     suspend fun getMaxOrderPresetTimer(name: String) : Int
 

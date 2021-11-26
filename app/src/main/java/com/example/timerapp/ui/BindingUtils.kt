@@ -2,8 +2,10 @@ package com.example.timerapp.ui
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.opengl.Visibility
 import android.view.View
 import android.widget.*
+import androidx.cardview.widget.CardView
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.databinding.BindingAdapter
@@ -163,6 +165,10 @@ fun NumberPicker.setPresetTimerNumber(temporalNotificationTime: Int, timePlace: 
     }
 }
 
+@BindingAdapter("presetItems")
+fun CardView.setInitialMessage(presetItems: List<PresetTimer>?){
+    isGone = presetItems != null && presetItems.count() > 0
+}
 
 
 
