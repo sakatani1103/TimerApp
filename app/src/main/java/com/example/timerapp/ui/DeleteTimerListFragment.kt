@@ -59,7 +59,7 @@ class DeleteTimerListFragment : Fragment() {
         }
 
         binding.deleteBtn.setOnClickListener {
-            viewModel.deleteTimerList(deleteTimerList)
+            viewModel.deleteTimerListAndPresetTimerList(deleteTimerList)
         }
     }
 

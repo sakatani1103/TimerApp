@@ -6,7 +6,8 @@ import androidx.room.PrimaryKey
 
 enum class ListType {
     SIMPLE_LAYOUT,
-    DETAIL_LAYOUT
+    DETAIL_LAYOUT,
+    INITIAL_LAYOUT
 }
 
 enum class NotificationType {

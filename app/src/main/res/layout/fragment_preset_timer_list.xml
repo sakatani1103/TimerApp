@@ -31,14 +31,13 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/standard_margin"
             android:layout_marginStart="@dimen/standard_margin"
             android:layout_marginTop="@dimen/standard_margin"
+            android:layout_marginEnd="@dimen/standard_margin"
             android:hint="@string/timer_name"
-            app:layout_constraintBottom_toTopOf="@+id/divider1"
             app:layout_constraintEnd_toStartOf="@+id/start_btn"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toBottomOf="@id/back_btn">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_timer_name"
@@ -50,18 +49,6 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <View
-            android:id="@+id/divider1"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginStart="@dimen/standard_margin"
-            android:layout_marginTop="@dimen/setting_margin"
-            android:layout_marginEnd="@dimen/standard_margin"
-            android:background="?android:attr/listDivider"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/start_btn" />
-
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/start_btn"
@@ -72,6 +59,7 @@
             app:backgroundTint="#ffffff"
             app:borderWidth="0dp"
             app:fabSize="mini"
+            app:layout_constraintBottom_toBottomOf="@+id/timer_name_layout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_play_arrow"
@@ -82,10 +70,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/standard_margin"
-            android:layout_marginTop="@dimen/setting_margin"
             android:text="@string/setting_title"
+            android:layout_marginTop="@dimen/setting_margin"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/divider1" />
+            app:layout_constraintTop_toBottomOf="@+id/timer_name_layout" />
 
         <com.google.android.material.switchmaterial.SwitchMaterial
             android:id="@+id/setting_display_title"
@@ -182,6 +170,27 @@
             app:layout_constraintEnd_toStartOf="@+id/add_list"
             app:srcCompat="@drawable/ic_delete"
             app:tint="@color/secondaryColor" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/initial_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/card_margin"
+            app:presetItems="@{viewModel.presetTimerList}"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/divider2">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/card_margin"
+                android:text="@string/initial_set_preset"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2" />
+
+        </com.google.android.material.card.MaterialCardView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

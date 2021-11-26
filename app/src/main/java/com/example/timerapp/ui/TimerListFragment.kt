@@ -16,6 +16,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.timerapp.R
 import com.example.timerapp.adapter.TimerListAdapter
 import com.example.timerapp.adapter.TimerListListener
+import com.example.timerapp.database.ListType
+import com.example.timerapp.database.Timer
 import com.example.timerapp.databinding.DialogCreateTimerBinding
 import com.example.timerapp.databinding.FragmentTimerListBinding
 import com.example.timerapp.others.Constants
@@ -99,8 +101,12 @@ class TimerListFragment : Fragment() {
 
 
     private fun subscribeToTimerListObservers() {
-        viewModel?.timerItems?.observe(viewLifecycleOwner, Observer {
-            timerListAdapter.timerItems = it
+        viewModel?.timerItems?.observe(viewLifecycleOwner, Observer { timerItems ->
+            if (timerItems.isEmpty()){
+                timerListAdapter.timerItems = listOf(Timer("initial", 0,ListType.INITIAL_LAYOUT))
+            } else {
+                timerListAdapter.timerItems = timerItems
+            }
         })
 
         viewModel?.navigateToPresetTimer?.observe(viewLifecycleOwner, Observer { name ->
@@ -129,7 +135,7 @@ class TimerListFragment : Fragment() {
             }
         })
 
-        viewModel?.timerNameStatus?.observe(viewLifecycleOwner, Observer {
+        viewModel?.nameStatus?.observe(viewLifecycleOwner, Observer {
             it.getContentIfNotHandled()?.let { result ->
                 when (result.status) {
                     Status.ERROR -> { createDialog(result.data, result.message) }
@@ -146,7 +152,7 @@ class TimerListFragment : Fragment() {
                     result.data.let { timer ->
                         if (timer != null) {
                             Snackbar.make(requireView(), "${timer.name}を削除しました。", Snackbar.LENGTH_LONG)
-                                .setAction("取り消し") { viewModel?.restoreTimerAndRelatedPresetTimers(timer) }
+                                .setAction("取り消し") { viewModel?.restoreTimerAndPresetTimers(timer) }
                                 .show()
                         }
                     }

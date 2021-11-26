@@ -23,7 +23,11 @@ class FakeTimerRepository: TimerRepository {
 
     override suspend fun insertPresetTimer(presetTimer: PresetTimer) {
         presetTimerItems.add(presetTimer)
-        presetTimerItems.sortBy { it.timerOrder }
+        observablePresetTimerItems.postValue(presetTimerItems)
+    }
+
+    override suspend fun insertPresetTimers(presetTimers: List<PresetTimer>) {
+        presetTimers.forEach { presetTimer -> presetTimerItems.add(presetTimer) }
         observablePresetTimerItems.postValue(presetTimerItems)
     }
 
@@ -31,7 +35,6 @@ class FakeTimerRepository: TimerRepository {
         timerItems.add(timer)
         observableTimerItems.postValue(timerItems)
         presetTimers.forEach { presetTimer -> presetTimerItems.add(presetTimer) }
-        presetTimerItems.sortBy { it.timerOrder }
         observablePresetTimerItems.postValue(presetTimers)
     }
 
@@ -56,7 +59,6 @@ class FakeTimerRepository: TimerRepository {
             val target = presetTimerItems.filter {
                 it.name == presetTimer.name && it.presetName == presetTimer.presetName && it.timerOrder == presetTimer.timerOrder}
             val index = presetTimerItems.indexOf(target.first())
-
             presetTimerItems[index] = presetTimer
         }
 
@@ -80,8 +82,9 @@ class FakeTimerRepository: TimerRepository {
 
     override suspend fun deletePresetTimers(presetTimers: List<PresetTimer>) {
         presetTimers.forEach { presetTimer ->
-            deletePresetTimer(presetTimer)
+            presetTimerItems.remove(presetTimer)
         }
+        observablePresetTimerItems.postValue(presetTimerItems)
     }
 
     override suspend fun deleteTimerAndPresetTimers(timer: Timer, presetTimers: List<PresetTimer>) {
@@ -92,7 +95,7 @@ class FakeTimerRepository: TimerRepository {
     override suspend fun getPresetTimerWithTimer(name: String): TimerWithPresetTimer {
         val timer = timerItems.first { it.name == name }
         val presetTimerList = mutableListOf<PresetTimer>()
-        presetTimerItems.forEach { if (it.name == name) presetTimerList.add(it) }
+        presetTimerItems.forEach { if (it.name == name){ presetTimerList.add(it) }}
         return TimerWithPresetTimer(timer, presetTimerList)
     }
 
@@ -115,16 +118,6 @@ class FakeTimerRepository: TimerRepository {
             names.add(it.name)
         }
         return names
-    }
-
-    override suspend fun getTotalTime(name: String): Int {
-        var total = 0
-        presetTimerItems.forEach {
-            if (it.name == name){
-                total += it.presetTime
-            }
-        }
-        return total
     }
 
     override suspend fun getMaxOrderPresetTimer(name: String): Int {

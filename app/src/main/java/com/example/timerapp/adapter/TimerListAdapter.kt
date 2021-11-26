@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.timerapp.database.ListType
 import com.example.timerapp.database.Timer
+import com.example.timerapp.databinding.InitialMessageBinding
 import com.example.timerapp.databinding.ListItemBinding
 import com.example.timerapp.databinding.SimpleListItemBinding
 
@@ -112,10 +113,28 @@ class TimerListAdapter(
         }
     }
 
+    class InitialViewHolder private constructor(
+        val binding: InitialMessageBinding
+    ): TimerViewHolder(binding){
+        override fun bind(
+            timer: Timer,
+            clickListener: TimerListListener,
+            viewLifeCycleOwner: LifecycleOwner
+        ) { }
+        companion object {
+            fun from(parent: ViewGroup): InitialViewHolder {
+                val layoutInflater = LayoutInflater.from(parent.context)
+                val binding = InitialMessageBinding.inflate(layoutInflater, parent, false)
+                return InitialViewHolder(binding)
+            }
+        }
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TimerViewHolder {
         return when (ListType.values()[viewType]) {
             ListType.DETAIL_LAYOUT -> DetailViewHolder.from(parent)
             ListType.SIMPLE_LAYOUT -> SimpleViewHolder.from(parent)
+            ListType.INITIAL_LAYOUT -> InitialViewHolder.from(parent)
         }
     }
 

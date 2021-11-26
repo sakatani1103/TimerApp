@@ -19,6 +19,7 @@ import com.example.timerapp.databinding.DeleteListItemBinding
 import com.example.timerapp.databinding.DeleteSimpleListItemBinding
 import com.example.timerapp.databinding.ListItemBinding
 import com.example.timerapp.databinding.SimpleListItemBinding
+import java.lang.IllegalArgumentException
 
 class DeleteTimerListAdapter(
     val clickListener: DeleteTimerListListener,
@@ -115,6 +116,7 @@ class DeleteTimerListAdapter(
         return when(ListType.values()[viewType]){
             ListType.DETAIL_LAYOUT -> DeleteDetailViewHolder.from(parent)
             ListType.SIMPLE_LAYOUT -> DeleteSimpleViewHolder.from(parent)
+            else -> throw IllegalArgumentException("unknown error")
         }
     }
 

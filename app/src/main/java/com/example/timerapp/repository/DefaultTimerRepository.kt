@@ -22,6 +22,10 @@ class DefaultTimerRepository @Inject constructor(
         timerDao.insertPresetTimer(presetTimer)
     }
 
+    override suspend fun insertPresetTimers(presetTimers: List<PresetTimer>) {
+        timerDao.insertPresetTimers(presetTimers)
+    }
+
     override suspend fun insertTimerAndPresetTimers(
         timer: Timer,
         presetTimers: List<PresetTimer>
@@ -79,10 +83,6 @@ class DefaultTimerRepository @Inject constructor(
 
     override fun observeAllPresetTimer(): LiveData<List<PresetTimer>> {
         return timerDao.observeAllPresetTimer()
-    }
-
-    override suspend fun getTotalTime(name: String): Int {
-        return timerDao.getTotalTime(name)
     }
 
     override suspend fun getMaxOrderPresetTimer(name: String): Int {

@@ -24,6 +24,7 @@ import com.example.timerapp.others.Constants
 import com.example.timerapp.others.Status
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import java.lang.IllegalArgumentException
 
 @AndroidEntryPoint
 class PresetTimerListFragment : Fragment() {
@@ -90,20 +91,24 @@ class PresetTimerListFragment : Fragment() {
     }
 
     private val itemTouchCallback = object : ItemTouchHelper.SimpleCallback(
-        0, ItemTouchHelper.RIGHT
+        ItemTouchHelper.UP or ItemTouchHelper.DOWN, ItemTouchHelper.RIGHT
     ){
         override fun onMove(
             recyclerView: RecyclerView,
             viewHolder: RecyclerView.ViewHolder,
             target: RecyclerView.ViewHolder
         ): Boolean {
-            return false
+            val fromPos = viewHolder.adapterPosition
+            val toPos = target.adapterPosition
+            viewModel.changePresetTimerOrder(fromPos, toPos)
+            presetTimerListAdapter.notifyItemMoved(fromPos, toPos)
+            return true
         }
 
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
             val pos = viewHolder.layoutPosition
             val item = presetTimerListAdapter.presetTimers[pos]
-            viewModel.deletePresetTimerAndUpdateRelatedTimer(item)
+            viewModel.deletePresetTimerAndUpdateTimer(item)
         }
     }
 
@@ -150,13 +155,13 @@ class PresetTimerListFragment : Fragment() {
             it.getContentIfNotHandled()?.let { result ->
                 if (result.status == Status.SUCCESS) {
                     Snackbar.make(requireView(), "${result.data!!.presetName}を削除しました。",Snackbar.LENGTH_LONG)
-                        .setAction("取り消し"){ viewModel.restorePresetTimerAndUpdateRelatedTimer(result.data) }
+                        .setAction("取り消し"){ viewModel.restorePresetTimerAndUpdateTimer(result.data) }
                         .show()
                     }
                 }
         })
 
-        viewModel.timerNameStatus.observe(viewLifecycleOwner, Observer {
+        viewModel.nameStatus.observe(viewLifecycleOwner, Observer {
             it.getContentIfNotHandled()?.let { result ->
                 when (result.status) {
                     Status.ERROR -> {
@@ -173,14 +178,6 @@ class PresetTimerListFragment : Fragment() {
                             timerName, inputNotificationType, isDisplay
                         ) }
                     }
-                }
-            }
-        })
-
-        viewModel.updateTimerStatus.observe(viewLifecycleOwner, Observer {
-            it.getContentIfNotHandled()?.let { result ->
-                if (result.status == Status.SUCCESS){
-                     Snackbar.make(binding.root, "設定を変更しました。", Snackbar.LENGTH_LONG).show()
                 }
             }
         })
