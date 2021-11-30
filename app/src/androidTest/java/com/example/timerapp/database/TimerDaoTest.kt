@@ -230,20 +230,6 @@ class TimerDaoTest {
     }
 
     @Test
-    fun getTimerNames() = runBlocking {
-        val timerItem1 = Timer("test1")
-        val timerItem2 = Timer("test2")
-        val timerItem3 = Timer("test3")
-        dao.insertTimer(timerItem1)
-        dao.insertTimer(timerItem2)
-        dao.insertTimer(timerItem3)
-
-        val timerNamesList = dao.getTimerNames()
-
-        assertThat(timerNamesList).isEqualTo(listOf("test1", "test2", "test3"))
-    }
-
-    @Test
     fun getMaxOrderPresetTimer() = runBlockingTest {
         val timerItem1 = Timer("test1")
         val presetTimer1 = PresetTimer("test1", "presetTimer1", 1,

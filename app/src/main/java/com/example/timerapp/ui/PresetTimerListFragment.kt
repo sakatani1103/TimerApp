@@ -1,11 +1,12 @@
 package com.example.timerapp.ui
 
+import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -18,13 +19,10 @@ import com.example.timerapp.R
 import com.example.timerapp.adapter.PresetTimerClickListener
 import com.example.timerapp.adapter.PresetTimerListAdapter
 import com.example.timerapp.database.NotificationType
-import com.example.timerapp.database.Timer
 import com.example.timerapp.databinding.FragmentPresetTimerListBinding
-import com.example.timerapp.others.Constants
 import com.example.timerapp.others.Status
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import java.lang.IllegalArgumentException
 
 @AndroidEntryPoint
 class PresetTimerListFragment : Fragment() {
@@ -60,9 +58,6 @@ class PresetTimerListFragment : Fragment() {
         binding.backBtn.setOnClickListener {
             this.findNavController().popBackStack()
         }
-        binding.startBtn.setOnClickListener {
-            startTimer()
-        } // navigateToTimerに変更
 
         binding.saveUpdate.setOnClickListener {
             updateTimer()
@@ -92,7 +87,7 @@ class PresetTimerListFragment : Fragment() {
 
     private val itemTouchCallback = object : ItemTouchHelper.SimpleCallback(
         ItemTouchHelper.UP or ItemTouchHelper.DOWN, ItemTouchHelper.RIGHT
-    ){
+    ) {
         override fun onMove(
             recyclerView: RecyclerView,
             viewHolder: RecyclerView.ViewHolder,
@@ -115,6 +110,15 @@ class PresetTimerListFragment : Fragment() {
     private fun subscribeToPresetTimerListObservers() {
         viewModel.presetTimerList.observe(viewLifecycleOwner, Observer {
             presetTimerListAdapter.presetTimers = it
+        })
+
+        viewModel.navigateToTimer.observe(viewLifecycleOwner, Observer { name ->
+            name?.let {
+                this.findNavController().navigate(
+                    PresetTimerListFragmentDirections.actionPresetTimerListFragmentToTimerFragment()
+                )
+                viewModel.doneNavigateToTimer()
+            }
         })
 
         viewModel.navigateToSettingTimer.observe(viewLifecycleOwner, Observer { it ->
@@ -144,9 +148,13 @@ class PresetTimerListFragment : Fragment() {
 
         viewModel.navigateToDeletePresetTimer.observe(viewLifecycleOwner, Observer {
             it?.let { b ->
-                if (b) { this.findNavController().navigate(
-                        PresetTimerListFragmentDirections.actionPresetTimerListFragmentToDeletePresetTimerListFragment(args.name))
-                        viewModel.doneNavigateToDeletePresetTimer()
+                if (b) {
+                    this.findNavController().navigate(
+                        PresetTimerListFragmentDirections.actionPresetTimerListFragmentToDeletePresetTimerListFragment(
+                            args.name
+                        )
+                    )
+                    viewModel.doneNavigateToDeletePresetTimer()
                 }
             }
         })
@@ -154,11 +162,15 @@ class PresetTimerListFragment : Fragment() {
         viewModel.deletePresetTimerStatus.observe(viewLifecycleOwner, Observer { it ->
             it.getContentIfNotHandled()?.let { result ->
                 if (result.status == Status.SUCCESS) {
-                    Snackbar.make(requireView(), "${result.data!!.presetName}を削除しました。",Snackbar.LENGTH_LONG)
-                        .setAction("取り消し"){ viewModel.restorePresetTimerAndUpdateTimer(result.data) }
+                    Snackbar.make(
+                        requireView(),
+                        "${result.data!!.presetName}を削除しました。",
+                        Snackbar.LENGTH_LONG
+                    )
+                        .setAction("取り消し") { viewModel.restorePresetTimerAndUpdateTimer(result.data) }
                         .show()
-                    }
                 }
+            }
         })
 
         viewModel.nameStatus.observe(viewLifecycleOwner, Observer {
@@ -173,10 +185,11 @@ class PresetTimerListFragment : Fragment() {
                         val inputNotificationType =
                             if (notificationType == "アラーム") NotificationType.ALARM
                             else NotificationType.VIBRATION
-                        val isDisplay = binding.settingDisplayTitle.isChecked
-                        result.data?.let { timerName -> viewModel.updateTimerNameAndSetting(
-                            timerName, inputNotificationType, isDisplay
-                        ) }
+                        result.data?.let { timerName ->
+                            viewModel.updateTimerNameAndSetting(
+                                timerName, inputNotificationType
+                            )
+                        }
                     }
                 }
             }
@@ -188,12 +201,15 @@ class PresetTimerListFragment : Fragment() {
                 viewModel.doneShowTimerError()
             }
         })
-    }
 
-    private fun startTimer() {
-        this.findNavController().navigate(
-            PresetTimerListFragmentDirections.actionPresetTimerListFragmentToTimerFragment(args.name)
-        )
+        viewModel.updateTimerStatus.observe(viewLifecycleOwner, Observer {
+            it.getContentIfNotHandled()?.let { result ->
+                if (result.status == Status.SUCCESS) {
+                    Snackbar.make(binding.root, "タイマーの設定を変更しました。", Snackbar.LENGTH_LONG).show()
+                    binding.timerNameLayout.error = null
+                }
+            }
+        })
     }
 
     private fun updateTimer() {
@@ -203,13 +219,21 @@ class PresetTimerListFragment : Fragment() {
         val inputNotificationType =
             if (notificationType == "アラーム") NotificationType.ALARM
             else NotificationType.VIBRATION
-        val isDisplay = binding.settingDisplayTitle.isChecked
 
         if (currentTimer.name != timerName) {
             viewModel.checkInputTimerName(timerName)
+        } else if (currentTimer.notificationType != inputNotificationType) {
+            viewModel.updateSettingTimer(inputNotificationType)
         }
-        else if (currentTimer.notificationType != inputNotificationType || currentTimer.isDisplay != isDisplay) {
-            viewModel.updateSettingTimer(inputNotificationType, isDisplay)
+        hideKeyboard()
+    }
+
+    private fun hideKeyboard() {
+        val view = activity?.currentFocus
+        if (view != null) {
+            val manager =
+                activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            manager.hideSoftInputFromWindow(view.windowToken, 0)
         }
     }
 }

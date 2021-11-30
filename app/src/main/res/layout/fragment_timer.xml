@@ -13,6 +13,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:keepScreenOn="true"
         android:padding="@dimen/timer_padding">
 
 
@@ -29,16 +30,16 @@
 
 
         <TextView
-            android:id="@+id/min"
+            android:id="@+id/timer_min"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/timer_margin"
+            android:text="@string/initial_min"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Headline4"
             apps:layout_constraintEnd_toStartOf="@+id/min_unit"
             apps:layout_constraintHorizontal_chainStyle="packed"
             apps:layout_constraintStart_toStartOf="parent"
-            apps:layout_constraintTop_toBottomOf="@+id/total_time_title"
-            tools:text="000" />
+            apps:layout_constraintTop_toBottomOf="@+id/total_time_title" />
 
         <TextView
             android:id="@+id/min_unit"
@@ -48,20 +49,20 @@
             android:gravity="bottom"
             android:text="@string/min"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-            apps:layout_constraintEnd_toStartOf="@+id/sec"
-            apps:layout_constraintStart_toEndOf="@+id/min"
+            apps:layout_constraintEnd_toStartOf="@+id/timer_sec"
+            apps:layout_constraintStart_toEndOf="@+id/timer_min"
             apps:layout_constraintTop_toBottomOf="@+id/total_time_title" />
 
         <TextView
-            android:id="@+id/sec"
+            android:id="@+id/timer_sec"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/timer_margin"
+            android:text="@string/initial_sec"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Headline4"
             apps:layout_constraintEnd_toStartOf="@+id/sec_unit"
             apps:layout_constraintStart_toEndOf="@+id/min_unit"
-            apps:layout_constraintTop_toBottomOf="@+id/total_time_title"
-            tools:text="00" />
+            apps:layout_constraintTop_toBottomOf="@+id/total_time_title" />
 
         <TextView
             android:id="@+id/sec_unit"
@@ -72,7 +73,7 @@
             android:text="@string/sec"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
             apps:layout_constraintEnd_toEndOf="parent"
-            apps:layout_constraintStart_toEndOf="@+id/sec"
+            apps:layout_constraintStart_toEndOf="@+id/timer_sec"
             apps:layout_constraintTop_toBottomOf="@+id/total_time_title" />
 
         <TextView
@@ -89,12 +90,12 @@
             android:id="@+id/preset_min"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="@string/initial_min"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Headline1"
             apps:layout_constraintEnd_toStartOf="@+id/preset_min_unit"
             apps:layout_constraintHorizontal_bias="0.5"
             apps:layout_constraintStart_toStartOf="parent"
-            apps:layout_constraintTop_toBottomOf="@+id/preset_timer_title"
-            tools:text="000" />
+            apps:layout_constraintTop_toBottomOf="@+id/preset_timer_title" />
 
         <TextView
             android:id="@+id/preset_min_unit"
@@ -111,12 +112,12 @@
             android:id="@+id/preset_sec"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="@string/initial_sec"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Headline1"
             apps:layout_constraintBottom_toBottomOf="@+id/preset_min_unit"
             apps:layout_constraintEnd_toStartOf="@+id/preset_sec_unit"
             apps:layout_constraintHorizontal_bias="0.5"
-            apps:layout_constraintStart_toEndOf="@+id/preset_min_unit"
-            tools:text="00" />
+            apps:layout_constraintStart_toEndOf="@+id/preset_min_unit" />
 
         <TextView
             android:id="@+id/preset_sec_unit"
@@ -135,6 +136,7 @@
             android:layout_gravity="top|end"
             android:layout_margin="@dimen/card_margin"
             android:layout_marginEnd="243dp"
+            android:keepScreenOn="false"
             apps:backgroundTint="#ffffff"
             apps:borderWidth="0dp"
             apps:layout_constraintBottom_toBottomOf="parent"

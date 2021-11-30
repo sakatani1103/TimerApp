@@ -52,13 +52,14 @@ interface TimerDao {
     fun observeAllPresetTimer(): LiveData<List<PresetTimer>>
 
     @Query("SELECT * FROM timer WHERE name = :name ")
-    suspend fun getCurrentTimer(name: String) : Timer
+    suspend fun getCurrentTimer(name: String): Timer
 
     @Query("SELECT * FROM presettimer WHERE name = :timerName AND presetName = :presetName AND timerOrder = :timerOrder")
-    suspend fun getCurrentPresetTimer(timerName: String, presetName: String, timerOrder: Int) : PresetTimer
-
-    @Query("SELECT name FROM timer")
-    suspend fun getTimerNames(): List<String>
+    suspend fun getCurrentPresetTimer(
+        timerName: String,
+        presetName: String,
+        timerOrder: Int
+    ): PresetTimer
 
     @Query("SELECT MAX(timerOrder) FROM presettimer WHERE name = :name")
     suspend fun getMaxOrderPresetTimer(name: String): Int

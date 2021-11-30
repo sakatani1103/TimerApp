@@ -115,12 +115,14 @@ class TimerListAdapter(
 
     class InitialViewHolder private constructor(
         val binding: InitialMessageBinding
-    ): TimerViewHolder(binding){
+    ) : TimerViewHolder(binding) {
         override fun bind(
             timer: Timer,
             clickListener: TimerListListener,
             viewLifeCycleOwner: LifecycleOwner
-        ) { }
+        ) {
+        }
+
         companion object {
             fun from(parent: ViewGroup): InitialViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)

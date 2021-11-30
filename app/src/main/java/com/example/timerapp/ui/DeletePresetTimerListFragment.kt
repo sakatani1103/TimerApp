@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.clearFragmentResultListener
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -62,11 +61,12 @@ class DeletePresetTimerListFragment : Fragment() {
         _binding = null
     }
 
-    private fun setupRecyclerView(){
+    private fun setupRecyclerView() {
         deletePresetTimerListAdapter = DeletePresetTimerListAdapter(clickListener =
         DeletePresetTimerListAdapter.DeletePresetTimerListListener { presetTimer ->
             createDeletePresetList(presetTimer)
-        }, viewLifecycleOwner)
+        }, viewLifecycleOwner
+        )
         binding.deletePresetTimerList.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = deletePresetTimerListAdapter
@@ -79,7 +79,7 @@ class DeletePresetTimerListFragment : Fragment() {
         })
         viewModel.deletePresetTimerStatus.observe(viewLifecycleOwner, Observer {
             it.getContentIfNotHandled()?.let { result ->
-                if (result.status == Status.SUCCESS){
+                if (result.status == Status.SUCCESS) {
                     deletePresetTimerList.clear()
                     this.findNavController().popBackStack()
                 }
@@ -87,7 +87,7 @@ class DeletePresetTimerListFragment : Fragment() {
         })
     }
 
-    private fun createDeletePresetList(presetTimer: PresetTimer){
+    private fun createDeletePresetList(presetTimer: PresetTimer) {
         viewModel.switchPresetTimerIsSelected(presetTimer)
         if (deletePresetTimerList.contains(presetTimer)) {
             deletePresetTimerList.remove(presetTimer)

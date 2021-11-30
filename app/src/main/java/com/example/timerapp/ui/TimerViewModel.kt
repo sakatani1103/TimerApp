@@ -1,15 +1,12 @@
 package com.example.timerapp.ui
 
-import android.util.Log
 import androidx.lifecycle.*
-import com.example.timerapp.R
 import com.example.timerapp.database.*
 import com.example.timerapp.others.*
 import com.example.timerapp.repository.TimerRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.Result
 
 @HiltViewModel
 class TimerViewModel @Inject constructor(
@@ -28,16 +25,11 @@ class TimerViewModel @Inject constructor(
 
     private val currentPresetTimer = MutableLiveData<PresetTimer>()
 
-    private val timerNamesList = MutableLiveData<List<String>>()
+    private val _temporalPresetTime = MutableLiveData<Long>()
+    val temporalPresetTime: LiveData<Long> = _temporalPresetTime
 
-    private val _totalTime = MutableLiveData<Int>()
-    val totalTime: LiveData<Int> = _totalTime
-
-    private val _temporalPresetTime = MutableLiveData<Int>()
-    val temporalPresetTime: LiveData<Int> = _temporalPresetTime
-
-    private val _temporalNotificationTime = MutableLiveData<Int>()
-    val temporalNotificationTime: LiveData<Int> = _temporalNotificationTime
+    private val _temporalNotificationTime = MutableLiveData<Long>()
+    val temporalNotificationTime: LiveData<Long> = _temporalNotificationTime
 
     private val _deleteTimerItemStatus = MutableLiveData<Event<Resource<Timer>>>()
     val deleteTimerItemStatus: LiveData<Event<Resource<Timer>>> = _deleteTimerItemStatus
@@ -53,7 +45,8 @@ class TimerViewModel @Inject constructor(
     val updateTimerStatus: LiveData<Event<Resource<Timer>>> = _updateTimerStatus
 
     private val _insertAndUpdatePresetTimerStatus = MutableLiveData<Event<Resource<PresetTimer>>>()
-    val insertAndUpdatePresetTimerStatus: LiveData<Event<Resource<PresetTimer>>> = _insertAndUpdatePresetTimerStatus
+    val insertAndUpdatePresetTimerStatus: LiveData<Event<Resource<PresetTimer>>> =
+        _insertAndUpdatePresetTimerStatus
 
     // Navigation
     // TimerListFragmentからPresetTimerListFragmentへの遷移
@@ -113,20 +106,15 @@ class TimerViewModel @Inject constructor(
             return
         }
 
-        getTimerNamesList()
-        if ((timerNamesList.value ?: mutableListOf()).contains(timerName)) {
+        val timerNames = mutableListOf<String>()
+        timerItems.value?.forEach { timerNames.add(it.name) }
+        if (timerNames.contains(timerName)) {
             _nameStatus.postValue(
                 Event(Resource.error("入力したタイマー名は使用されています。", timerName))
             )
             return
         }
         _nameStatus.postValue(Event(Resource.success(timerName)))
-    }
-
-    private fun getTimerNamesList() {
-        viewModelScope.launch {
-            timerNamesList.postValue(repository.getTimerNames())
-        }
     }
 
     fun insertTimer(timerName: String) {
@@ -136,7 +124,8 @@ class TimerViewModel @Inject constructor(
         _navigateToPresetTimer.value = timerName
     }
 
-    private fun insertTimerIntoDb(timer: Timer){
+    // testに使用するため　
+    fun insertTimerIntoDb(timer: Timer) {
         viewModelScope.launch {
             repository.insertTimer(timer)
         }
@@ -149,8 +138,8 @@ class TimerViewModel @Inject constructor(
         }
     }
 
-    private fun sortedOrder(presetTimerList: List<PresetTimer>):List<PresetTimer>{
-        val comparator : Comparator<PresetTimer> = compareBy { it.timerOrder }
+    private fun sortedOrder(presetTimerList: List<PresetTimer>): List<PresetTimer> {
+        val comparator: Comparator<PresetTimer> = compareBy { it.timerOrder }
         return presetTimerList.sortedWith(comparator)
     }
 
@@ -189,7 +178,11 @@ class TimerViewModel @Inject constructor(
     // Navigation
     fun navigateToPresetTimer(name: String) {
         getCurrentTimerAndPresetTimerList(name)
-        _navigateToPresetTimer.value = name
+        currentTimer.value?.let {
+            if (it.name == name) {
+                _navigateToPresetTimer.value = name
+            }
+        }
     }
 
     fun doneNavigateToPresetTimer() {
@@ -198,7 +191,16 @@ class TimerViewModel @Inject constructor(
 
     fun navigateToTimer(name: String) {
         getCurrentTimerAndPresetTimerList(name)
-        _navigateToTimer.value = name
+        currentTimer.value?.let {
+            if (it.total == 0L) {
+                _showTimerError.postValue("タイマーが設定されていません。")
+                return
+            }
+
+            if (it.name == name) {
+                _navigateToTimer.value = name
+            }
+        }
     }
 
     fun doneNavigateToTimer() {
@@ -221,10 +223,10 @@ class TimerViewModel @Inject constructor(
 
     // PresetTimerListFragment
     // update Timer
-    fun updateSettingTimer(notificationType: NotificationType, isDisplay: Boolean) {
+    fun updateSettingTimer(notificationType: NotificationType) {
         val timer = currentTimer.value!!
         val newTimer = Timer(
-            timer.name, timer.total, timer.listType, notificationType, isDisplay, timer.detail
+            timer.name, timer.total, timer.listType, notificationType, timer.isDisplay, timer.detail
         )
         updateTimerIntoDb(newTimer)
         _updateTimerStatus.postValue(Event(Resource.success(newTimer)))
@@ -240,11 +242,15 @@ class TimerViewModel @Inject constructor(
     fun updateTimerNameAndSetting(
         timerName: String,
         notificationType: NotificationType,
-        isDisplay: Boolean
     ) {
         currentTimer.value?.let { timer ->
             val newTimer = Timer(
-                timerName, timer.total, timer.listType, notificationType, isDisplay, timer.detail
+                timerName,
+                timer.total,
+                timer.listType,
+                notificationType,
+                timer.isDisplay,
+                timer.detail
             )
             updateTimerAndPresetTimers(newTimer)
         }
@@ -255,9 +261,13 @@ class TimerViewModel @Inject constructor(
             currentTimer.value?.let { currentTimer ->
                 val presetTimers = repository.getPresetTimerWithTimer(currentTimer.name).presetTimer
                 val newPresetTimers = mutableListOf<PresetTimer>()
-                presetTimers.forEach{ presetTimer ->
-                    newPresetTimers.add(PresetTimer(newTimer.name, presetTimer.presetName, presetTimer.timerOrder,
-                        presetTimer.presetTime, presetTimer.notificationTime))
+                presetTimers.forEach { presetTimer ->
+                    newPresetTimers.add(
+                        PresetTimer(
+                            newTimer.name, presetTimer.presetName, presetTimer.timerOrder,
+                            presetTimer.presetTime, presetTimer.notificationTime
+                        )
+                    )
                 }
                 repository.insertTimerAndPresetTimers(newTimer, newPresetTimers)
                 repository.deleteTimerAndPresetTimers(currentTimer, presetTimers)
@@ -270,9 +280,9 @@ class TimerViewModel @Inject constructor(
     }
 
     // drag and drop updatePresetTimer
-    fun changePresetTimerOrder(fromPos: Int, toPos:Int) {
+    fun changePresetTimerOrder(fromPos: Int, toPos: Int) {
         val presetTimerList = presetTimerList.value!!.toMutableList()
-        if(fromPos < toPos){
+        if (fromPos < toPos) {
             val fromValue = presetTimerList[fromPos]
             presetTimerList.removeAt(fromPos)
             presetTimerList.add(toPos, fromValue)
@@ -284,12 +294,14 @@ class TimerViewModel @Inject constructor(
         deleteAndInsertPresetTimers(presetTimerList)
     }
 
-    private fun deleteAndInsertPresetTimers(presetTimerList: List<PresetTimer>){
+    private fun deleteAndInsertPresetTimers(presetTimerList: List<PresetTimer>) {
         val insertPresetTimerList = mutableListOf<PresetTimer>()
         presetTimerList.forEachIndexed { index, presetTimer ->
             insertPresetTimerList.add(
-                PresetTimer(presetTimer.name, presetTimer.presetName,
-                    index+1, presetTimer.presetTime, presetTimer.notificationTime)
+                PresetTimer(
+                    presetTimer.name, presetTimer.presetName,
+                    index + 1, presetTimer.presetTime, presetTimer.notificationTime
+                )
             )
         }
         _presetTimerList.postValue(sortedOrder(insertPresetTimerList))
@@ -304,13 +316,14 @@ class TimerViewModel @Inject constructor(
         }
     }
 
-    private fun timerChangeDueToPresetTimerChange(presetTimerList: List<PresetTimer>): Timer{
+    private fun timerChangeDueToPresetTimerChange(presetTimerList: List<PresetTimer>): Timer {
         var timer = Timer("no name")
-        var total = 0
+        var total = 0L
         presetTimerList.forEach { total += it.presetTime }
         val detail = convertDetail(sortedOrder(presetTimerList))
-        val listType = if (presetTimerList.count() <= 1) { ListType.SIMPLE_LAYOUT }
-        else ListType.DETAIL_LAYOUT
+        val listType = if (presetTimerList.count() <= 1) {
+            ListType.SIMPLE_LAYOUT
+        } else ListType.DETAIL_LAYOUT
         currentTimer.value?.let {
             timer = Timer(it.name, total, listType, it.notificationType, it.isDisplay, detail)
         }
@@ -322,7 +335,8 @@ class TimerViewModel @Inject constructor(
         viewModelScope.launch {
             repository.deletePresetTimer(presetTimer)
             currentTimer.value?.let { timer ->
-                val presetTimerList = sortedOrder(repository.getPresetTimerWithTimer(timer.name).presetTimer)
+                val presetTimerList =
+                    sortedOrder(repository.getPresetTimerWithTimer(timer.name).presetTimer)
                 val updateTimer = timerChangeDueToPresetTimerChange(presetTimerList)
                 repository.updateTimer(updateTimer)
                 val timerAndPresetTimers = repository.getPresetTimerWithTimer(timer.name)
@@ -337,7 +351,8 @@ class TimerViewModel @Inject constructor(
         viewModelScope.launch {
             repository.insertPresetTimer(presetTimer)
             currentTimer.value?.let {
-                val presetTimerList = sortedOrder(repository.getPresetTimerWithTimer(it.name).presetTimer)
+                val presetTimerList =
+                    sortedOrder(repository.getPresetTimerWithTimer(it.name).presetTimer)
                 val updateTimer = timerChangeDueToPresetTimerChange(presetTimerList)
                 repository.updateTimer(updateTimer)
                 val timerAndPresetTimers = repository.getPresetTimerWithTimer(it.name)
@@ -354,7 +369,7 @@ class TimerViewModel @Inject constructor(
             _showTimerError.postValue("カスタマイズできるタイマーは${Constants.PRESET_TIMER_NUM}までです。")
             return
         }
-        if (timerName != null && presetName != null && order != null){
+        if (timerName != null && presetName != null && order != null) {
             getTemporalTime(timerName, presetName, order)
         } else {
             _temporalPresetTime.postValue(0)
@@ -373,7 +388,7 @@ class TimerViewModel @Inject constructor(
     // settingTimerFragmentとTimerFragmentに以降する際に必要
     fun getTemporalTime(timerName: String, presetName: String, order: Int) {
         viewModelScope.launch {
-            val presetTimer = repository.getCurrentPresetTimer(timerName,presetName,order)
+            val presetTimer = repository.getCurrentPresetTimer(timerName, presetName, order)
             currentPresetTimer.postValue(presetTimer)
             _temporalNotificationTime.postValue(presetTimer.notificationTime)
             _temporalPresetTime.postValue(presetTimer.presetTime)
@@ -401,21 +416,23 @@ class TimerViewModel @Inject constructor(
 
     // SetTimerFragment
     // insert PresetTimer
-    fun getTemporalNotificationTime(time: Int) {
+    fun getTemporalNotificationTime(time: Long) {
         _temporalNotificationTime.postValue(time)
     }
 
-    fun getTemporalPresetTime(time: Int) {
+    fun getTemporalPresetTime(time: Long) {
         _temporalPresetTime.postValue(time)
     }
 
-    fun insertPresetTimer(presetName: String, presetTime: Int) {
-        if (checkInputPresetTimer(presetName, presetTime)){
+    fun insertPresetTimer(presetName: String, presetTime: Long) {
+        if (checkInputPresetTimer(presetName, presetTime)) {
             insertPresetTimerAndUpdateTimer(presetName, presetTime)
-        } else { return }
+        } else {
+            return
+        }
     }
 
-    private fun checkInputPresetTimer(presetName: String, presetTime: Int) : Boolean {
+    private fun checkInputPresetTimer(presetName: String, presetTime: Long): Boolean {
         if (presetName.isEmpty()) {
             _nameStatus.postValue(
                 Event(
@@ -438,7 +455,7 @@ class TimerViewModel @Inject constructor(
             return false
         }
 
-        if (presetTime <= (temporalNotificationTime.value ?: 0) || presetTime == 0) {
+        if (presetTime <= (temporalNotificationTime.value ?: 0L) || presetTime == 0L) {
             _showTimerError.postValue("適切にタイマーの設定を行って下さい。")
             return false
         }
@@ -448,15 +465,25 @@ class TimerViewModel @Inject constructor(
     }
 
 
-    private fun insertPresetTimerAndUpdateTimer(presetTimerName: String, presetTime: Int){
+    private fun insertPresetTimerAndUpdateTimer(presetTimerName: String, presetTime: Long) {
         viewModelScope.launch {
             currentTimer.value?.let { timer ->
-                val order = if( timer.detail == "no presetTimer"){ 1 }
-                else { repository.getMaxOrderPresetTimer(timer.name) + 1 }
-                val presetTimer = PresetTimer(timer.name, presetTimerName, order, presetTime, temporalNotificationTime.value!!)
+                val order = if (timer.detail == "no presetTimer") {
+                    1
+                } else {
+                    repository.getMaxOrderPresetTimer(timer.name) + 1
+                }
+                val presetTimer = PresetTimer(
+                    timer.name,
+                    presetTimerName,
+                    order,
+                    presetTime,
+                    temporalNotificationTime.value!!
+                )
                 repository.insertPresetTimer(presetTimer)
 
-                val presetTimerList = sortedOrder(repository.getPresetTimerWithTimer(timer.name).presetTimer)
+                val presetTimerList =
+                    sortedOrder(repository.getPresetTimerWithTimer(timer.name).presetTimer)
                 val updateTimer = timerChangeDueToPresetTimerChange(presetTimerList)
                 repository.updateTimer(updateTimer)
 
@@ -469,18 +496,22 @@ class TimerViewModel @Inject constructor(
     }
 
     // update PresetTimer
-    fun updatePresetTimer(presetName: String, presetTime: Int) {
+    fun updatePresetTimer(presetName: String, presetTime: Long) {
         val presetTimer = currentPresetTimer.value!!
-        val updatePresetTimer = PresetTimer(presetTimer.name, presetName, presetTimer.timerOrder,
-            presetTime, temporalNotificationTime.value!!)
-        if (checkInputPresetTimer(presetName, presetTime)){
+        val updatePresetTimer = PresetTimer(
+            presetTimer.name, presetName, presetTimer.timerOrder,
+            presetTime, temporalNotificationTime.value!!
+        )
+        if (checkInputPresetTimer(presetName, presetTime)) {
             if (presetName != presetTimer.presetName) {
                 deleteAndInsertPresetTimerAndUpdateTimer(updatePresetTimer)
             } else {
                 updatePresetTimerAndTimer(updatePresetTimer)
             }
             _insertAndUpdatePresetTimerStatus.postValue(Event(Resource.success(updatePresetTimer)))
-        } else { return }
+        } else {
+            return
+        }
     }
 
     private fun deleteAndInsertPresetTimerAndUpdateTimer(presetTimer: PresetTimer) {
@@ -489,7 +520,8 @@ class TimerViewModel @Inject constructor(
             repository.insertPresetTimer(presetTimer)
 
             currentTimer.value?.let {
-                val presetTimerList = sortedOrder(repository.getPresetTimerWithTimer(it.name).presetTimer)
+                val presetTimerList =
+                    sortedOrder(repository.getPresetTimerWithTimer(it.name).presetTimer)
                 val updateTimer = timerChangeDueToPresetTimerChange(presetTimerList)
                 repository.updateTimer(updateTimer)
 
@@ -500,11 +532,12 @@ class TimerViewModel @Inject constructor(
         }
     }
 
-    private fun updatePresetTimerAndTimer(presetTimer: PresetTimer){
+    private fun updatePresetTimerAndTimer(presetTimer: PresetTimer) {
         viewModelScope.launch {
             currentTimer.value?.let {
                 repository.updatePresetTimers(listOf(presetTimer))
-                val presetTimerList = sortedOrder(repository.getPresetTimerWithTimer(it.name).presetTimer)
+                val presetTimerList =
+                    sortedOrder(repository.getPresetTimerWithTimer(it.name).presetTimer)
                 val updateTimer = timerChangeDueToPresetTimerChange(presetTimerList)
                 repository.updateTimer(updateTimer)
 
@@ -532,21 +565,31 @@ class TimerViewModel @Inject constructor(
     }
 
     // update Timer (select Delete Item)
-    fun switchTimerIsSelected(timer: Timer){
+    fun switchTimerIsSelected(timer: Timer) {
         viewModelScope.launch {
             repository.updateTimer(
-                Timer(timer.name, timer.total, timer.listType, timer.notificationType,
-                    timer.isDisplay, timer.detail, !timer.isSelected)
+                Timer(
+                    timer.name, timer.total, timer.listType, timer.notificationType,
+                    timer.isDisplay, timer.detail, !timer.isSelected
+                )
             )
         }
     }
 
-    fun cancelDeleteTimerList(timerList: List<Timer>){
+    fun cancelDeleteTimerList(timerList: List<Timer>) {
         viewModelScope.launch {
             val updateTimers = mutableListOf<Timer>()
             timerList.forEach {
                 updateTimers.add(
-                    Timer(it.name, it.total, it.listType, it.notificationType, it.isDisplay, it.detail, false)
+                    Timer(
+                        it.name,
+                        it.total,
+                        it.listType,
+                        it.notificationType,
+                        it.isDisplay,
+                        it.detail,
+                        false
+                    )
                 )
             }
             repository.updateTimers(updateTimers)
@@ -559,7 +602,8 @@ class TimerViewModel @Inject constructor(
         viewModelScope.launch {
             repository.deletePresetTimers(deletePresetTimers)
             currentTimer.value?.let { timer ->
-                val presetTimerList = sortedOrder(repository.getPresetTimerWithTimer(timer.name).presetTimer)
+                val presetTimerList =
+                    sortedOrder(repository.getPresetTimerWithTimer(timer.name).presetTimer)
                 _presetTimerList.postValue(presetTimerList)
                 val updateTimer = timerChangeDueToPresetTimerChange(presetTimerList)
                 repository.updateTimer(updateTimer)
@@ -569,26 +613,39 @@ class TimerViewModel @Inject constructor(
     }
 
     // update presetTimer (select Delete Item)
-    fun switchPresetTimerIsSelected(presetTimer: PresetTimer){
+    fun switchPresetTimerIsSelected(presetTimer: PresetTimer) {
         viewModelScope.launch {
             repository.updatePresetTimers(
-                listOf(PresetTimer(presetTimer.name, presetTimer.presetName, presetTimer.timerOrder,
-                presetTimer.presetTime, presetTimer.notificationTime, !presetTimer.isSelected))
+                listOf(
+                    PresetTimer(
+                        presetTimer.name,
+                        presetTimer.presetName,
+                        presetTimer.timerOrder,
+                        presetTimer.presetTime,
+                        presetTimer.notificationTime,
+                        !presetTimer.isSelected
+                    )
+                )
             )
             _presetTimerList.postValue(sortedOrder(repository.getPresetTimerWithTimer(presetTimer.name).presetTimer))
         }
     }
 
-    fun cancelDeletePresetTimerList(presetTimerList: List<PresetTimer>){
+    fun cancelDeletePresetTimerList(presetTimerList: List<PresetTimer>) {
         viewModelScope.launch {
             val updatePresetTimers = mutableListOf<PresetTimer>()
             presetTimerList.forEach { presetTimer ->
-                updatePresetTimers.add(PresetTimer(presetTimer.name, presetTimer.presetName, presetTimer.timerOrder,
-                presetTimer.presetTime, presetTimer.notificationTime, false))
+                updatePresetTimers.add(
+                    PresetTimer(
+                        presetTimer.name, presetTimer.presetName, presetTimer.timerOrder,
+                        presetTimer.presetTime, presetTimer.notificationTime, false
+                    )
+                )
             }
             repository.updatePresetTimers(updatePresetTimers)
         }
         _deletePresetTimerStatus.postValue(Event(Resource.success(null)))
     }
+
 }
 

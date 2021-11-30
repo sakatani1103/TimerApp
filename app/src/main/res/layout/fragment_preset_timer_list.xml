@@ -52,6 +52,7 @@
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/start_btn"
+            android:onClick="@{() -> viewModel.navigateToTimer(viewModel.currentTimer.name)}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/icon_margin"
@@ -75,17 +76,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/timer_name_layout" />
 
-        <com.google.android.material.switchmaterial.SwitchMaterial
-            android:id="@+id/setting_display_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/standard_margin"
-            android:layout_marginEnd="@dimen/standard_margin"
-            android:checked="@{viewModel.currentTimer.display}"
-            android:text="@string/timer_setting"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/setting_title" />
-
         <TextView
             android:id="@+id/setting_sound_title"
             android:layout_width="wrap_content"
@@ -96,7 +86,7 @@
             android:text="@string/setting_sound"
             android:textColor="@color/black"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/setting_display_title" />
+            app:layout_constraintTop_toBottomOf="@+id/setting_title" />
 
         <Spinner
             android:id="@+id/sounds_spinner"
@@ -106,7 +96,7 @@
             android:layout_height="wrap_content"
             android:entries="@array/sound_items"
             app:layout_constraintBaseline_toBaselineOf="@+id/setting_sound_title"
-            app:layout_constraintEnd_toEndOf="@+id/setting_display_title" />
+            app:layout_constraintEnd_toEndOf="parent" />
 
         <View
             android:id="@+id/divider2"
@@ -127,7 +117,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/btn_margin"
-            android:layout_marginTop="@dimen/setting_margin"
+            android:layout_marginTop="@dimen/btn_margin"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/sounds_spinner" />
 

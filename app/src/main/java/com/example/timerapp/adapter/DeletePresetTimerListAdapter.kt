@@ -12,7 +12,8 @@ import com.example.timerapp.databinding.DeletePresetTimerItemBinding
 
 class DeletePresetTimerListAdapter(
     val clickListener: DeletePresetTimerListListener,
-    val viewLifecycleOwner: LifecycleOwner) :
+    val viewLifecycleOwner: LifecycleOwner
+) :
     RecyclerView.Adapter<DeletePresetTimerListAdapter.DeletePresetTimerViewHolder>() {
 
     private val diffCallback = object : DiffUtil.ItemCallback<PresetTimer>() {
@@ -31,14 +32,18 @@ class DeletePresetTimerListAdapter(
         get() = differ.currentList
         set(value) = differ.submitList(value)
 
-    class DeletePresetTimerViewHolder constructor(val binding: DeletePresetTimerItemBinding)
-        : RecyclerView.ViewHolder(binding.root){
-            fun bind(presetTimer: PresetTimer, viewLifecycleOwner: LifecycleOwner, clickListener: DeletePresetTimerListListener){
-                binding.presetTimer = presetTimer
-                binding.lifecycleOwner = viewLifecycleOwner
-                binding.clickListener = clickListener
-                binding.executePendingBindings()
-            }
+    class DeletePresetTimerViewHolder constructor(val binding: DeletePresetTimerItemBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(
+            presetTimer: PresetTimer,
+            viewLifecycleOwner: LifecycleOwner,
+            clickListener: DeletePresetTimerListListener
+        ) {
+            binding.presetTimer = presetTimer
+            binding.lifecycleOwner = viewLifecycleOwner
+            binding.clickListener = clickListener
+            binding.executePendingBindings()
+        }
 
         companion object {
             fun from(parent: ViewGroup): DeletePresetTimerViewHolder {
