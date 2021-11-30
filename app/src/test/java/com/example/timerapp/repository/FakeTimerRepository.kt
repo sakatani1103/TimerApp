@@ -112,14 +112,6 @@ class FakeTimerRepository: TimerRepository {
             it.name == timerName && it.presetName == presetName && it.timerOrder == order}
     }
 
-    override suspend fun getTimerNames(): List<String> {
-        val names = mutableListOf<String>()
-        timerItems.forEach {
-            names.add(it.name)
-        }
-        return names
-    }
-
     override suspend fun getMaxOrderPresetTimer(name: String): Int {
         val presetTimers = getPresetTimerWithTimer(name)
         var max = 0

@@ -3,9 +3,9 @@
     <string name="delete">削除</string>
     <string name="cancel">キャンセル</string>
     <string name="save">保存</string>
-    <string name="caution">タイマーが登録されていません。</string>
+    <string name="caution">タイマーの設定を行って下さい。</string>
     <string name="ok">OK</string>
-    <string name="timer_setting">タイマーを画面表示させたままにする</string>
+    <string name="timer_setting">タイマーの終了を通知画面に表示する</string>
     <string name="initial_use">ご利用頂きありがとうございます。\n「+」ボタンを押してタイマーを作成しましょう。</string>
     <string name="initial_set_preset">「+」ボタンを押してタイマーの設定を行いましょう。</string>
     <string name="timer_name">タイマーの名前</string>
@@ -22,6 +22,11 @@
     <string name="content_description_delete">リストの削除</string>
     <string name="timer_stop_message">タイマーを終了しますか。</string>
     <string name="setting_update">設定の変更を反映する</string>
-
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="initial_min">000</string>
+    <string name="initial_sec">00</string>
+    <string name="set_min">%0$03d</string>
+    <string name="set_sec">%0$02d</string>
+    <string name="finish_message">タイマーが終了しました。</string>
+    <string name="notification_channel">タイマー通知</string>
+    <string name="notification_channel_name">タイマー終了</string>
 </resources>

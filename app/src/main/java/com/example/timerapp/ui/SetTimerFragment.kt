@@ -48,22 +48,25 @@ class SetTimerFragment : Fragment() {
         subscribeToSetPresetTimerObservers()
 
         binding.backBtn.setOnClickListener { this.findNavController().popBackStack() }
-        binding.saveButton.setOnClickListener{ savePresetTimer() }
-        binding.preNotification.setOnClickListener{ createNotificationTimeDialog() }
+        binding.saveButton.setOnClickListener { savePresetTimer() }
+        binding.preNotification.setOnClickListener { createNotificationTimeDialog() }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding= null
+        _binding = null
     }
 
     private fun setPresetTimerNameToEt() {
         // PresetTimerの+を押して遷移した場合はpresetTimer数字が表示され、
         // PresetTimerを押して遷移した場合はpresetTimer名が表示される
-        if (args.presetName == null){
+        if (args.presetName == null) {
             val presetTimerList = viewModel.presetTimerList.value ?: listOf()
-            val num = if(presetTimerList.isEmpty()) {0}
-            else {presetTimerList.last().timerOrder}
+            val num = if (presetTimerList.isEmpty()) {
+                0
+            } else {
+                presetTimerList.last().timerOrder
+            }
             val newName = "presetTimer" + "${num + 1}"
             binding.etPresetName.setText(newName)
         } else {
@@ -75,7 +78,7 @@ class SetTimerFragment : Fragment() {
         val presetTime = getMilliSeconds()
         val presetName = binding.etPresetName.text.toString()
 
-        if (args.presetName == null){
+        if (args.presetName == null) {
             // 新規登録の場合
             viewModel.insertPresetTimer(presetName, presetTime)
         } else {
@@ -84,57 +87,64 @@ class SetTimerFragment : Fragment() {
         }
     }
 
-    private fun getMilliSeconds(): Int {
-        val num1 = binding.numberPicker1.value
-        val num2 = binding.numberPicker2.value
-        val num3 = binding.numberPicker3.value
-        val num4 = binding.numberPicker4.value
-        val num5 = binding.numberPicker5.value
+    private fun getMilliSeconds(): Long {
+        val num1 = binding.numberPicker1.value.toLong()
+        val num2 = binding.numberPicker2.value.toLong()
+        val num3 = binding.numberPicker3.value.toLong()
+        val num4 = binding.numberPicker4.value.toLong()
+        val num5 = binding.numberPicker5.value.toLong()
 
-        val min = num1 * 100 + num2 * 10 + num3
-        val sec = num4 * 10 + num5
+        val min = num1 * 100L + num2 * 10L + num3
+        val sec = num4 * 10L + num5
 
-        val allTime = (min * 60 + sec) * 1000
+        val allTime = (min * 60L + sec) * 1000L
         viewModel.getTemporalPresetTime(allTime)
         return allTime
     }
 
-    private fun createNotificationTimeDialog(){
+    private fun createNotificationTimeDialog() {
         getMilliSeconds()
         val inflater = requireActivity().layoutInflater
-        val binding = DataBindingUtil.inflate<DialogNotificationTimeBinding>(inflater, R.layout.dialog_notification_time, null, false)
+        val binding = DataBindingUtil.inflate<DialogNotificationTimeBinding>(
+            inflater,
+            R.layout.dialog_notification_time,
+            null,
+            false
+        )
         val createSettingView = binding.root
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
         MaterialAlertDialogBuilder(requireContext())
             .setView(createSettingView)
-            .setPositiveButton(R.string.save){ _, _ ->
-                val min = binding.numberPickerMin.value
-                val sec = binding.numberPickerSec.value
-                val allTime = (min * 60 + sec) * 1000
-                viewModel.getTemporalNotificationTime(allTime) }
-            .setNegativeButton(R.string.cancel){ dialog, _ -> dialog.dismiss() }
+            .setPositiveButton(R.string.save) { _, _ ->
+                val min = binding.numberPickerMin.value.toLong()
+                val sec = binding.numberPickerSec.value.toLong()
+                val allTime = (min * 60L + sec) * 1000L
+                viewModel.getTemporalNotificationTime(allTime)
+            }
+            .setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
             .show()
     }
 
     private fun subscribeToSetPresetTimerObservers() {
         viewModel.insertAndUpdatePresetTimerStatus.observe(viewLifecycleOwner, Observer { it ->
             it.getContentIfNotHandled()?.let { result ->
-                if(result.status == Status.SUCCESS) {
-                        this.findNavController().popBackStack() }
+                if (result.status == Status.SUCCESS) {
+                    this.findNavController().popBackStack()
                 }
+            }
         })
         viewModel.nameStatus.observe(viewLifecycleOwner, Observer { it ->
             it.getContentIfNotHandled()?.let { result ->
-                if(result.status == Status.ERROR){
+                if (result.status == Status.ERROR) {
                     binding.etPresetName.setText(result.data)
                     binding.etTimerName.error = result.message
                 }
             }
         })
         viewModel.showTimerError.observe(viewLifecycleOwner, Observer { msg ->
-            msg?.let{
+            msg?.let {
                 Snackbar.make(binding.root, msg, Snackbar.LENGTH_LONG).show()
                 viewModel.doneShowTimerError()
             }

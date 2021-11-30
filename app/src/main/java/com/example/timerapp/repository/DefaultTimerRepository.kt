@@ -1,13 +1,11 @@
 package com.example.timerapp.repository
 
 import androidx.lifecycle.LiveData
-import androidx.room.Query
 import com.example.timerapp.database.PresetTimer
 import com.example.timerapp.database.Timer
 import com.example.timerapp.database.TimerDao
 import com.example.timerapp.database.TimerWithPresetTimer
 import javax.inject.Inject
-import kotlin.concurrent.timer
 
 // repositoryにRoomDaoをinject
 // injectしたrepositoryの
@@ -87,10 +85,6 @@ class DefaultTimerRepository @Inject constructor(
 
     override suspend fun getMaxOrderPresetTimer(name: String): Int {
         return timerDao.getMaxOrderPresetTimer(name)
-    }
-
-    override suspend fun getTimerNames(): List<String> {
-        return timerDao.getTimerNames()
     }
 
 }

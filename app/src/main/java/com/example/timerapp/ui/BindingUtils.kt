@@ -1,30 +1,21 @@
 package com.example.timerapp.ui
 
-import android.annotation.SuppressLint
-import android.app.Activity
-import android.opengl.Visibility
-import android.view.View
 import android.widget.*
 import androidx.cardview.widget.CardView
 import androidx.core.view.isGone
-import androidx.core.view.isVisible
 import androidx.databinding.BindingAdapter
-import androidx.navigation.ActivityNavigatorExtras
 import com.example.timerapp.R
 import com.example.timerapp.R.*
 import com.example.timerapp.database.NotificationType
 import com.example.timerapp.database.PresetTimer
-import com.example.timerapp.database.Timer
 import com.example.timerapp.others.convertLongToTimeString
 import com.example.timerapp.others.setIntToNumberPicker
 import com.example.timerapp.others.setPreNotification
 import com.google.android.material.card.MaterialCardView
-import com.google.android.material.switchmaterial.SwitchMaterial
-import org.w3c.dom.Text
 
 // simpleListItem & listItem
 @BindingAdapter("timerTotal", "timerDetail")
-fun TextView.setTotalTime(timerTotal: Int, timerDetail: String) {
+fun TextView.setTotalTime(timerTotal: Long, timerDetail: String) {
     if (timerDetail != "no presetTimer" && timerTotal > 0) {
         val totalString = convertLongToTimeString(timerTotal)
         val output = "計 $totalString"
@@ -77,12 +68,12 @@ fun Spinner.setSound(notificationType: NotificationType?) {
 
 // presetTimerListItem
 @BindingAdapter("customTime")
-fun TextView.setPresetTime(customTime: Int){
-    text =  convertLongToTimeString(customTime)
+fun TextView.setPresetTime(customTime: Long) {
+    text = convertLongToTimeString(customTime)
 }
 
 @BindingAdapter("notificationTime")
-fun TextView.setNotificationTime(notificationTime: Int){
+fun TextView.setNotificationTime(notificationTime: Long) {
     text = if (notificationTime > 0) {
         val time = convertLongToTimeString(notificationTime)
         val output = "通知：　$time 前"
@@ -94,18 +85,18 @@ fun TextView.setNotificationTime(notificationTime: Int){
 
 // settingTimerFragment
 @BindingAdapter("presetTime", "place")
-fun NumberPicker.setNumber(presetTime: Int, place: Int) {
+fun NumberPicker.setNumber(presetTime: Long, place: Int) {
     maxValue = 9
     minValue = 0
     if (presetTime > 0) {
         val numMap = setIntToNumberPicker(presetTime)
-        value = numMap[place]!!
+        value = numMap[place]!!.toInt()
     }
 }
 
 // delete function
 @BindingAdapter("selectedColor")
-fun MaterialCardView.setSelectedColor(selectedColor: Boolean){
+fun MaterialCardView.setSelectedColor(selectedColor: Boolean) {
     if (selectedColor) {
         setBackgroundColor(context.getColor(color.light_purple))
     } else {
@@ -114,8 +105,8 @@ fun MaterialCardView.setSelectedColor(selectedColor: Boolean){
 }
 
 @BindingAdapter("selectedImage")
-fun ImageView.setSelectedImage(selectedImage: Boolean){
-    if(selectedImage){
+fun ImageView.setSelectedImage(selectedImage: Boolean) {
+    if (selectedImage) {
         setImageResource(R.drawable.ic_check)
     } else {
         setImageResource(R.drawable.ic_check_outline)
@@ -124,49 +115,48 @@ fun ImageView.setSelectedImage(selectedImage: Boolean){
 
 // notificationTimerDialog
 @BindingAdapter("temporalNotificationTime", "timePlace", "temporalPresetTime")
-fun NumberPicker.setPresetTimerNumber(temporalNotificationTime: Int, timePlace: Int, temporalPresetTime: Int){
+fun NumberPicker.setPresetTimerNumber(
+    temporalNotificationTime: Long,
+    timePlace: Int,
+    temporalPresetTime: Long
+) {
     // presetTimeに応じて設定できる範囲を決める
     val numMap = setPreNotification(temporalPresetTime)
+    val setNumMap = if (temporalPresetTime > 0) {
+        setPreNotification(temporalNotificationTime)
+    } else mapOf("min" to 0, "sec" to 0)
     // min単位で時間が設定されている場合は分設定のみ変更
-    if (numMap["min"]!! > 0){
-        when(timePlace) {
+    if (numMap["min"]!! > 0L) {
+        when (timePlace) {
             1 -> {
-                maxValue = numMap["min"]!!
+                maxValue = numMap["min"]!!.toInt()
                 minValue = 0
+                value = setNumMap["min"]!!.toInt()
             }
             2 -> {
                 maxValue = 60
                 minValue = 0
+                value = setNumMap["sec"]!!.toInt()
             }
         }
     } else {
-        when(timePlace){
+        when (timePlace) {
             1 -> {
                 maxValue = 999
                 minValue = 0
+                value = setNumMap["min"]!!.toInt()
             }
             2 -> {
                 maxValue = 60
                 minValue = 0
+                value = setNumMap["sec"]!!.toInt()
             }
-        }
-    }
-    // notificationTimeが設定されている場合には初期値をセット
-    if (temporalNotificationTime > 0) {
-        val setNumMap = setPreNotification(temporalNotificationTime)
-        if (setNumMap["min"]!! > 0) {
-            when(timePlace) {
-                1 -> value = setNumMap["min"]!!
-                2 -> value = setNumMap["sec"]!!
-            }
-        } else {
-            value = setNumMap["sec"]!!
         }
     }
 }
 
 @BindingAdapter("presetItems")
-fun CardView.setInitialMessage(presetItems: List<PresetTimer>?){
+fun CardView.setInitialMessage(presetItems: List<PresetTimer>?) {
     isGone = presetItems != null && presetItems.count() > 0
 }
 

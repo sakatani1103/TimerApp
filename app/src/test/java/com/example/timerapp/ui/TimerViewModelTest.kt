@@ -71,19 +71,20 @@ class TimerViewModelTest {
 
     @Test
     fun `insert many timers, cannot create input TimerName Dialog`(){
-        timerViewModel.insertTimer("timer3")
-        timerViewModel.insertTimer("timer4")
-        timerViewModel.insertTimer("timer5")
-        timerViewModel.insertTimer("timer6")
-        timerViewModel.insertTimer("timer7")
-        timerViewModel.insertTimer("timer8")
-        timerViewModel.insertTimer("timer9")
-        timerViewModel.insertTimer("timer10")
-        timerViewModel.insertTimer("timer11")
-        timerViewModel.insertTimer("timer12")
-        timerViewModel.insertTimer("timer13")
-        timerViewModel.insertTimer("timer14")
-        timerViewModel.insertTimer("timer15")
+        timerViewModel.insertTimerIntoDb(Timer("timer3"))
+        timerViewModel.insertTimerIntoDb(Timer("timer4"))
+        timerViewModel.insertTimerIntoDb(Timer("timer5"))
+        timerViewModel.insertTimerIntoDb(Timer("timer6"))
+        timerViewModel.insertTimerIntoDb(Timer("timer7"))
+        timerViewModel.insertTimerIntoDb(Timer("timer8"))
+        timerViewModel.insertTimerIntoDb(Timer("timer9"))
+        timerViewModel.insertTimerIntoDb(Timer("timer10"))
+        timerViewModel.insertTimerIntoDb(Timer("timer11"))
+        timerViewModel.insertTimerIntoDb(Timer("timer12"))
+        timerViewModel.insertTimerIntoDb(Timer("timer13"))
+        timerViewModel.insertTimerIntoDb(Timer("timer14"))
+        timerViewModel.insertTimerIntoDb(Timer("timer15"))
+        timerViewModel.insertTimerIntoDb(Timer("timer16"))
         timerViewModel.createInsertTimerDialog()
         val value = timerViewModel.showTimerError.getOrAwaitValue()
         Truth.assertThat(value).isEqualTo("登録できるタイマーは${Constants.TIMER_NUM}までです。")
@@ -151,7 +152,7 @@ class TimerViewModelTest {
         timerViewModel.getTemporalNotificationTime(600000)
         timerViewModel.insertPresetTimer("preset1", 9000000)
 
-        timerViewModel.updateTimerNameAndSetting("timer", NotificationType.ALARM, true)
+        timerViewModel.updateTimerNameAndSetting("timer", NotificationType.ALARM)
         val value = timerViewModel.updateTimerStatus.getOrAwaitValue()
 
         Truth.assertThat(value.getContentIfNotHandled()?.status).isEqualTo(Status.SUCCESS)
@@ -162,7 +163,7 @@ class TimerViewModelTest {
         timerViewModel.getTemporalNotificationTime(600000)
         timerViewModel.insertPresetTimer("preset1", 9000000)
 
-        timerViewModel.updateTimerNameAndSetting("timer", NotificationType.ALARM, true)
+        timerViewModel.updateTimerNameAndSetting("timer", NotificationType.ALARM)
         val presetTimerList = timerViewModel.presetTimerList.getOrAwaitValue()
         val presetTimer = PresetTimer("timer", "preset1", 1, 9000000, 600000)
 
@@ -171,7 +172,7 @@ class TimerViewModelTest {
 
     @Test
     fun `update timer except for timerName, return success()`(){
-        timerViewModel.updateSettingTimer(NotificationType.ALARM, false)
+        timerViewModel.updateSettingTimer(NotificationType.ALARM)
         val value = timerViewModel.updateTimerStatus.getOrAwaitValue()
         Truth.assertThat(value.getContentIfNotHandled()?.status).isEqualTo(Status.SUCCESS)
     }
@@ -201,7 +202,7 @@ class TimerViewModelTest {
         val value = timerViewModel.currentTimer.getOrAwaitValue()
         val detail = "preset1\t150分\t通知: なし\npreset3\t150分\t通知: なし\npreset2\t150分\t通知: なし\n"
         val correct = Timer("timer1", 27000000, ListType.DETAIL_LAYOUT, NotificationType.VIBRATION,
-            isDisplay = true, detail)
+            isDisplay = false, detail)
         Truth.assertThat(value).isEqualTo(correct)
     }
 
@@ -267,7 +268,7 @@ class TimerViewModelTest {
 
         val value = timerViewModel.currentTimer.getOrAwaitValue()
         val correctTimer = Timer("timer1", 6000000, ListType.SIMPLE_LAYOUT, NotificationType.VIBRATION,
-            isDisplay = true, "通知: なし")
+            isDisplay = false, "通知: なし")
         Truth.assertThat(value).isEqualTo(correctTimer)
     }
 
@@ -357,7 +358,7 @@ class TimerViewModelTest {
         val detail = "presetTimer1\t150分\t通知: なし\n" +
                 "presetTimer2\t60分\t通知: 5分前\n"
         val correct = Timer("timer1", 12600000, ListType.DETAIL_LAYOUT, NotificationType.VIBRATION,
-            isDisplay = true, detail)
+            isDisplay = false, detail)
         Truth.assertThat(value).isEqualTo(correct)
     }
 
@@ -381,7 +382,7 @@ class TimerViewModelTest {
         timerViewModel.updatePresetTimer("presetTimer",9000000)
         val detail = "presetTimer\t150分\t通知: なし\npresetTimer2\t150分\t通知: なし\n"
         val correctTimer = Timer("timer1", 18000000, ListType.DETAIL_LAYOUT, NotificationType.VIBRATION,
-            true, detail)
+            isDisplay = false, detail)
         val value = timerViewModel.currentTimer.getOrAwaitValue()
         Truth.assertThat(value).isEqualTo(correctTimer)
     }
@@ -406,7 +407,7 @@ class TimerViewModelTest {
         timerViewModel.updatePresetTimer("presetTimer1",9000000)
         val detail = "presetTimer1\t150分\t通知: なし\npresetTimer2\t150分\t通知: なし\n"
         val correctTimer = Timer("timer1", 18000000, ListType.DETAIL_LAYOUT, NotificationType.VIBRATION,
-            true, detail)
+            isDisplay = false, detail)
         val value = timerViewModel.currentTimer.getOrAwaitValue()
         Truth.assertThat(value).isEqualTo(correctTimer)
     }

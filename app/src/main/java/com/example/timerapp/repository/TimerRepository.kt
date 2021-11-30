@@ -37,8 +37,6 @@ interface TimerRepository {
 
     suspend fun getCurrentPresetTimer(timerName: String, presetName: String, order:Int): PresetTimer
 
-    suspend fun getTimerNames(): List<String>
-
     suspend fun getMaxOrderPresetTimer(name: String) : Int
 
     fun observeAllTimer(): LiveData<List<Timer>>

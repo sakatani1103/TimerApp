@@ -20,13 +20,13 @@ data class Timer(
     @PrimaryKey(autoGenerate = false)
     val name: String,
     @ColumnInfo
-    val total: Int = 0,
+    val total: Long = 0L,
     @ColumnInfo
     val listType: ListType = ListType.SIMPLE_LAYOUT,
     @ColumnInfo
     val notificationType: NotificationType = NotificationType.VIBRATION,
     @ColumnInfo
-    val isDisplay: Boolean = true,
+    val isDisplay: Boolean = false,
     @ColumnInfo
     val detail: String = "no presetTimer",
     @ColumnInfo

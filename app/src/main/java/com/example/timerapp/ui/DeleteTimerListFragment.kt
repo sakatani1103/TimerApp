@@ -5,7 +5,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -15,10 +14,8 @@ import com.example.timerapp.R
 import com.example.timerapp.adapter.DeleteTimerListAdapter
 import com.example.timerapp.adapter.DeleteTimerListListener
 import com.example.timerapp.database.Timer
-import com.example.timerapp.databinding.FragmentDeletePresetTimerListBinding
 import com.example.timerapp.databinding.FragmentDeleteTimerListBinding
 import com.example.timerapp.others.Status
-import com.google.android.material.card.MaterialCardView
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -70,7 +67,8 @@ class DeleteTimerListFragment : Fragment() {
 
     private fun setupRecyclerView() {
         deleteTimerListAdapter = DeleteTimerListAdapter(clickListener =
-        DeleteTimerListListener { timer -> createDeleteList(timer) },viewLifecycleOwner)
+        DeleteTimerListListener { timer -> createDeleteList(timer) }, viewLifecycleOwner
+        )
         binding.deleteTimerList.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = deleteTimerListAdapter
@@ -92,9 +90,9 @@ class DeleteTimerListFragment : Fragment() {
         })
     }
 
-    private fun createDeleteList(timer: Timer){
+    private fun createDeleteList(timer: Timer) {
         viewModel.switchTimerIsSelected(timer)
-        if (deleteTimerList.contains(timer)){
+        if (deleteTimerList.contains(timer)) {
             deleteTimerList.remove(timer)
         } else {
             deleteTimerList.add(timer)

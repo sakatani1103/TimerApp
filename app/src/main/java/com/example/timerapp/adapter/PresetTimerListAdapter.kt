@@ -12,7 +12,8 @@ import com.example.timerapp.databinding.PresetTimerListItemBinding
 
 class PresetTimerListAdapter(
     val clickListener: PresetTimerClickListener,
-    val viewLifeCycleOwner: LifecycleOwner) :
+    val viewLifeCycleOwner: LifecycleOwner
+) :
     RecyclerView.Adapter<PresetTimerListAdapter.ViewHolder>() {
 
     private val diffCallback = object : DiffUtil.ItemCallback<PresetTimer>() {
@@ -31,9 +32,13 @@ class PresetTimerListAdapter(
         get() = differ.currentList
         set(value) = differ.submitList(value)
 
-    class ViewHolder constructor(val binding: PresetTimerListItemBinding)
-        : RecyclerView.ViewHolder(binding.root) {
-        fun bind(presetTimer: PresetTimer, viewLifeCycleOwner: LifecycleOwner, clickListener: PresetTimerClickListener) {
+    class ViewHolder constructor(val binding: PresetTimerListItemBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(
+            presetTimer: PresetTimer,
+            viewLifeCycleOwner: LifecycleOwner,
+            clickListener: PresetTimerClickListener
+        ) {
             binding.presetTimer = presetTimer
             binding.clickListener = clickListener
             binding.lifecycleOwner = viewLifeCycleOwner
@@ -65,6 +70,7 @@ class PresetTimerListAdapter(
 
 
 class PresetTimerClickListener(val clickListener: (timerName: String, presetName: String, order: Int) -> Unit) {
-    fun onClick(presetTimer: PresetTimer) = clickListener(presetTimer.name, presetTimer.presetName, presetTimer.timerOrder)
+    fun onClick(presetTimer: PresetTimer) =
+        clickListener(presetTimer.name, presetTimer.presetName, presetTimer.timerOrder)
 }
 

@@ -1,13 +1,9 @@
 package com.example.timerapp.adapter
 
-import android.text.BoringLayout
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.RotateAnimation
-import android.widget.AdapterView
-import androidx.annotation.NonNull
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.AsyncListDiffer
@@ -17,16 +13,14 @@ import com.example.timerapp.database.ListType
 import com.example.timerapp.database.Timer
 import com.example.timerapp.databinding.DeleteListItemBinding
 import com.example.timerapp.databinding.DeleteSimpleListItemBinding
-import com.example.timerapp.databinding.ListItemBinding
-import com.example.timerapp.databinding.SimpleListItemBinding
 import java.lang.IllegalArgumentException
 
 class DeleteTimerListAdapter(
     val clickListener: DeleteTimerListListener,
-    val viewLifecycleOwner: LifecycleOwner)
-    : RecyclerView.Adapter<DeleteTimerListAdapter.DeleteTimerViewHolder>() {
+    val viewLifecycleOwner: LifecycleOwner
+) : RecyclerView.Adapter<DeleteTimerListAdapter.DeleteTimerViewHolder>() {
 
-    private val diffCallback = object: DiffUtil.ItemCallback<Timer>(){
+    private val diffCallback = object : DiffUtil.ItemCallback<Timer>() {
         override fun areItemsTheSame(oldItem: Timer, newItem: Timer): Boolean {
             return oldItem.name == newItem.name
         }
@@ -44,7 +38,7 @@ class DeleteTimerListAdapter(
 
     class DeleteDetailViewHolder(
         val binding: DeleteListItemBinding
-    ) : DeleteTimerListAdapter.DeleteTimerViewHolder(binding){
+    ) : DeleteTimerListAdapter.DeleteTimerViewHolder(binding) {
         private var expanded: Boolean = false
 
         init {
@@ -72,7 +66,11 @@ class DeleteTimerListAdapter(
             }
         }
 
-        override fun bind(timer: Timer, viewLifecycleOwner: LifecycleOwner, clickListener: DeleteTimerListListener) {
+        override fun bind(
+            timer: Timer,
+            viewLifecycleOwner: LifecycleOwner,
+            clickListener: DeleteTimerListListener
+        ) {
             binding.timer = timer
             binding.clickListener = clickListener
             binding.lifecycleOwner = viewLifecycleOwner
@@ -90,14 +88,19 @@ class DeleteTimerListAdapter(
 
     class DeleteSimpleViewHolder private constructor(
         val binding: DeleteSimpleListItemBinding
-    ) : DeleteTimerListAdapter.DeleteTimerViewHolder(binding){
+    ) : DeleteTimerListAdapter.DeleteTimerViewHolder(binding) {
 
-        override fun bind(timer: Timer, viewLifecycleOwner: LifecycleOwner, clickListener: DeleteTimerListListener) {
+        override fun bind(
+            timer: Timer,
+            viewLifecycleOwner: LifecycleOwner,
+            clickListener: DeleteTimerListListener
+        ) {
             binding.timer = timer
             binding.clickListener = clickListener
             binding.lifecycleOwner = viewLifecycleOwner
             binding.executePendingBindings()
         }
+
         companion object {
             fun from(parent: ViewGroup): DeleteSimpleViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
@@ -108,12 +111,16 @@ class DeleteTimerListAdapter(
     }
 
     abstract class DeleteTimerViewHolder constructor(binding: ViewDataBinding) :
-            RecyclerView.ViewHolder(binding.root){
-                abstract fun bind(timer: Timer, viewLifecycleOwner: LifecycleOwner, clickListener: DeleteTimerListListener)
-            }
+        RecyclerView.ViewHolder(binding.root) {
+        abstract fun bind(
+            timer: Timer,
+            viewLifecycleOwner: LifecycleOwner,
+            clickListener: DeleteTimerListListener
+        )
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DeleteTimerViewHolder {
-        return when(ListType.values()[viewType]){
+        return when (ListType.values()[viewType]) {
             ListType.DETAIL_LAYOUT -> DeleteDetailViewHolder.from(parent)
             ListType.SIMPLE_LAYOUT -> DeleteSimpleViewHolder.from(parent)
             else -> throw IllegalArgumentException("unknown error")
