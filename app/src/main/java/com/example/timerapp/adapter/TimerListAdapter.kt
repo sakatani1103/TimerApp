@@ -166,10 +166,10 @@ class TimerListAdapter(
 
 class TimerListListener(
     val clickListener: (name: String) -> Unit,
-    val startTimer: (name: String) -> Unit
+    val startTimer: (timer: Timer) -> Unit
 ) {
     fun onClick(timer: Timer) = clickListener(timer.name)
-    fun onStartClick(timer: Timer) = startTimer(timer.name)
+    fun onStartClick(timer: Timer) = startTimer(timer)
 }
 
 

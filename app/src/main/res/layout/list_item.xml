@@ -77,8 +77,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-                            app:timerTotal="@{timer.total}"
-                            app:timerDetail="@{timer.detail}"
+                            app:totalTime="@{timer.total}"
                             tools:text="150分"/>
 
                         <ImageView

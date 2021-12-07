@@ -24,6 +24,9 @@ interface TimerDao {
     suspend fun updateTimers(timers: List<Timer>)
 
     @Update
+    suspend fun updatePresetTimer(presettimer: PresetTimer)
+
+    @Update
     suspend fun updatePresetTimers(presettimers: List<PresetTimer>)
 
     @Update
@@ -51,16 +54,9 @@ interface TimerDao {
     @Query("SELECT * FROM presettimer ORDER BY timerOrder ASC")
     fun observeAllPresetTimer(): LiveData<List<PresetTimer>>
 
-    @Query("SELECT * FROM timer WHERE name = :name ")
-    suspend fun getCurrentTimer(name: String): Timer
+    @Query("SELECT * FROM presettimer WHERE presetTimerId = :presetTimerId")
+    suspend fun getCurrentPresetTimer(presetTimerId: String): PresetTimer
 
-    @Query("SELECT * FROM presettimer WHERE name = :timerName AND presetName = :presetName AND timerOrder = :timerOrder")
-    suspend fun getCurrentPresetTimer(
-        timerName: String,
-        presetName: String,
-        timerOrder: Int
-    ): PresetTimer
-
-    @Query("SELECT MAX(timerOrder) FROM presettimer WHERE name = :name")
-    suspend fun getMaxOrderPresetTimer(name: String): Int
+    @Query("SELECT name FROM timer")
+    suspend fun getTimerNames(): List<String>
 }

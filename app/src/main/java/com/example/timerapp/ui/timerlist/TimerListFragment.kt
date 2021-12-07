@@ -1,4 +1,4 @@
-package com.example.timerapp.ui
+package com.example.timerapp.ui.timerlist
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,8 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,21 +18,18 @@ import com.example.timerapp.database.ListType
 import com.example.timerapp.database.Timer
 import com.example.timerapp.databinding.DialogCreateTimerBinding
 import com.example.timerapp.databinding.FragmentTimerListBinding
+import com.example.timerapp.others.EventObserver
 import com.example.timerapp.others.Status
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
-import dagger.hilt.android.AndroidEntryPoint
 
-@AndroidEntryPoint
 class TimerListFragment : Fragment() {
-
-    var viewModel: TimerViewModel? = null
-
-    private lateinit var timerListAdapter: TimerListAdapter
-
     private var _binding: FragmentTimerListBinding? = null
     private val binding: FragmentTimerListBinding
         get() = _binding!!
+
+    private val viewModel by viewModels<TimerListViewModel>()
+    private lateinit var timerListAdapter: TimerListAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -47,12 +43,11 @@ class TimerListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = viewModel ?: ViewModelProvider(requireActivity())[TimerViewModel::class.java]
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
-
         subscribeToTimerListObservers()
         setupRecyclerView()
+        viewModel.start()
     }
 
     override fun onDestroyView() {
@@ -64,8 +59,8 @@ class TimerListFragment : Fragment() {
         timerListAdapter =
             TimerListAdapter(
                 clickListener = TimerListListener(
-                    { name -> viewModel?.navigateToPresetTimer(name) },
-                    { name -> viewModel?.navigateToTimer(name) }),
+                    { timerName -> viewModel.navigateToPresetTimer(timerName) },
+                    { timer -> viewModel.navigateToTimer(timer) }),
                 viewLifecycleOwner
             )
 
@@ -90,14 +85,13 @@ class TimerListFragment : Fragment() {
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
             val pos = viewHolder.layoutPosition
             val item = timerListAdapter.timerItems[pos]
-            // ViewModelの設定後、削除機能の追加
-            viewModel?.deleteTimer(item)
+            viewModel.deleteTimer(item)
         }
     }
 
 
     private fun subscribeToTimerListObservers() {
-        viewModel?.timerItems?.observe(viewLifecycleOwner, Observer { timerItems ->
+        viewModel.timerItems.observe(viewLifecycleOwner, { timerItems ->
             if (timerItems.isEmpty()) {
                 timerListAdapter.timerItems = listOf(Timer("initial", 0, ListType.INITIAL_LAYOUT))
             } else {
@@ -105,81 +99,56 @@ class TimerListFragment : Fragment() {
             }
         })
 
-        viewModel?.navigateToPresetTimer?.observe(viewLifecycleOwner, Observer { name ->
-            name?.let {
+        viewModel.navigateToPresetTimer.observe(viewLifecycleOwner, EventObserver { timerName ->
+            this.findNavController().navigate(
+                TimerListFragmentDirections.actionTimerListFragmentToPresetTimerListFragment(timerName)
+            )
+        })
+
+        viewModel.navigateToTimer.observe(viewLifecycleOwner, EventObserver { timerName ->
+            this.findNavController().navigate(
+                TimerListFragmentDirections.actionTimerListFragmentToTimerFragment(timerName)
+            )
+        })
+
+        viewModel.navigateToDeleteTimer.observe(viewLifecycleOwner, EventObserver { boolean ->
+            if (boolean) {
                 this.findNavController().navigate(
-                    TimerListFragmentDirections.actionTimerListFragmentToPresetTimerListFragment(
-                        name
-                    )
+                    TimerListFragmentDirections.actionTimerListFragmentToDeleteTimerListFragment()
                 )
-                viewModel?.doneNavigateToPresetTimer()
             }
         })
 
-        viewModel?.navigateToTimer?.observe(viewLifecycleOwner, Observer { name ->
-            name?.let {
-                this.findNavController().navigate(
-                    TimerListFragmentDirections.actionTimerListFragmentToTimerFragment()
-                )
-                viewModel?.doneNavigateToTimer()
-            }
-        })
-
-        viewModel?.navigateToDeleteTimer?.observe(viewLifecycleOwner, Observer {
-            it?.let { b ->
-                if (b) {
-                    this.findNavController().navigate(
-                        TimerListFragmentDirections.actionTimerListFragmentToDeleteTimerListFragment()
-                    )
-                    viewModel?.doneNavigateToDeleteTimer()
+        viewModel.nameStatus.observe(viewLifecycleOwner, EventObserver { result ->
+            when (result.status) {
+                Status.ERROR -> {
+                    createDialog(result.data, result.message)
+                }
+                Status.SUCCESS -> {
+                    result.data?.let { timerName -> viewModel.insertTimer(timerName) }
                 }
             }
         })
 
-        viewModel?.nameStatus?.observe(viewLifecycleOwner, Observer {
-            it.getContentIfNotHandled()?.let { result ->
-                when (result.status) {
-                    Status.ERROR -> {
-                        createDialog(result.data, result.message)
-                    }
-                    Status.SUCCESS -> {
-                        result.data?.let { timerName -> viewModel!!.insertTimer(timerName) }
+        viewModel.deleteTimerItemStatus.observe(viewLifecycleOwner, EventObserver { result ->
+            if (result.status == Status.SUCCESS) {
+                result.data.let { timer ->
+                    if (timer != null) {
+                        Snackbar.make(requireView(), "${timer.name}を削除しました。", Snackbar.LENGTH_LONG)
+                            .setAction("取り消し") { viewModel.restoreTimerAndPresetTimers(timer) }
+                            .show()
                     }
                 }
             }
         })
 
-        viewModel?.deleteTimerItemStatus?.observe(viewLifecycleOwner, Observer {
-            it.getContentIfNotHandled()?.let { result ->
-                if (result.status == Status.SUCCESS) {
-                    result.data.let { timer ->
-                        if (timer != null) {
-                            Snackbar.make(
-                                requireView(),
-                                "${timer.name}を削除しました。",
-                                Snackbar.LENGTH_LONG
-                            )
-                                .setAction("取り消し") { viewModel?.restoreTimerAndPresetTimers(timer) }
-                                .show()
-                        }
-                    }
-                }
-            }
+        viewModel.showSnackbarMessage.observe(viewLifecycleOwner, EventObserver { message ->
+            Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
         })
 
-        viewModel?.showTimerError?.observe(viewLifecycleOwner, Observer { error ->
-            error?.let {
-                Snackbar.make(requireView(), it, Snackbar.LENGTH_LONG).show()
-                viewModel?.doneShowTimerError()
-            }
-        })
-
-        viewModel?.showTimerDialog?.observe(viewLifecycleOwner, Observer {
-            it?.let { b ->
-                if (b) {
-                    createDialog(null, null)
-                }
-                viewModel?.doneShowTimerDialog()
+        viewModel.showDialog.observe(viewLifecycleOwner, EventObserver { boolean ->
+            if (boolean) {
+                createDialog(null, null)
             }
         })
     }
@@ -202,8 +171,9 @@ class TimerListFragment : Fragment() {
         }
 
         val dialog = MaterialAlertDialogBuilder(requireContext())
+            .setCancelable(false)
             .setView(timerNameInputView)
-            .setPositiveButton(R.string.save) { _, _ -> viewModel?.checkInputTimerName(newName.text.toString()) }
+            .setPositiveButton(R.string.save) { _, _ -> viewModel.checkInputTimerName(newName.text.toString()) }
             .setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
             .create()
         dialog.show()

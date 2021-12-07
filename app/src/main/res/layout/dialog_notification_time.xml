@@ -7,7 +7,7 @@
 
         <variable
             name="viewModel"
-            type="com.example.timerapp.ui.TimerViewModel" />
+            type="com.example.timerapp.ui.setTimer.SetTimerViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -34,9 +34,9 @@
             app:layout_constraintStart_toEndOf="@+id/min_unit"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/setting_title"
-            app:temporalNotificationTime="@{viewModel.temporalNotificationTime}"
-            app:temporalPresetTime="@{viewModel.temporalPresetTime}"
-            app:timePlace="@{1}" />
+            app:maxValue="@{999}"
+            app:minValue="@{0}"
+            android:value="@={viewModel.min}"/>
 
         <TextView
             android:id="@+id/min_unit"
@@ -57,9 +57,9 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/numberPickerMin"
             app:layout_constraintTop_toBottomOf="@+id/setting_title"
-            app:temporalNotificationTime="@{viewModel.temporalNotificationTime}"
-            app:temporalPresetTime="@{viewModel.temporalPresetTime}"
-            app:timePlace="@{2}" />
+            app:maxValue="@{60}"
+            app:minValue="@{0}"
+            android:value="@={viewModel.sec}" />
 
         <TextView
             android:id="@+id/sec_unit"

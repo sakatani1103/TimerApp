@@ -7,6 +7,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.example.timerapp.getOrAwaitValueTest
 import com.google.common.truth.Truth.assertThat
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runBlockingTest
@@ -15,24 +17,28 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import javax.inject.Inject
+import javax.inject.Named
 
 @ExperimentalCoroutinesApi
 @SmallTest
-@RunWith(AndroidJUnit4::class)
+@HiltAndroidTest
 class TimerDaoTest {
 
-    private lateinit var database: TimerDatabase
-    private lateinit var dao: TimerDao
+    @get:Rule
+    var hiltRule = HiltAndroidRule(this)
 
     @get:Rule
     var instantTaskExecutorRule = InstantTaskExecutorRule()
 
+    @Inject
+    @Named("test_db")
+    lateinit var database: TimerDatabase
+    private lateinit var dao: TimerDao
+
     @Before
     fun setup() {
-        database = Room.inMemoryDatabaseBuilder(
-            ApplicationProvider.getApplicationContext(),
-            TimerDatabase::class.java
-        ).allowMainThreadQueries().build()
+        hiltRule.inject()
         dao = database.timerDao()
     }
 

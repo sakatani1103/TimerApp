@@ -6,7 +6,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.example.timerapp.ui.TimerViewModel" />
+            type="com.example.timerapp.ui.timer.TimerViewModel" />
 
     </data>
 
@@ -34,12 +34,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/timer_margin"
-            android:text="@string/initial_min"
+            android:text="@{@string/set_min(viewModel.residueTotalMin)}"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Headline4"
             apps:layout_constraintEnd_toStartOf="@+id/min_unit"
             apps:layout_constraintHorizontal_chainStyle="packed"
             apps:layout_constraintStart_toStartOf="parent"
-            apps:layout_constraintTop_toBottomOf="@+id/total_time_title" />
+            apps:layout_constraintTop_toBottomOf="@+id/total_time_title"
+            tools:text="000"/>
 
         <TextView
             android:id="@+id/min_unit"
@@ -51,14 +52,15 @@
             android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
             apps:layout_constraintEnd_toStartOf="@+id/timer_sec"
             apps:layout_constraintStart_toEndOf="@+id/timer_min"
-            apps:layout_constraintTop_toBottomOf="@+id/total_time_title" />
+            apps:layout_constraintTop_toBottomOf="@+id/total_time_title"
+            tools:text="00"/>
 
         <TextView
             android:id="@+id/timer_sec"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/timer_margin"
-            android:text="@string/initial_sec"
+            android:text="@{@string/set_sec(viewModel.residueTotalSec)}"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Headline4"
             apps:layout_constraintEnd_toStartOf="@+id/sec_unit"
             apps:layout_constraintStart_toEndOf="@+id/min_unit"
@@ -84,18 +86,20 @@
             android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
             apps:layout_constraintStart_toStartOf="@+id/preset_min"
             apps:layout_constraintTop_toBottomOf="@+id/min_unit"
+            android:text="@{viewModel.presetTimerTitle}"
             tools:text="設問1" />
 
         <TextView
             android:id="@+id/preset_min"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/initial_min"
+            android:text="@{@string/set_min(viewModel.residueMin)}"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Headline1"
             apps:layout_constraintEnd_toStartOf="@+id/preset_min_unit"
             apps:layout_constraintHorizontal_bias="0.5"
             apps:layout_constraintStart_toStartOf="parent"
-            apps:layout_constraintTop_toBottomOf="@+id/preset_timer_title" />
+            apps:layout_constraintTop_toBottomOf="@+id/preset_timer_title"
+            tools:text="000"/>
 
         <TextView
             android:id="@+id/preset_min_unit"
@@ -112,12 +116,13 @@
             android:id="@+id/preset_sec"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/initial_sec"
+            android:text="@{@string/set_sec(viewModel.residueSec)}"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Headline1"
             apps:layout_constraintBottom_toBottomOf="@+id/preset_min_unit"
             apps:layout_constraintEnd_toStartOf="@+id/preset_sec_unit"
             apps:layout_constraintHorizontal_bias="0.5"
-            apps:layout_constraintStart_toEndOf="@+id/preset_min_unit" />
+            apps:layout_constraintStart_toEndOf="@+id/preset_min_unit"
+            tools:text="00"/>
 
         <TextView
             android:id="@+id/preset_sec_unit"

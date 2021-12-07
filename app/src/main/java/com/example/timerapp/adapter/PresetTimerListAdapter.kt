@@ -69,8 +69,8 @@ class PresetTimerListAdapter(
 }
 
 
-class PresetTimerClickListener(val clickListener: (timerName: String, presetName: String, order: Int) -> Unit) {
+class PresetTimerClickListener(val clickListener: (presetTimerId: String) -> Unit) {
     fun onClick(presetTimer: PresetTimer) =
-        clickListener(presetTimer.name, presetTimer.presetName, presetTimer.timerOrder)
+        clickListener(presetTimer.presetTimerId)
 }
 

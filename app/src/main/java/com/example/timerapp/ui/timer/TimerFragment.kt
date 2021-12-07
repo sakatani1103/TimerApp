@@ -1,4 +1,4 @@
-package com.example.timerapp.ui
+package com.example.timerapp.ui.timer
 
 import android.content.Context
 import android.media.AudioAttributes
@@ -9,26 +9,24 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.example.timerapp.R
 import com.example.timerapp.database.NotificationType
 import com.example.timerapp.database.PresetTimer
 import com.example.timerapp.database.Timer
 import com.example.timerapp.databinding.FragmentTimerBinding
+import com.example.timerapp.others.EventObserver
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import dagger.hilt.android.AndroidEntryPoint
 
-@AndroidEntryPoint
 class TimerFragment : Fragment() {
-    private lateinit var viewModel: TimerViewModel
     private var _binding: FragmentTimerBinding? = null
     private val binding: FragmentTimerBinding
         get() = _binding!!
 
-    private lateinit var customCountDownTimer: CustomCountDownTimer
-    private var timerStatus = Status.PROGRESS
-    private var resumeFromMillis: Long = 0
+    private val args: TimerFragmentArgs by navArgs()
+    private val viewModel by viewModels<TimerViewModel>()
 
     private lateinit var soundPool: SoundPool
     private var soundNotification1Id = 0
@@ -36,50 +34,9 @@ class TimerFragment : Fragment() {
     private var soundPreNotificationId = 0
     var currentSound = 1
 
+    private var status = Status.PROGRESS
+
     private lateinit var timerFinishVibrator: Vibrator
-
-    private lateinit var presetTimerList: MutableList<PresetTimer>
-    private lateinit var currentTimer: Timer
-    private var others = 0L
-
-    private var preNotificationTime: Long = 0
-    private var isNotification = false
-
-    inner class CustomCountDownTimer(
-        millisInFuture: Long, countDownInterval: Long
-    ) : CountDownTimer(millisInFuture, countDownInterval) {
-        override fun onTick(millisUtilFinished: Long) {
-            when (timerStatus) {
-                Status.PAUSE -> {
-                    resumeFromMillis = millisUtilFinished
-                    cancel()
-                    displayTime(millisUtilFinished)
-                }
-                else -> {
-                    displayTime(millisUtilFinished)
-                }
-            }
-            if (preNotificationTime > 0 && preNotificationTime >= millisUtilFinished && !isNotification) {
-                notifyPreNotification(currentTimer.notificationType)
-                isNotification = true
-            }
-        }
-
-        override fun onFinish() {
-            binding.presetMin.text = getString(R.string.initial_min)
-            binding.presetSec.text = getString(R.string.initial_sec)
-            presetTimerList.removeAt(0)
-            if (presetTimerList.isEmpty()) {
-                notifyFinishTimer(currentTimer.notificationType)
-            } else {
-                others -= presetTimerList.first().presetTime
-                notifyPresetTimerFinish(currentTimer.notificationType)
-                setFirstElement()
-                customCountDownTimer = CustomCountDownTimer(presetTimerList.first().presetTime, 100)
-                customCountDownTimer.start()
-            }
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -93,9 +50,10 @@ class TimerFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProvider(requireActivity())[TimerViewModel::class.java]
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
+        viewModel.start(args.timerName)
+        subscribeToTimerNotification()
 
         timerFinishVibrator = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             val vibratorManager =
@@ -106,40 +64,29 @@ class TimerFragment : Fragment() {
         }
 
         binding.cancelBtn.setOnClickListener {
-            when (timerStatus) {
-                Status.PROGRESS -> {
-                    binding.stopOrStartBtn.setImageResource(R.drawable.ic_pause)
-                    timerStatus = Status.PAUSE
-                    createCancelDialog()
-                }
-                else -> {
-                    createCancelDialog()
-                }
+            if (status == Status.PROGRESS) {
+                binding.stopOrStartBtn.setImageResource(R.drawable.ic_play_arrow)
+                viewModel.timerPause()
+                status = Status.PAUSE
             }
+            createCancelDialog()
         }
+
 
         binding.stopOrStartBtn.setOnClickListener {
-            when (timerStatus) {
+            when (status) {
                 Status.PROGRESS -> {
+                    status = Status.PAUSE
                     binding.stopOrStartBtn.setImageResource(R.drawable.ic_play_arrow)
-                    timerStatus = Status.PAUSE
+                    viewModel.timerPause()
                 }
                 else -> {
-                    timerStatus = Status.PROGRESS
+                    status = Status.PROGRESS
                     binding.stopOrStartBtn.setImageResource(R.drawable.ic_pause)
-                    customCountDownTimer = CustomCountDownTimer(resumeFromMillis, 100)
-                    customCountDownTimer.start()
+                    viewModel.timerStart()
                 }
             }
         }
-
-        presetTimerList = viewModel.presetTimerList.value?.toMutableList() ?: mutableListOf()
-        currentTimer = viewModel.currentTimer.value!!
-        others = currentTimer.total - presetTimerList.first().presetTime
-
-        setFirstElement()
-        customCountDownTimer = CustomCountDownTimer(presetTimerList.first().presetTime, 100)
-        customCountDownTimer.start()
     }
 
     override fun onResume() {
@@ -168,6 +115,18 @@ class TimerFragment : Fragment() {
         _binding = null
     }
 
+    private fun subscribeToTimerNotification() {
+        viewModel.notifyPreNotification.observe ( viewLifecycleOwner,  EventObserver{ type ->
+            notifyPreNotification(type)
+        })
+        viewModel.notifyPresetTimerFinish.observe(viewLifecycleOwner, EventObserver{ type ->
+            notifyPresetTimerFinish(type)
+        })
+        viewModel.notifyTimerFinish.observe(viewLifecycleOwner, EventObserver {type ->
+            notifyFinishTimer(type)
+        })
+    }
+
     private fun createCancelDialog() {
         MaterialAlertDialogBuilder(requireContext())
             .setMessage(R.string.timer_stop_message)
@@ -176,11 +135,11 @@ class TimerFragment : Fragment() {
             .show()
     }
 
-    private fun createNotificationDialog() {
+    private fun createNotificationDialog(notificationType: NotificationType) {
         val dialog = MaterialAlertDialogBuilder(requireContext())
             .setMessage(R.string.finish_message)
             .setPositiveButton(R.string.ok) { _, _ ->
-                when (currentTimer.notificationType) {
+                when (notificationType) {
                     NotificationType.ALARM -> if (currentSound == 1) {
                         soundPool.stop(soundNotification1Id)
                     } else {
@@ -188,28 +147,11 @@ class TimerFragment : Fragment() {
                     }
                     NotificationType.VIBRATION -> timerFinishVibrator.cancel()
                 }
-                this.findNavController().popBackStack()
+                this.findNavController().navigate(TimerFragmentDirections.actionTimerFragmentToTimerListFragment())
             }
             .create()
         dialog.setCanceledOnTouchOutside(false)
         dialog.show()
-    }
-
-    private fun displayTime(millisUtilFinished: Long) {
-        val minute = millisUtilFinished / 1000L / 60L
-        val second = millisUtilFinished / 1000L % 60L
-        binding.presetMin.text = getString(R.string.set_min).format(minute)
-        binding.presetSec.text = getString(R.string.set_sec).format(second)
-        val totalMinute = (others + millisUtilFinished) / 1000L / 60L
-        val totalSec = (others + millisUtilFinished) / 1000L % 60L
-        binding.timerMin.text = getString(R.string.set_min).format(totalMinute)
-        binding.timerSec.text = getString(R.string.set_sec).format(totalSec)
-    }
-
-    private fun setFirstElement() {
-        preNotificationTime = presetTimerList.first().notificationTime
-        binding.presetTimerTitle.text = presetTimerList.first().presetName
-        isNotification = false
     }
 
     private fun finishTimerVibration() {
@@ -285,7 +227,7 @@ class TimerFragment : Fragment() {
     }
 
     private fun notifyFinishTimer(notificationType: NotificationType) {
-        createNotificationDialog()
+        createNotificationDialog(notificationType)
         when (notificationType) {
             NotificationType.VIBRATION -> finishTimerVibration()
             NotificationType.ALARM -> if (currentSound == 1) {
@@ -297,4 +239,3 @@ class TimerFragment : Fragment() {
     }
 }
 
-enum class Status { PROGRESS, PAUSE }

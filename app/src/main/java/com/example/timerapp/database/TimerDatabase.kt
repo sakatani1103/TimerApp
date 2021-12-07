@@ -11,6 +11,5 @@ import androidx.room.RoomDatabase
     version = 1,
 )
 abstract class TimerDatabase : RoomDatabase() {
-    // HiltModuleに記述するためfunctionにする
     abstract fun timerDao(): TimerDao
 }

@@ -78,8 +78,7 @@
                             android:layout_weight="1"
                             android:layout_height="wrap_content"
                             android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-                            app:timerTotal="@{timer.total}"
-                            app:timerDetail="@{timer.detail}"
+                            app:totalTime="@{timer.total}"
                             tools:text="計  2時間30分" />
 
                         <ImageView
