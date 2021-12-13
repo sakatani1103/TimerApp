@@ -11,10 +11,12 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.timerapp.R
+import com.example.timerapp.TimerApplication
 import com.example.timerapp.adapter.DeletePresetTimerListAdapter
 import com.example.timerapp.databinding.FragmentDeletePresetTimerListBinding
 import com.example.timerapp.others.EventObserver
 import com.example.timerapp.others.Status
+import com.example.timerapp.repository.DefaultTimerRepository
 
 
 class DeletePresetTimerListFragment : Fragment() {
@@ -25,7 +27,9 @@ class DeletePresetTimerListFragment : Fragment() {
     private val args: DeletePresetTimerListFragmentArgs by navArgs()
 
     private lateinit var deletePresetTimerListAdapter: DeletePresetTimerListAdapter
-    private val viewModel by viewModels<DeletePresetTimerListViewModel>()
+    private val viewModel by viewModels<DeletePresetTimerListViewModel>{
+        DeletePresetTimerListViewModelFactory((requireContext().applicationContext as TimerApplication).timerRepository)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

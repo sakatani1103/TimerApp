@@ -10,11 +10,13 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.timerapp.R
+import com.example.timerapp.TimerApplication
 import com.example.timerapp.adapter.DeleteTimerListAdapter
 import com.example.timerapp.adapter.DeleteTimerListListener
 import com.example.timerapp.databinding.FragmentDeleteTimerListBinding
 import com.example.timerapp.others.EventObserver
 import com.example.timerapp.others.Status
+import com.example.timerapp.repository.DefaultTimerRepository
 
 class DeleteTimerListFragment : Fragment() {
     private var _binding: FragmentDeleteTimerListBinding? = null
@@ -22,7 +24,10 @@ class DeleteTimerListFragment : Fragment() {
         get() = _binding!!
 
     private lateinit var deleteTimerListAdapter: DeleteTimerListAdapter
-    private val viewModel by viewModels<DeleteTimerListViewModel>()
+    private val viewModel by viewModels<DeleteTimerListViewModel>{
+        DeleteTimerListViewModelFactory(
+            (requireContext().applicationContext as TimerApplication).timerRepository)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,6 +47,7 @@ class DeleteTimerListFragment : Fragment() {
         setupRecyclerView()
         subscribeToDeleteTimerListObservers()
 
+        viewModel.start()
     }
 
     override fun onDestroyView() {

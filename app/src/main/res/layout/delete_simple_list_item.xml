@@ -53,7 +53,7 @@
                         android:orientation="horizontal">
 
                         <TextView
-                            android:id="@+id/timer_name"
+                            android:id="@+id/delete_simple_timer_name"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
@@ -78,6 +78,7 @@
                         android:orientation="horizontal">
 
                         <TextView
+                            android:id="@+id/delete_simple_total_time"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
@@ -85,6 +86,7 @@
                             tools:text="計  2時間30分" />
 
                         <ImageView
+                            android:id="@+id/delete_simple_notification_type"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/icon_margin"
@@ -94,6 +96,7 @@
                             tools:src="@drawable/ic_vibration" />
 
                         <TextView
+                            android:id="@+id/delete_simple_detail"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             app:timerDetail="@{timer.detail}"

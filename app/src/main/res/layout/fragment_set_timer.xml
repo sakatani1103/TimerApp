@@ -158,11 +158,12 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/setting_margin"
             android:layout_marginTop="@dimen/setting_margin"
+            android:onClick="@{() -> viewModel.savePresetTimer()}"
             android:text="@string/save"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             android:textStyle="bold"
-            android:onClick="@{() -> viewModel.savePresetTimer()}"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toEndOf="@+id/pre_notification"
             app:layout_constraintTop_toBottomOf="@+id/sec_unit" />
 

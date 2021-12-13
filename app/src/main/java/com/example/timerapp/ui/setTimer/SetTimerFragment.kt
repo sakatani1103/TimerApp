@@ -13,10 +13,12 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.timerapp.R
+import com.example.timerapp.TimerApplication
 import com.example.timerapp.databinding.DialogNotificationTimeBinding
 import com.example.timerapp.databinding.FragmentSetTimerBinding
 import com.example.timerapp.others.EventObserver
 import com.example.timerapp.others.Status
+import com.example.timerapp.repository.DefaultTimerRepository
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 
@@ -26,7 +28,9 @@ class SetTimerFragment : Fragment() {
         get() = _binding!!
 
     private val args: SetTimerFragmentArgs by navArgs()
-    private val viewModel by viewModels<SetTimerViewModel>()
+    private val viewModel by viewModels<SetTimerViewModel>{
+        SetTimerViewModelFactory((requireContext().applicationContext as TimerApplication).timerRepository)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

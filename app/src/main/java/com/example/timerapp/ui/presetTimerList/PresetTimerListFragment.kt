@@ -16,11 +16,13 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.timerapp.R
+import com.example.timerapp.TimerApplication
 import com.example.timerapp.adapter.PresetTimerClickListener
 import com.example.timerapp.adapter.PresetTimerListAdapter
 import com.example.timerapp.databinding.FragmentPresetTimerListBinding
 import com.example.timerapp.others.EventObserver
 import com.example.timerapp.others.Status
+import com.example.timerapp.repository.DefaultTimerRepository
 import com.google.android.material.snackbar.Snackbar
 
 class PresetTimerListFragment : Fragment() {
@@ -29,7 +31,9 @@ class PresetTimerListFragment : Fragment() {
         get() = _binding!!
 
     private val args: PresetTimerListFragmentArgs by navArgs()
-    private val viewModel by viewModels<PresetTimerListViewModel>()
+    private val viewModel by viewModels<PresetTimerListViewModel> {
+        PresetTimerListViewModelFactory((requireContext().applicationContext as TimerApplication).timerRepository)
+    }
     private lateinit var presetTimerListAdapter: PresetTimerListAdapter
 
 
@@ -105,37 +109,61 @@ class PresetTimerListFragment : Fragment() {
             presetTimerListAdapter.presetTimers = it
         })
 
-        viewModel.navigateToTimer.observe(viewLifecycleOwner, EventObserver { timerName ->
-            this.findNavController().navigate(
-                PresetTimerListFragmentDirections.actionPresetTimerListFragmentToTimerFragment(
-                    timerName
-                )
-            )
+        viewModel.navigateToTimer.observe(viewLifecycleOwner, EventObserver { result ->
+            when (result.status) {
+                Status.SUCCESS ->
+                    result.data?.let { timerName ->
+                        this.findNavController().navigate(
+                            PresetTimerListFragmentDirections.actionPresetTimerListFragmentToTimerFragment(
+                                timerName
+                            )
+                        )
+                    }
+                Status.ERROR -> createSnackbar(result.message)
+            }
         })
 
-        viewModel.navigateToSettingTimer.observe(viewLifecycleOwner, EventObserver { ids ->
-            val presetTimerId = ids["presetTimerId"]
-            val timerName = ids["timerName"].toString()
-            this.findNavController().navigate(
-                PresetTimerListFragmentDirections.actionPresetTimerListFragmentToSetTimerFragment(
-                    presetTimerId = presetTimerId,
-                    timerName = timerName
-                )
-            )
+        viewModel.navigateToSettingTimer.observe(viewLifecycleOwner, EventObserver { result ->
+            when (result.status) {
+                Status.SUCCESS -> {
+                    result.data?.let { ids ->
+                        val presetTimerId = ids["presetTimerId"]
+                        val timerName = ids["timerName"].toString()
+                        this.findNavController().navigate(
+                            PresetTimerListFragmentDirections.actionPresetTimerListFragmentToSetTimerFragment(
+                                presetTimerId = presetTimerId,
+                                timerName = timerName
+                            )
+                        )
+                    }
+                }
+                Status.ERROR -> createSnackbar(result.message)
+            }
+
         })
 
         viewModel.navigateToDeletePresetTimer.observe(
             viewLifecycleOwner,
-            EventObserver { timerName ->
-                this.findNavController().navigate(
-                    PresetTimerListFragmentDirections.actionPresetTimerListFragmentToDeletePresetTimerListFragment(
-                        timerName
-                    )
-                )
+            EventObserver { result ->
+                when (result.status) {
+                    Status.SUCCESS -> {
+                        result.data?.let { timerName ->
+                            this.findNavController().navigate(
+                                PresetTimerListFragmentDirections.actionPresetTimerListFragmentToDeletePresetTimerListFragment(
+                                    timerName
+                                )
+                            )
+                        }
+                    }
+                    Status.ERROR -> createSnackbar(result.message)
+                }
             })
 
         viewModel.navigateToTimerList.observe(viewLifecycleOwner, EventObserver { boolean ->
-            this.findNavController().navigate(PresetTimerListFragmentDirections.actionPresetTimerListFragmentToTimerListFragment())
+            if (boolean) {
+                this.findNavController()
+                    .navigate(PresetTimerListFragmentDirections.actionPresetTimerListFragmentToTimerListFragment())
+            }
         })
 
         viewModel.deletePresetTimerStatus.observe(viewLifecycleOwner, EventObserver { result ->
@@ -148,10 +176,6 @@ class PresetTimerListFragment : Fragment() {
                     .setAction("取り消し") { viewModel.restorePresetTimerAndUpdateTimer(result.data) }
                     .show()
             }
-        })
-
-        viewModel.showSnackbarMessage.observe(viewLifecycleOwner, EventObserver { message ->
-            Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
         })
 
         viewModel.updateTimerStatus.observe(viewLifecycleOwner, EventObserver { result ->
@@ -177,6 +201,12 @@ class PresetTimerListFragment : Fragment() {
             return true
         }
         return false
+    }
+
+    private fun createSnackbar(msg: String?) {
+        msg?.let {
+            Snackbar.make(binding.root, it, Snackbar.LENGTH_LONG).show()
+        }
     }
 }
 

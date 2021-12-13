@@ -1,21 +1,14 @@
 package com.example.timerapp.ui.timer
 
-import android.app.Application
 import android.os.CountDownTimer
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
-import com.example.timerapp.R
+import androidx.lifecycle.*
 import com.example.timerapp.database.NotificationType
 import com.example.timerapp.database.PresetTimer
-import com.example.timerapp.database.Timer
 import com.example.timerapp.others.Event
-import com.example.timerapp.repository.DefaultTimerRepository
+import com.example.timerapp.repository.TimerRepository
 import kotlinx.coroutines.launch
 
-class TimerViewModel(application: Application) : AndroidViewModel(application) {
-    private val timerRepository = DefaultTimerRepository.getRepository(application)
+class TimerViewModel(private val timerRepository: TimerRepository) : ViewModel() {
 
     private val _notifyPreNotification = MutableLiveData<Event<NotificationType>>()
     val notifyPreNotification : LiveData<Event<NotificationType>> = _notifyPreNotification
@@ -122,8 +115,14 @@ class TimerViewModel(application: Application) : AndroidViewModel(application) {
         val customCountDownTimer = CustomCountDownTimer(resumeFromMillis, 100)
         customCountDownTimer.start()
     }
-
-
 }
 
 enum class Status { PROGRESS, PAUSE }
+
+@Suppress("UNCHECKED_CAST")
+class TimerViewModelFactory(
+    private val timerRepository: TimerRepository
+) : ViewModelProvider.NewInstanceFactory() {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T =
+        (TimerViewModel(timerRepository) as T)
+}

@@ -1,44 +1,36 @@
 package com.example.timerapp.ui.deleteTimerList
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.example.timerapp.database.Timer
 import com.example.timerapp.others.Event
 import com.example.timerapp.others.Resource
-import com.example.timerapp.repository.DefaultTimerRepository
+import com.example.timerapp.repository.TimerRepository
 import kotlinx.coroutines.launch
 
-class DeleteTimerListViewModel(application: Application) : AndroidViewModel(application) {
-    private val timerRepository = DefaultTimerRepository.getRepository(application)
+class DeleteTimerListViewModel(private val timerRepository: TimerRepository) : ViewModel() {
     val timerItems = timerRepository.observeAllTimer()
 
     private val _deleteTimerItemStatus = MutableLiveData<Event<Resource<List<Timer>>>>()
     val deleteTimerItemStatus: LiveData<Event<Resource<List<Timer>>>> = _deleteTimerItemStatus
 
-    private var currentTimer = MutableLiveData<Timer>()
-    private var deleteTimerList = mutableListOf<Timer>()
+    private val deleteTimerList = mutableListOf<Timer>()
+
+    fun start() {
+        deleteTimerList.clear()
+    }
 
     fun deleteTimerListAndPresetTimerList() {
         viewModelScope.launch {
             deleteTimerList.forEach { timer ->
-//                if (timer.detail == "no presetTimer") {
-//                    timerRepository.deleteTimer(timer)
-//                } else {
-//                    val presetTimers =
-//                        timerRepository.getPresetTimerWithTimer(timer.name).presetTimer
-//                    timerRepository.deleteTimerAndPresetTimers(timer, presetTimers)
-//                }
-                val timerWithPresetTimer = timerRepository.getPresetTimerWithTimer(timer.name)
-                val deleteTimer = timerWithPresetTimer.timer
-                val deletePresetTimer = timerWithPresetTimer.presetTimer
-                timerRepository.deleteTimerAndPresetTimers(deleteTimer, deletePresetTimer)
+                if (timer.detail == "no presetTimer") {
+                    timerRepository.deleteTimer(timer)
+                } else {
+                    val timerWithPresetTimer = timerRepository.getPresetTimerWithTimer(timer.name)
+                    timerRepository.deleteTimerAndPresetTimers(timerWithPresetTimer.timer, timerWithPresetTimer.presetTimer)
+                }
             }
-            _deleteTimerItemStatus.postValue(Event(Resource.success(deleteTimerList)))
-            deleteTimerList.clear()
         }
+        _deleteTimerItemStatus.postValue(Event(Resource.success(deleteTimerList)))
     }
 
     // update Timer (select Delete Item)
@@ -78,8 +70,15 @@ class DeleteTimerListViewModel(application: Application) : AndroidViewModel(appl
             }
             timerRepository.updateTimers(updateTimers)
             _deleteTimerItemStatus.postValue(Event(Resource.success(deleteTimerList)))
-            deleteTimerList.clear()
         }
     }
 
+}
+
+@Suppress("UNCHECKED_CAST")
+class DeleteTimerListViewModelFactory(
+    private val timerRepository: TimerRepository
+) : ViewModelProvider.NewInstanceFactory() {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T =
+        (DeleteTimerListViewModel(timerRepository) as T)
 }

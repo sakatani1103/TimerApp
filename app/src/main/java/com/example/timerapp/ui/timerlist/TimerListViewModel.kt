@@ -1,21 +1,22 @@
 package com.example.timerapp.ui.timerlist
 
-import android.app.Application
 import androidx.lifecycle.*
 import com.example.timerapp.database.PresetTimer
 import com.example.timerapp.database.Timer
 import com.example.timerapp.others.Constants
 import com.example.timerapp.others.Event
 import com.example.timerapp.others.Resource
-import com.example.timerapp.repository.DefaultTimerRepository
+import com.example.timerapp.repository.TimerRepository
 import kotlinx.coroutines.launch
 
-class TimerListViewModel(application: Application) : AndroidViewModel(application) {
-    private val timerRepository = DefaultTimerRepository.getRepository(application)
+class TimerListViewModel(private val timerRepository: TimerRepository) : ViewModel() {
 
     val timerItems = timerRepository.observeAllTimer()
+    val presetTimers = timerRepository.observeAllPresetTimer()
 
     var timerNames = mutableListOf<String>()
+
+    var isInitial = MutableLiveData<Boolean>()
 
     private val _nameStatus = MutableLiveData<Event<Resource<String>>>()
     val nameStatus: LiveData<Event<Resource<String>>> = _nameStatus
@@ -27,30 +28,28 @@ class TimerListViewModel(application: Application) : AndroidViewModel(applicatio
     private val _navigateToPresetTimer = MutableLiveData<Event<String>>()
     val navigateToPresetTimer: LiveData<Event<String>> = _navigateToPresetTimer
 
-    private val _navigateToTimer = MutableLiveData<Event<String>>()
-    val navigateToTimer: LiveData<Event<String>> = _navigateToTimer
+    private val _navigateToTimer = MutableLiveData<Event<Resource<String>>>()
+    val navigateToTimer: LiveData<Event<Resource<String>>> = _navigateToTimer
 
-    private val _navigateToDeleteTimer = MutableLiveData<Event<Boolean>>()
-    val navigateToDeleteTimer: LiveData<Event<Boolean>> = _navigateToDeleteTimer
+    private val _navigateToDeleteTimer = MutableLiveData<Event<Resource<Boolean>>>()
+    val navigateToDeleteTimer: LiveData<Event<Resource<Boolean>>> = _navigateToDeleteTimer
 
-    private val _showSnackbarMessage = MutableLiveData<Event<String>>()
-    val showSnackbarMessage: LiveData<Event<String>> = _showSnackbarMessage
-
-    private val _showDialog = MutableLiveData<Event<Boolean>>()
-    val showDialog: LiveData<Event<Boolean>> = _showDialog
+    private val _showDialog = MutableLiveData<Event<Resource<String>>>()
+    val showDialog: LiveData<Event<Resource<String>>> = _showDialog
 
     fun start() {
         viewModelScope.launch {
             timerNames = timerRepository.getTimerNames().toMutableList()
+            isInitial.value = timerNames.isEmpty()
         }
     }
 
     // insert Timer
     fun createInsertTimerDialog() {
         if(timerNames.count() >= Constants.TIMER_NUM){
-            _showSnackbarMessage.value = Event("登録できるタイマーは${Constants.TIMER_NUM}までです。")
+            _showDialog.value = Event(Resource.error("登録できるタイマーは${Constants.TIMER_NUM}までです。", null))
         } else {
-            _showDialog.value = Event(true)
+            _showDialog.value = Event(Resource.success(null))
         }
     }
 
@@ -134,17 +133,25 @@ class TimerListViewModel(application: Application) : AndroidViewModel(applicatio
 
     fun navigateToTimer(timer: Timer) {
         if (timer.total == 0L) {
-            _showSnackbarMessage.value = Event("タイマーが設定されていません。")
+            _navigateToTimer.value = Event(Resource.error("タイマーが設定されていません。", null))
             return
         }
-        _navigateToTimer.value = Event(timer.name)
+        _navigateToTimer.value = Event(Resource.success(timer.name))
     }
 
     fun navigateToDeleteTimer() {
         if (timerNames.count() == 0) {
-            _showSnackbarMessage.value = Event("タイマーが登録されていません。")
+            _navigateToDeleteTimer.value = Event(Resource.error("タイマーが設定されていません。", null))
         } else {
-            _navigateToDeleteTimer.value = Event(true)
+            _navigateToDeleteTimer.value = Event(Resource.success(true))
         }
     }
+}
+
+@Suppress("UNCHECKED_CAST")
+class TimerListViewModelFactory(
+    private val timerRepository: TimerRepository
+) : ViewModelProvider.NewInstanceFactory() {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T =
+        (TimerListViewModel(timerRepository) as T)
 }

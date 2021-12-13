@@ -1,21 +1,16 @@
 package com.example.timerapp.ui.deletePresetTimerList
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.example.timerapp.database.ListType
 import com.example.timerapp.database.PresetTimer
 import com.example.timerapp.database.Timer
 import com.example.timerapp.others.Event
 import com.example.timerapp.others.Resource
 import com.example.timerapp.others.convertDetail
-import com.example.timerapp.repository.DefaultTimerRepository
+import com.example.timerapp.repository.TimerRepository
 import kotlinx.coroutines.launch
 
-class DeletePresetTimerListViewModel(application: Application) : AndroidViewModel(application) {
-    private val timerRepository = DefaultTimerRepository.getRepository(application)
+class DeletePresetTimerListViewModel(private val timerRepository: TimerRepository) : ViewModel() {
 
     private val _deletePresetTimerItemStatus = MutableLiveData<Event<Resource<List<PresetTimer>>>>()
     val deletePresetTimerItemStatus: LiveData<Event<Resource<List<PresetTimer>>>> =
@@ -35,6 +30,7 @@ class DeletePresetTimerListViewModel(application: Application) : AndroidViewMode
             currentPresetTimerList.value = sortedOrder(timerWithPresetTimer.presetTimer)
             currentTimer.value = timerWithPresetTimer.timer
             residuePresetTimerList = timerWithPresetTimer.presetTimer.toMutableList()
+            deletePresetTimerList.clear()
         }
     }
 
@@ -117,4 +113,12 @@ class DeletePresetTimerListViewModel(application: Application) : AndroidViewMode
     fun navigateToPresetTimerList() {
         _navigateToPresetTimerList.value = Event(currentTimer.value!!.name)
     }
+}
+
+@Suppress("UNCHECKED_CAST")
+class DeletePresetTimerListViewModelFactory(
+    private val timerRepository: TimerRepository
+): ViewModelProvider.NewInstanceFactory() {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T =
+        (DeletePresetTimerListViewModel(timerRepository) as T)
 }

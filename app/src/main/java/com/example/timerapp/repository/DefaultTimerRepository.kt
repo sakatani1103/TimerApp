@@ -1,34 +1,9 @@
 package com.example.timerapp.repository
 
-import android.app.Application
 import androidx.lifecycle.LiveData
-import androidx.room.Room
 import com.example.timerapp.database.*
 
-class DefaultTimerRepository private constructor(application: Application) : TimerRepository {
-    private val timerDao: TimerDao
-
-    companion object {
-        @Volatile
-        private var INSTANCE: DefaultTimerRepository? = null
-        fun getRepository(application: Application): DefaultTimerRepository {
-            return INSTANCE ?: synchronized(this) {
-                DefaultTimerRepository(application).also {
-                    INSTANCE = it
-                }
-            }
-        }
-    }
-
-    init {
-        val database = Room.databaseBuilder(
-            application.applicationContext,
-            TimerDatabase::class.java, "timer_db"
-        )
-            .fallbackToDestructiveMigration()
-            .build()
-        timerDao = database.timerDao()
-    }
+class DefaultTimerRepository internal constructor( private val timerDao: TimerDao ) : TimerRepository {
 
     override suspend fun insertTimer(timer: Timer) {
         timerDao.insertTimer(timer)

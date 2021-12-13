@@ -13,11 +13,13 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.timerapp.R
+import com.example.timerapp.TimerApplication
 import com.example.timerapp.database.NotificationType
 import com.example.timerapp.database.PresetTimer
 import com.example.timerapp.database.Timer
 import com.example.timerapp.databinding.FragmentTimerBinding
 import com.example.timerapp.others.EventObserver
+import com.example.timerapp.repository.DefaultTimerRepository
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class TimerFragment : Fragment() {
@@ -26,7 +28,9 @@ class TimerFragment : Fragment() {
         get() = _binding!!
 
     private val args: TimerFragmentArgs by navArgs()
-    private val viewModel by viewModels<TimerViewModel>()
+    private val viewModel by viewModels<TimerViewModel>{
+        TimerViewModelFactory((requireContext().applicationContext as TimerApplication).timerRepository)
+    }
 
     private lateinit var soundPool: SoundPool
     private var soundNotification1Id = 0
@@ -147,7 +151,7 @@ class TimerFragment : Fragment() {
                     }
                     NotificationType.VIBRATION -> timerFinishVibrator.cancel()
                 }
-                this.findNavController().navigate(TimerFragmentDirections.actionTimerFragmentToTimerListFragment())
+                this.findNavController().popBackStack()
             }
             .create()
         dialog.setCanceledOnTouchOutside(false)

@@ -7,8 +7,7 @@ import java.util.*
 
 enum class ListType {
     SIMPLE_LAYOUT,
-    DETAIL_LAYOUT,
-    INITIAL_LAYOUT
+    DETAIL_LAYOUT
 }
 
 enum class NotificationType {

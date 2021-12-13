@@ -60,7 +60,7 @@ fun TextView.setPresetTime(customTime: Long) {
 fun TextView.setNotificationTime(notificationTime: Long) {
     text = if (notificationTime > 0L) {
         val time = convertLongToTimeString(notificationTime)
-        val output = "通知：　$time 前"
+        val output = "通知: $time 前"
         output
     } else {
         ""
@@ -86,47 +86,6 @@ fun ImageView.setSelectedImage(selectedImage: Boolean) {
     }
 }
 
-// notificationTimerDialog
-//@BindingAdapter("temporalNotificationTime", "timePlace", "temporalPresetTime")
-//fun NumberPicker.setPresetTimerNumber(
-//    temporalNotificationTime: Long,
-//    timePlace: Int,
-//    temporalPresetTime: Long
-//) {
-//    // presetTimeに応じて設定できる範囲を決める
-//    val numMap = setPreNotification(temporalPresetTime)
-//    val setNumMap = if (temporalPresetTime > 0) {
-//        setPreNotification(temporalNotificationTime)
-//    } else mapOf("min" to 0, "sec" to 0)
-//    // min単位で時間が設定されている場合は分設定のみ変更
-//    if (numMap["min"]!! > 0L) {
-//        when (timePlace) {
-//            1 -> {
-//                maxValue = numMap["min"]!!.toInt()
-//                minValue = 0
-//                value = setNumMap["min"]!!.toInt()
-//            }
-//            2 -> {
-//                maxValue = 60
-//                minValue = 0
-//                value = setNumMap["sec"]!!.toInt()
-//            }
-//        }
-//    } else {
-//        when (timePlace) {
-//            1 -> {
-//                maxValue = 999
-//                minValue = 0
-//                value = setNumMap["min"]!!.toInt()
-//            }
-//            2 -> {
-//                maxValue = 60
-//                minValue = 0
-//                value = setNumMap["sec"]!!.toInt()
-//            }
-//        }
-//    }
-//}
 
 
 

@@ -1,16 +1,14 @@
 package com.example.timerapp.ui.setTimer
 
-import android.app.Application
 import androidx.lifecycle.*
 import com.example.timerapp.database.ListType
 import com.example.timerapp.database.PresetTimer
 import com.example.timerapp.database.Timer
 import com.example.timerapp.others.*
-import com.example.timerapp.repository.DefaultTimerRepository
+import com.example.timerapp.repository.TimerRepository
 import kotlinx.coroutines.launch
 
-class SetTimerViewModel(application: Application) : AndroidViewModel(application) {
-    private val timerRepository = DefaultTimerRepository.getRepository(application)
+class SetTimerViewModel(private val timerRepository: TimerRepository) : ViewModel() {
 
     private val _insertAndUpdatePresetTimerStatus =
         MutableLiveData<Event<Resource<Map<String, String?>>>>()
@@ -224,3 +222,12 @@ class SetTimerViewModel(application: Application) : AndroidViewModel(application
 }
 
 enum class DataType { INSERT, UPDATE }
+
+@Suppress("UNCHECKED_CAST")
+class SetTimerViewModelFactory(
+
+    private val timerRepository: TimerRepository
+) : ViewModelProvider.NewInstanceFactory() {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T =
+        (SetTimerViewModel(timerRepository) as T)
+}

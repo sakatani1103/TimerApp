@@ -1,11 +1,6 @@
 package com.example.timerapp.ui.presetTimerList
 
-import android.app.Application
-import android.util.Log
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.example.timerapp.database.ListType
 import com.example.timerapp.database.NotificationType
 import com.example.timerapp.database.PresetTimer
@@ -14,13 +9,11 @@ import com.example.timerapp.others.Constants
 import com.example.timerapp.others.Event
 import com.example.timerapp.others.Resource
 import com.example.timerapp.others.convertDetail
-import com.example.timerapp.repository.DefaultTimerRepository
+import com.example.timerapp.repository.TimerRepository
 import kotlinx.coroutines.launch
 
-class PresetTimerListViewModel(application: Application) : AndroidViewModel(application) {
-    private val timerRepository = DefaultTimerRepository.getRepository(application)
-
-    var timerNames = mutableListOf<String>()
+class PresetTimerListViewModel(private val timerRepository: TimerRepository) : ViewModel() {
+    private var timerNames = mutableListOf<String>()
 
     private val _updateTimerStatus = MutableLiveData<Event<Resource<Timer>>>()
     val updateTimerStatus: LiveData<Event<Resource<Timer>>> = _updateTimerStatus
@@ -31,22 +24,21 @@ class PresetTimerListViewModel(application: Application) : AndroidViewModel(appl
     private val _navigateToTimerList = MutableLiveData<Event<Boolean>>()
     val navigateToTimerList: LiveData<Event<Boolean>> = _navigateToTimerList
 
-    private val _navigateToTimer = MutableLiveData<Event<String>>()
-    val navigateToTimer: LiveData<Event<String>> = _navigateToTimer
+    private val _navigateToTimer = MutableLiveData<Event<Resource<String>>>()
+    val navigateToTimer: LiveData<Event<Resource<String>>> = _navigateToTimer
 
-    private val _navigateToSettingTimer = MutableLiveData<Event<Map<String, String?>>>()
-    val navigateToSettingTimer: LiveData<Event<Map<String, String?>>> = _navigateToSettingTimer
+    private val _navigateToSettingTimer = MutableLiveData<Event<Resource<Map<String, String?>>>>()
+    val navigateToSettingTimer: LiveData<Event<Resource<Map<String, String?>>>> =
+        _navigateToSettingTimer
 
-    private val _navigateToDeletePresetTimer = MutableLiveData<Event<String>>()
-    val navigateToDeletePresetTimer: LiveData<Event<String>> = _navigateToDeletePresetTimer
-
-    private val _showSnackbarMessage = MutableLiveData<Event<String>>()
-    val showSnackbarMessage: LiveData<Event<String>> = _showSnackbarMessage
+    private val _navigateToDeletePresetTimer = MutableLiveData<Event<Resource<String>>>()
+    val navigateToDeletePresetTimer: LiveData<Event<Resource<String>>> =
+        _navigateToDeletePresetTimer
 
     private var currentTimer = MutableLiveData<Timer>()
     var currentTimerName = MutableLiveData<String>()
     var selectedPosition = MutableLiveData<Int>()
-    var currentTimerSound = MutableLiveData(NotificationType.VIBRATION)
+    private var currentTimerSound = MutableLiveData(NotificationType.VIBRATION)
     var isInitial = MutableLiveData(true)
     private val _presetTimerList = MutableLiveData<List<PresetTimer>>()
     val presetTimerList: LiveData<List<PresetTimer>> = _presetTimerList
@@ -115,15 +107,18 @@ class PresetTimerListViewModel(application: Application) : AndroidViewModel(appl
                     val presetTimers = presetTimerList.value ?: listOf()
                     val updatePresetTimers = mutableListOf<PresetTimer>()
                     presetTimers.forEach { preset ->
-                        updatePresetTimers.add(PresetTimer(
-                            timerName, preset.presetName, preset.timerOrder, preset.presetTime,
-                        preset.notificationTime, false, preset.presetTimerId))
+                        updatePresetTimers.add(
+                            PresetTimer(
+                                timerName, preset.presetName, preset.timerOrder, preset.presetTime,
+                                preset.notificationTime, false, preset.presetTimerId
+                            )
+                        )
                     }
                     updateTimerAndPresetTimersIntoDb(updateTimer, updatePresetTimers)
                 } else {
                     updateTimerIntoDb(updateTimer)
                 }
-                _updateTimerStatus.postValue(Event(Resource.success(timer)))
+                _updateTimerStatus.postValue(Event(Resource.success(updateTimer)))
             }
         }
     }
@@ -153,9 +148,12 @@ class PresetTimerListViewModel(application: Application) : AndroidViewModel(appl
             updateOrderList.add(fromPos, toValue)
         }
         val modifiedOrderList = mutableListOf<PresetTimer>()
-        for ((index, value) in updateOrderList.withIndex()){
-            modifiedOrderList.add(PresetTimer(value.name, value.presetName, index+1, value.presetTime,
-            value.notificationTime, false, value.presetTimerId)
+        for ((index, value) in updateOrderList.withIndex()) {
+            modifiedOrderList.add(
+                PresetTimer(
+                    value.name, value.presetName, index + 1, value.presetTime,
+                    value.notificationTime, false, value.presetTimerId
+                )
             )
         }
         deleteAndInsertPresetTimers(modifiedOrderList)
@@ -181,7 +179,16 @@ class PresetTimerListViewModel(application: Application) : AndroidViewModel(appl
             ListType.SIMPLE_LAYOUT
         } else ListType.DETAIL_LAYOUT
         currentTimer.value?.let {
-            timer = Timer(it.name, total, listType, it.notificationType, it.isDisplay, detail, false, it.timerId)
+            timer = Timer(
+                it.name,
+                total,
+                listType,
+                it.notificationType,
+                it.isDisplay,
+                detail,
+                false,
+                it.timerId
+            )
         }
         return timer
     }
@@ -218,15 +225,22 @@ class PresetTimerListViewModel(application: Application) : AndroidViewModel(appl
 
     // Navigation
     fun navigateToSettingTimer(presetTimerId: String?) {
-        val numberOfPresetTimers = presetTimerList.value?.count() ?: 0
-        if (numberOfPresetTimers >= Constants.PRESET_TIMER_NUM) {
-            _showSnackbarMessage.value = Event("カスタマイズできるタイマーは${Constants.PRESET_TIMER_NUM}までです。")
-            return
+        if (presetTimerId == null){
+            // in the case of add
+            val numberOfPresetTimers = presetTimerList.value?.count() ?: 0
+            if (numberOfPresetTimers >= Constants.PRESET_TIMER_NUM) {
+                _navigateToSettingTimer.value =
+                    Event(Resource.error("カスタマイズできるタイマーは${Constants.PRESET_TIMER_NUM}までです。", null))
+                return
+            }
         }
+
         _navigateToSettingTimer.value = Event(
-            mapOf(
-                "timerName" to currentTimer.value!!.name,
-                "presetTimerId" to presetTimerId
+            Resource.success(
+                mapOf(
+                    "timerName" to currentTimer.value!!.name,
+                    "presetTimerId" to presetTimerId
+                )
             )
         )
     }
@@ -234,9 +248,9 @@ class PresetTimerListViewModel(application: Application) : AndroidViewModel(appl
     fun navigateToDeletePresetTimer() {
         val numberOfPresetTimers = presetTimerList.value?.count() ?: 0
         if (numberOfPresetTimers == 0) {
-            _showSnackbarMessage.value = Event("タイマーが登録されていません。")
+            _navigateToDeletePresetTimer.value = Event(Resource.error("タイマーが登録されていません。", null))
         } else {
-            _navigateToDeletePresetTimer.value = Event(currentTimer.value!!.name)
+            _navigateToDeletePresetTimer.value = Event(Resource.success(currentTimer.value!!.name))
         }
     }
 
@@ -247,9 +261,17 @@ class PresetTimerListViewModel(application: Application) : AndroidViewModel(appl
     fun navigateToTimer() {
         val numberOfPresetTimers = presetTimerList.value?.count() ?: 0
         if (numberOfPresetTimers == 0) {
-            _showSnackbarMessage.value = Event("タイマーが登録されていません。")
+            _navigateToTimer.value = Event(Resource.error("タイマーが登録されていません。", null))
         } else {
-            _navigateToTimer.value = Event(currentTimer.value!!.name)
+            _navigateToTimer.value = Event(Resource.success(currentTimer.value!!.name))
         }
     }
+}
+
+@Suppress("UNCHECKED_CAST")
+class PresetTimerListViewModelFactory(
+    private val timerRepository: TimerRepository
+) : ViewModelProvider.NewInstanceFactory() {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T =
+        (PresetTimerListViewModel(timerRepository) as T)
 }
