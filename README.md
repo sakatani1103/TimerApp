@@ -42,13 +42,13 @@
         </ul>
 </ul>
 
-- タイマー作成機能
+<タイマー作成機能>
 ![insertTimer](https://user-images.githubusercontent.com/60771916/145973592-d13d33b2-bed3-4309-aa1d-7424b4f8c40a.gif)
 
-- タイマー削除機能
+<タイマー削除機能>
 ![deleteTimer](https://user-images.githubusercontent.com/60771916/145973821-20bc056e-06c4-4709-ba00-87f20f0ff830.gif)
 
-- タイマー機能
+<タイマー機能>
 ![TimerStart](https://user-images.githubusercontent.com/60771916/145973928-1dc26f23-dcad-4e85-a8bc-09f26f9f26ea.gif)
 
 ### ライブラリ
