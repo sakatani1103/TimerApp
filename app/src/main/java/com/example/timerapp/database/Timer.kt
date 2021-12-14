@@ -3,11 +3,11 @@ package com.example.timerapp.database
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.util.*
 
 enum class ListType {
     SIMPLE_LAYOUT,
-    DETAIL_LAYOUT,
-    INITIAL_LAYOUT
+    DETAIL_LAYOUT
 }
 
 enum class NotificationType {
@@ -17,7 +17,7 @@ enum class NotificationType {
 
 @Entity
 data class Timer(
-    @PrimaryKey(autoGenerate = false)
+    @ColumnInfo
     val name: String,
     @ColumnInfo
     val total: Long = 0L,
@@ -30,5 +30,7 @@ data class Timer(
     @ColumnInfo
     val detail: String = "no presetTimer",
     @ColumnInfo
-    val isSelected: Boolean = false
+    val isSelected: Boolean = false,
+    @PrimaryKey
+    val timerId: String = UUID.randomUUID().toString()
 )

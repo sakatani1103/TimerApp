@@ -1,17 +1,10 @@
 package com.example.timerapp.repository
 
 import androidx.lifecycle.LiveData
-import com.example.timerapp.database.PresetTimer
-import com.example.timerapp.database.Timer
-import com.example.timerapp.database.TimerDao
-import com.example.timerapp.database.TimerWithPresetTimer
-import javax.inject.Inject
+import com.example.timerapp.database.*
 
-// repositoryにRoomDaoをinject
-// injectしたrepositoryの
-class DefaultTimerRepository @Inject constructor(
-    private val timerDao: TimerDao
-): TimerRepository{
+class DefaultTimerRepository internal constructor( private val timerDao: TimerDao ) : TimerRepository {
+
     override suspend fun insertTimer(timer: Timer) {
         timerDao.insertTimer(timer)
     }
@@ -39,12 +32,16 @@ class DefaultTimerRepository @Inject constructor(
         timerDao.updateTimers(timers)
     }
 
+    override suspend fun updatePresetTimer(presetTimer: PresetTimer) {
+        timerDao.updatePresetTimer(presetTimer)
+    }
+
     override suspend fun updatePresetTimers(presetTimers: List<PresetTimer>) {
         timerDao.updatePresetTimers(presetTimers)
     }
 
     override suspend fun updateTimerAndPresetTimers(timer: Timer, presetTimers: List<PresetTimer>) {
-         timerDao.updateTimerAndPresetTimers(timer, presetTimers)
+        timerDao.updateTimerAndPresetTimers(timer, presetTimers)
     }
 
     override suspend fun deleteTimerAndPresetTimers(timer: Timer, presetTimers: List<PresetTimer>) {
@@ -67,12 +64,8 @@ class DefaultTimerRepository @Inject constructor(
         return timerDao.getPresetTimerWithTimer(name)
     }
 
-    override suspend fun getCurrentTimer(name: String): Timer {
-        return timerDao.getCurrentTimer(name)
-    }
-
-    override suspend fun getCurrentPresetTimer(timerName: String, presetName: String, order:Int): PresetTimer {
-        return timerDao.getCurrentPresetTimer(timerName, presetName, order)
+    override suspend fun getCurrentPresetTimer(presetTimerId: String): PresetTimer {
+        return timerDao.getCurrentPresetTimer(presetTimerId)
     }
 
     override fun observeAllTimer(): LiveData<List<Timer>> {
@@ -83,8 +76,8 @@ class DefaultTimerRepository @Inject constructor(
         return timerDao.observeAllPresetTimer()
     }
 
-    override suspend fun getMaxOrderPresetTimer(name: String): Int {
-        return timerDao.getMaxOrderPresetTimer(name)
+    override suspend fun getTimerNames(): List<String> {
+        return timerDao.getTimerNames()
     }
 
 }

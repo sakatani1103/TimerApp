@@ -4,9 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <import type="android.view.View"/>
         <variable
             name="viewModel"
-            type="com.example.timerapp.ui.TimerViewModel" />
+            type="com.example.timerapp.ui.presetTimerList.PresetTimerListViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -23,6 +24,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:background="@color/white"
+            android:onClick="@{() -> viewModel.navigateToTimerList()}"
             android:clickable="true"
             android:focusable="true" />
 
@@ -43,7 +45,9 @@
                 android:id="@+id/et_timer_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@{viewModel.currentTimer.name}"
+                android:text="@={viewModel.currentTimerName}"
+                android:inputType="text"
+                android:maxLines="1"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
                 tools:text="基本情報技術者午前試験" />
 
@@ -52,7 +56,7 @@
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/start_btn"
-            android:onClick="@{() -> viewModel.navigateToTimer(viewModel.currentTimer.name)}"
+            android:onClick="@{() -> viewModel.navigateToTimer()}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/icon_margin"
@@ -91,10 +95,11 @@
         <Spinner
             android:id="@+id/sounds_spinner"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-            app:sound="@{viewModel.currentTimer.notificationType}"
+            android:onItemSelected="@{(parent, view, position, id) -> viewModel.onItemSelectedNumber(position)}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:entries="@array/sound_items"
+            android:selection="@={viewModel.selectedPosition}"
+            android:entries="@{viewModel.soundTypes}"
             app:layout_constraintBaseline_toBaselineOf="@+id/setting_sound_title"
             app:layout_constraintEnd_toEndOf="parent" />
 
@@ -118,6 +123,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/btn_margin"
             android:layout_marginTop="@dimen/btn_margin"
+            android:onClick="@{() -> viewModel.updateSettingTimer()}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/sounds_spinner" />
 
@@ -130,7 +136,7 @@
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/divider2"
             app:layout_constraintVertical_bias="1.0" />
@@ -166,7 +172,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/card_margin"
-            app:presetItems="@{viewModel.presetTimerList}"
+            android:visibility="@{viewModel.isInitial() ? View.VISIBLE : View.GONE}"
             app:cardCornerRadius="8dp"
             app:cardElevation="10dp"
             app:layout_constraintEnd_toEndOf="parent"

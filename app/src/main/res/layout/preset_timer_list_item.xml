@@ -49,6 +49,7 @@
                     android:padding="@dimen/card_padding">
 
                     <TextView
+                        android:id="@+id/preset_timer_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@{presetTimer.presetName}"
@@ -62,6 +63,7 @@
                         android:orientation="horizontal">
 
                         <TextView
+                            android:id="@+id/preset_timer_time"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -70,13 +72,14 @@
                             tools:text="20分" />
 
                         <TextView
+                            android:id="@+id/preset_timer_prenotification_time"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/card_margin"
                             android:layout_weight="1"
                             android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
                             app:notificationTime="@{presetTimer.notificationTime}"
-                            tools:text="通知 : 5分前" />
+                            tools:text="通知: 5分前" />
 
                     </LinearLayout>
                 </LinearLayout>

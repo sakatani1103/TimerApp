@@ -3,7 +3,6 @@ plugins {
     id 'kotlin-android'
     id 'kotlin-kapt'
     id 'androidx.navigation.safeargs.kotlin'
-    id 'dagger.hilt.android.plugin'
 }
 
 android {
@@ -46,14 +45,21 @@ android {
         exclude 'META-INF/*.properties'
         exclude 'META-INF/AL2.0'
         exclude 'META-INF/LGPL2.1'
+        exclude "META-INF/licenses/ASM"
+        pickFirst "win32-x86-64/attach_hotspot_windows.dll"
+        pickFirst "win32-x86/attach_hotspot_windows.dll"
+    }
+    testOptions.unitTests {
+        includeAndroidResources = true
+        returnDefaultValues = true
     }
 }
 
 dependencies {
 
     implementation 'androidx.core:core-ktx:1.7.0'
-    implementation 'androidx.appcompat:appcompat:1.3.1'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.1'
+    implementation 'androidx.appcompat:appcompat:1.4.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.2'
 
     // MaterialDesign
     implementation 'com.google.android.material:material:1.4.0'
@@ -65,11 +71,7 @@ dependencies {
     // Architectural Components
     def lifecycle_version = "2.4.0"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
-
-    // Lifecycle
-    // implementation "androidx.lifecycle:lifecycle-extensions:2.4.0"　サポート終了
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
-    // implementation "androidx.lifecycle:lifecycle-runtime:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
 
     // Room
@@ -84,56 +86,71 @@ dependencies {
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.0'
 
-    // Coroutine Lifecycle Scopes
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
-    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
-
     // Navigation Components
-    def navigation_version = "2.4.0-alpha10"
+    def navigation_version = "2.4.0-beta02"
     implementation "androidx.navigation:navigation-fragment-ktx:$navigation_version"
     implementation "androidx.navigation:navigation-ui-ktx:$navigation_version"
 
     // ViewModelsの記述を簡単に書けるようにする
     implementation "androidx.activity:activity-ktx:1.4.0"
 
-    //Dagger - Hilt
-    implementation "com.google.dagger:hilt-android:2.37"
-    kapt "com.google.dagger:hilt-android-compiler:2.37"
+    // フラグメントとViewModelのinteraction testに必要
+    debugImplementation "androidx.fragment:fragment-testing:1.4.0"
+    implementation "androidx.test:core:1.4.0"
 
-    implementation "androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03"
-    kapt "androidx.hilt:hilt-compiler:1.0.0"
+    implementation "com.jakewharton.timber:timber:5.0.1"
 
-    // コンパイル時に依存するライブラリ、ViewModelに引数を渡したい時(AssistedInject)で使用
-    //compileOnly "com.squareup.inject:assisted-inject-annotations-dagger2:0.6.0"
-    //kapt "com.squareup.inject:assisted-inject-processor-dagger2:0.6.0"
-
-    // Timber
-    implementation 'com.jakewharton.timber:timber:5.0.1'
+    // idling resource
+    implementation "androidx.test.espresso:espresso-idling-resource:3.4.0"
 
     // Unit Test
     implementation "androidx.test:core:1.4.0"
     testImplementation 'junit:junit:4.13.2'
-    testImplementation "org.hamcrest:hamcrest-all:1.3"
-    testImplementation "androidx.arch.core:core-testing:2.1.0"
-    testImplementation "org.robolectric:robolectric:4.5.1"
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.0"
+
+    // Assertion
     testImplementation "com.google.truth:truth:1.0.1"
-    testImplementation "org.mockito:mockito-core:2.28.2"
+
+    // AndroidX Test -JVM testing
+    testImplementation "androidx.test.ext:junit-ktx:1.1.3"
+    // getApplicationContextに必要
+    testImplementation "androidx.test:core-ktx:1.4.0"
+
+    // Robolectric
+    testImplementation "org.robolectric:robolectric:4.7.2"
+
+    // ArchitectureComponentCoreTestingLibrary　instantExecutorRuleに必要
+    testImplementation "androidx.arch.core:core-testing:2.1.0"
+
+    testImplementation "org.mockito:mockito-core:4.1.0"
 
     // androidTest
-    androidTestImplementation 'junit:junit:4.13.2'
-    androidTestImplementation "com.linkedin.dexmaker:dexmaker-mockito:2.28.1"
-    androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.0" //run blocking test
-    androidTestImplementation "androidx.arch.core:core-testing:2.1.0"
-    androidTestImplementation "org.mockito:mockito-core:2.28.2"
-    androidTestImplementation "com.google.truth:truth:1.0.1"
+    // AndroidX Test - Instrumented testing フラグメントとViewModelのinteractionTest
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
-
-    androidTestImplementation "androidx.compose.ui:ui-test-junit4:1.0.5"
-
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.4.0' //recyclerView click test
-    androidTestImplementation 'com.google.dagger:hilt-android-testing:2.37'
-    kaptAndroidTest 'com.google.dagger:hilt-android-compiler:2.37'
-    debugImplementation "androidx.fragment:fragment-testing:1.4.0-alpha10" //fragment test using hilt
+
+    androidTestImplementation 'junit:junit:4.13.2'
+    androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.0" //run blocking test
+
+    androidTestImplementation "org.mockito:mockito-core:4.1.0"
+    androidTestImplementation "com.linkedin.dexmaker:dexmaker-mockito:2.28.1"
+
+    androidTestImplementation 'androidx.test:runner:1.4.0'
+    androidTestImplementation 'androidx.test:rules:1.4.0'
+
+    androidTestImplementation "com.google.truth:truth:1.0.1"
+
+    // AnimationTestRuleの記述に必要
+    androidTestImplementation 'com.android.support:support-annotations:28.0.0'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
+
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation "androidx.arch.core:core-testing:2.1.0"
+
+    // getApplicationContextに必要
+    androidTestImplementation "androidx.test:core-ktx:1.4.0"
+
+    androidTestImplementation "androidx.compose.ui:ui-test-junit4:1.0.5"
 }

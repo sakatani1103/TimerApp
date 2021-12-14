@@ -6,14 +6,14 @@
     <data>
         <variable
             name="viewModel"
-            type="com.example.timerapp.ui.TimerViewModel" />
+            type="com.example.timerapp.ui.setTimer.SetTimerViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="@dimen/card_margin"
-        tools:context=".ui.SetTimerFragment">
+        tools:context=".ui.setTimer.SetTimerFragment">
 
         <ImageButton
             android:id="@+id/back_btn"
@@ -22,6 +22,7 @@
             android:layout_marginStart="@dimen/standard_margin"
             android:src="@drawable/ic_back"
             android:background="@color/white"
+            android:onClick="@{() -> viewModel.navigateToPresetTimer()}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -38,6 +39,9 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_presetName"
+                android:inputType="text"
+                android:maxLines="1"
+                android:text="@={viewModel.currentTimerName}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
@@ -50,10 +54,11 @@
             android:layout_marginTop="@dimen/setting_margin"
             android:textSize="100sp"
             android:layout_marginStart="@dimen/standard_margin"
+            app:minValue="@{0}"
+            app:maxValue="@{9}"
+            android:value="@={viewModel.min1}"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/et_timer_name"
-            app:presetTime="@{viewModel.temporalPresetTime}"
-            app:place="@{1}"/>
+            app:layout_constraintTop_toBottomOf="@+id/et_timer_name" />
 
         <NumberPicker
             android:id="@+id/numberPicker2"
@@ -65,8 +70,9 @@
             app:layout_constraintStart_toEndOf="@+id/numberPicker1"
             app:layout_constraintTop_toBottomOf="@+id/et_timer_name"
             app:layout_constraintVertical_bias="0.0"
-            app:presetTime="@{viewModel.temporalPresetTime}"
-            app:place="@{2}"/>
+            app:minValue="@{0}"
+            app:maxValue="@{9}"
+            android:value="@={viewModel.min2}"/>
 
         <NumberPicker
             android:id="@+id/numberPicker3"
@@ -76,8 +82,9 @@
             app:layout_constraintBottom_toBottomOf="@+id/numberPicker2"
             app:layout_constraintStart_toEndOf="@+id/numberPicker2"
             app:layout_constraintTop_toBottomOf="@+id/et_timer_name"
-            app:presetTime="@{viewModel.temporalPresetTime}"
-            app:place="@{3}"/>
+            app:minValue="@{0}"
+            app:maxValue="@{9}"
+            android:value="@={viewModel.min3}"/>
 
         <TextView
             android:id="@+id/min_unit"
@@ -95,8 +102,9 @@
             android:layout_marginTop="@dimen/setting_margin"
             app:layout_constraintEnd_toStartOf="@+id/numberPicker5"
             app:layout_constraintTop_toBottomOf="@+id/et_timer_name"
-            app:presetTime="@{viewModel.temporalPresetTime}"
-            app:place="@{4}"/>
+            app:minValue="@{0}"
+            app:maxValue="@{9}"
+            android:value="@={viewModel.sec1}"/>
 
         <NumberPicker
             android:id="@+id/numberPicker5"
@@ -108,8 +116,9 @@
             app:layout_constraintTop_toBottomOf="@+id/et_timer_name"
             app:layout_constraintVertical_bias="0.0"
             android:layout_marginEnd="@dimen/standard_margin"
-            app:presetTime="@{viewModel.temporalPresetTime}"
-            app:place="@{5}"/>
+            app:minValue="@{0}"
+            app:maxValue="@{9}"
+            android:value="@={viewModel.sec2}"/>
 
         <TextView
             android:id="@+id/sec_unit"
@@ -127,6 +136,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/setting_margin"
             android:text="@string/setting_preset"
+            android:onClick="@{() -> viewModel.showDialog()}"
             app:icon="@drawable/ic_add"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/min_unit" />
@@ -138,7 +148,7 @@
             android:layout_marginStart="@dimen/standard_margin"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/pre_notification"
-            app:notificationTime="@{viewModel.temporalNotificationTime}"
+            app:notificationTime="@{viewModel.currentNotificationTime}"
             tools:text="5分前に通知する" />
 
         <Button
@@ -148,10 +158,12 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/setting_margin"
             android:layout_marginTop="@dimen/setting_margin"
+            android:onClick="@{() -> viewModel.savePresetTimer()}"
             android:text="@string/save"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toEndOf="@+id/pre_notification"
             app:layout_constraintTop_toBottomOf="@+id/sec_unit" />
 

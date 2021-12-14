@@ -21,7 +21,7 @@
     <string name="preset_timer_detail">プリセットタイマーの詳細</string>
     <string name="content_description_delete">リストの削除</string>
     <string name="timer_stop_message">タイマーを終了しますか。</string>
-    <string name="setting_update">設定の変更を反映する</string>
+    <string name="setting_update">タイマー名と設定の変更を反映する</string>
     <string name="initial_min">000</string>
     <string name="initial_sec">00</string>
     <string name="set_min">%0$03d</string>

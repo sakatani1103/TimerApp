@@ -37,11 +37,23 @@ fun setIntToNumberPicker(time: Long): Map<Int, Long> {
     )
 }
 
+fun getPresetTimeFromNumberPicker(num1: Int, num2: Int, num3: Int, num4: Int, num5: Int): Long{
+    val sec = num4 * 10L + num5
+    val min = num1 * 100L + num2 * 10L + num3
+    val allSec = min * 60L + sec
+    return allSec * 1000L
+}
+
 fun setPreNotification(time: Long): Map<String, Long> {
     val allSec = time / 1000L
     val min = allSec / 60L
     val sec = allSec % 60L
     return mapOf("min" to min, "sec" to sec)
+}
+
+fun getNotificationFromNumberPicker(min: Int, sec: Int): Long{
+    val allSec = min * 60 + sec
+    return allSec * 1000L
 }
 
 fun convertDetail(presetList: List<PresetTimer>): String {

@@ -51,6 +51,7 @@
                         android:orientation="horizontal">
 
                         <TextView
+                            android:id="@+id/delete_preset_name"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
@@ -73,6 +74,7 @@
                         android:orientation="horizontal">
 
                         <TextView
+                            android:id="@+id/delete_preset_time"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -81,6 +83,7 @@
                             tools:text="20分" />
 
                         <TextView
+                            android:id="@+id/delete_preset_prenotification"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/card_margin"

@@ -7,14 +7,14 @@
 
         <variable
             name="viewModel"
-            type="com.example.timerapp.ui.TimerViewModel" />
+            type="com.example.timerapp.ui.deletePresetTimerList.DeletePresetTimerListViewModel" />
 
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.DeletePresetTimerListFragment">
+        tools:context=".ui.deletePresetTimerList.DeletePresetTimerListFragment">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/delete_preset_timer_list"
@@ -36,6 +36,7 @@
             android:layout_margin="@dimen/btn_margin"
             android:text="@string/cancel"
             android:textStyle="bold"
+            android:onClick="@{() -> viewModel.cancelDeletePresetTimerList()}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/preset_delete_btn"
             app:layout_constraintHorizontal_bias="0.5"
@@ -48,6 +49,7 @@
             android:layout_marginEnd="@dimen/btn_margin"
             android:text="@string/delete"
             android:textStyle="bold"
+            android:onClick="@{() -> viewModel.deletePresetTimerList()}"
             app:layout_constraintBaseline_toBaselineOf="@+id/preset_cancel_btn"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
