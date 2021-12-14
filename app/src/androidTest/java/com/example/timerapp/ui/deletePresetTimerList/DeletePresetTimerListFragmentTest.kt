@@ -49,8 +49,8 @@ class DeletePresetTimerListFragmentTest{
 
     @Test
     fun somePresetTimer_DisplayInUi() = runBlockingTest {
-        val timer = Timer("timer", 18000000, ListType.DETAIL_LAYOUT, NotificationType.VIBRATION,
-            false, "preset1\n150分\n通知: 10分前\tpreset2\n150分\n通知: なし\t")
+        val timer = Timer("timer", 16200000, ListType.DETAIL_LAYOUT, NotificationType.VIBRATION,
+            false, "preset1\n150分\n通知: 10分前\tpreset2\n120分\n通知: なし\t")
         val preset1 = PresetTimer("timer", "preset1", 1, 9000000, 600000)
         val preset2 = PresetTimer("timer", "preset2", 2, 7200000)
         timerRepository.insertTimerAndPresetTimers(timer, listOf(preset1, preset2))
@@ -66,8 +66,8 @@ class DeletePresetTimerListFragmentTest{
 
     @Test
     fun clickPresetTimerItemsAndClickAndDeleteButton_setNavigateToPresetTimerEvent() = runBlockingTest {
-        val timer = Timer("timer", 18000000, ListType.DETAIL_LAYOUT, NotificationType.VIBRATION,
-            false, "preset1\n150分\n通知: 10分前\tpreset2\n150分\n通知: なし\t")
+        val timer = Timer("timer", 16200000, ListType.DETAIL_LAYOUT, NotificationType.VIBRATION,
+            false, "preset1\n150分\n通知: 10分前\tpreset2\n120分\n通知: なし\t")
         val preset1 = PresetTimer("timer", "preset1", 1, 9000000, 600000)
         val preset2 = PresetTimer("timer", "preset2", 2, 7200000)
         timerRepository.insertTimerAndPresetTimers(timer, listOf(preset1, preset2))
@@ -95,8 +95,8 @@ class DeletePresetTimerListFragmentTest{
 
     @Test
     fun clickPresetTimerItemsAndClickAndCancelButton_setNavigateToPresetTimerEvent() = runBlockingTest {
-        val timer = Timer("timer", 18000000, ListType.DETAIL_LAYOUT, NotificationType.VIBRATION,
-            false, "preset1\n150分\n通知: 10分前\tpreset2\n150分\n通知: なし\t")
+        val timer = Timer("timer", 16200000, ListType.DETAIL_LAYOUT, NotificationType.VIBRATION,
+            false, "preset1\n150分\n通知: 10分前\tpreset2\n120分\n通知: なし\t")
         val preset1 = PresetTimer("timer", "preset1", 1, 9000000, 600000)
         val preset2 = PresetTimer("timer", "preset2", 2, 7200000)
         timerRepository.insertTimerAndPresetTimers(timer, listOf(preset1, preset2))
@@ -116,7 +116,7 @@ class DeletePresetTimerListFragmentTest{
                 1, click()
             ))
 
-        onView(withId(R.id.preset_cancel_btn)).perform(ViewActions.click())
+        onView(withId(R.id.preset_cancel_btn)).perform(click())
         verify(navController).navigate(
             DeletePresetTimerListFragmentDirections.actionDeletePresetTimerListFragmentToPresetTimerListFragment("timer")
         )

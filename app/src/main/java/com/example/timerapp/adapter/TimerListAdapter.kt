@@ -48,7 +48,7 @@ class TimerListAdapter(
                 // expandedしないところ
                 //　設定しないとanimationの矢印が一周してしまう
                 binding.topTopic.isSelected = expanded.not()
-                binding.detailStartBtn.isSelected = expanded.not()
+                binding.startBtn.isSelected = expanded.not()
 
                 binding.expandableLayout.toggle()
 

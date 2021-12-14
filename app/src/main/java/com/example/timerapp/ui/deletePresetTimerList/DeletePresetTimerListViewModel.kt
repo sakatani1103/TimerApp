@@ -40,7 +40,8 @@ class DeletePresetTimerListViewModel(private val timerRepository: TimerRepositor
             if (deletePresetTimerList.isNotEmpty()) {
                 timerRepository.deletePresetTimers(deletePresetTimerList)
                 deletePresetTimerList.forEach { preset ->
-                    residuePresetTimerList.remove(preset)
+                    residuePresetTimerList.remove(PresetTimer(preset.name, preset.presetName,
+                    preset.timerOrder, preset.presetTime, preset.notificationTime, false, preset.presetTimerId))
                 }
                 val updateTimer = timerChangeDueToPresetTimerChange(residuePresetTimerList)
                 timerRepository.updateTimer(updateTimer)
@@ -71,23 +72,27 @@ class DeletePresetTimerListViewModel(private val timerRepository: TimerRepositor
 
     // update presetTimer (select Delete Item)
     fun switchPresetTimerIsSelected(presetTimer: PresetTimer) {
-        if (!presetTimer.isSelected) {
-            deletePresetTimerList.add(presetTimer)
+        val updateTimer = PresetTimer(
+            presetTimer.name,
+            presetTimer.presetName,
+            presetTimer.timerOrder,
+            presetTimer.presetTime,
+            presetTimer.notificationTime,
+            !presetTimer.isSelected,
+            presetTimer.presetTimerId
+        )
+
+        if (updateTimer.isSelected) {
+            deletePresetTimerList.add(updateTimer)
         } else {
-            deletePresetTimerList.remove(presetTimer)
-        }
-        viewModelScope.launch {
-            timerRepository.updatePresetTimer(
-                    PresetTimer(
-                        presetTimer.name,
-                        presetTimer.presetName,
-                        presetTimer.timerOrder,
-                        presetTimer.presetTime,
-                        presetTimer.notificationTime,
-                        !presetTimer.isSelected,
-                        presetTimer.presetTimerId
-                    )
+            deletePresetTimerList.remove(
+                PresetTimer(updateTimer.name, updateTimer.presetName,
+            updateTimer.timerOrder, updateTimer.presetTime, updateTimer.notificationTime, true, updateTimer.presetTimerId)
             )
+        }
+
+        viewModelScope.launch {
+            timerRepository.updatePresetTimer(updateTimer)
             currentPresetTimerList.value =
                 sortedOrder(timerRepository.getPresetTimerWithTimer(presetTimer.name).presetTimer)
         }

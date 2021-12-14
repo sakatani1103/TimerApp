@@ -2,7 +2,6 @@ package com.example.timerapp.ui.setTimer
 
 import android.view.InputDevice
 import android.view.MotionEvent
-import androidx.databinding.adapters.NumberPickerBindingAdapter.setValue
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
@@ -12,9 +11,7 @@ import androidx.test.espresso.action.GeneralLocation
 import androidx.test.espresso.action.Press
 import androidx.test.espresso.action.Tap
 import androidx.test.espresso.action.ViewActions.*
-import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.PickerActions
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
@@ -25,7 +22,6 @@ import com.example.timerapp.database.NotificationType
 import com.example.timerapp.database.PresetTimer
 import com.example.timerapp.database.Timer
 import com.example.timerapp.others.Constants
-import com.example.timerapp.others.setIntToNumberPicker
 import com.example.timerapp.repository.FakeTimerAndroidTestRepository
 import com.example.timerapp.repository.TimerRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -56,8 +52,8 @@ class SetTimerFragmentTest {
 
     @Test
     fun inTheCaseOfAdd_noValueSetInUi() = runBlockingTest {
-        val timer = Timer("timer", 18000000, ListType.DETAIL_LAYOUT, NotificationType.VIBRATION,
-            false, "preset1\n150分\n通知: 10分前\tpreset2\n150分\n通知: なし\t")
+        val timer = Timer("timer", 16200000, ListType.DETAIL_LAYOUT, NotificationType.VIBRATION,
+            false, "preset1\n150分\n通知: 10分前\tpreset2\n120分\n通知: なし\t")
         val preset1 = PresetTimer("timer", "preset1", 1, 9000000, 600000)
         val preset2 = PresetTimer("timer", "preset2", 2, 7200000)
         timerRepository.insertTimerAndPresetTimers(timer, listOf(preset1, preset2))
@@ -75,8 +71,8 @@ class SetTimerFragmentTest {
 
     @Test
     fun inTheCaseOfUpdate_registeredValueSettingInUi() = runBlockingTest {
-        val timer = Timer("timer", 18000000, ListType.DETAIL_LAYOUT, NotificationType.VIBRATION,
-            false, "preset1\n150分\n通知: 10分前\tpreset2\n150分\n通知: なし\t")
+        val timer = Timer("timer", 16200000, ListType.DETAIL_LAYOUT, NotificationType.VIBRATION,
+            false, "preset1\n150分\n通知: 10分前\tpreset2\n120分\n通知: なし\t")
         val preset1 = PresetTimer("timer", "preset1", 1, 9000000, 600000)
         val preset2 = PresetTimer("timer", "preset2", 2, 7200000)
         timerRepository.insertTimerAndPresetTimers(timer, listOf(preset1, preset2))
@@ -97,8 +93,8 @@ class SetTimerFragmentTest {
     // NumberPickerへの処理を連続して行うとErrorになってしまうので1つずつ実行
     @Test
     fun inTheCaseOfAdd_inputInvalidName_showError() = runBlockingTest {
-        val timer = Timer("timer", 18000000, ListType.DETAIL_LAYOUT, NotificationType.VIBRATION,
-            false, "preset1\n150分\n通知: 10分前\tpreset2\n150分\n通知: なし\t")
+        val timer = Timer("timer", 16200000, ListType.DETAIL_LAYOUT, NotificationType.VIBRATION,
+            false, "preset1\n150分\n通知: 10分前\tpreset2\n120分\n通知: なし\t")
         val preset1 = PresetTimer("timer", "preset1", 1, 9000000, 600000)
         val preset2 = PresetTimer("timer", "preset2", 2, 7200000)
         timerRepository.insertTimerAndPresetTimers(timer, listOf(preset1, preset2))
@@ -114,8 +110,8 @@ class SetTimerFragmentTest {
 
     @Test
     fun inTheCaseOfAdd_zeroPresetTime_showErrorOnSnackbar() = runBlockingTest {
-        val timer = Timer("timer", 18000000, ListType.DETAIL_LAYOUT, NotificationType.VIBRATION,
-            false, "preset1\n150分\n通知: 10分前\tpreset2\n150分\n通知: なし\t")
+        val timer = Timer("timer", 16200000, ListType.DETAIL_LAYOUT, NotificationType.VIBRATION,
+            false, "preset1\n150分\n通知: 10分前\tpreset2\n120分\n通知: なし\t")
         val preset1 = PresetTimer("timer", "preset1", 1, 9000000, 600000)
         val preset2 = PresetTimer("timer", "preset2", 2, 7200000)
         timerRepository.insertTimerAndPresetTimers(timer, listOf(preset1, preset2))
@@ -129,7 +125,7 @@ class SetTimerFragmentTest {
 
     @Test
     fun inTheCaseOfAdd_validInput_setNavigateToPresetTimerListEvent() = runBlockingTest {
-        val timer = Timer("timer", 18000000, ListType.DETAIL_LAYOUT, NotificationType.VIBRATION,
+        val timer = Timer("timer", 16200000, ListType.DETAIL_LAYOUT, NotificationType.VIBRATION,
             false, "preset1\n150分\n通知: 10分前\tpreset2\n150分\n通知: なし\t")
         val preset1 = PresetTimer("timer", "preset1", 1, 9000000, 600000)
         val preset2 = PresetTimer("timer", "preset2", 2, 7200000)
@@ -151,8 +147,8 @@ class SetTimerFragmentTest {
 
     @Test
     fun inTheCaseOfUpdate_inputInvalidName_showError() = runBlockingTest {
-        val timer = Timer("timer", 18000000, ListType.DETAIL_LAYOUT, NotificationType.VIBRATION,
-            false, "preset1\n150分\n通知: 10分前\tpreset2\n150分\n通知: なし\t")
+        val timer = Timer("timer", 16200000, ListType.DETAIL_LAYOUT, NotificationType.VIBRATION,
+            false, "preset1\n150分\n通知: 10分前\tpreset2\n120分\n通知: なし\t")
         val preset1 = PresetTimer("timer", "preset1", 1, 9000000, 600000)
         val preset2 = PresetTimer("timer", "preset2", 2, 7200000)
         timerRepository.insertTimerAndPresetTimers(timer, listOf(preset1, preset2))
@@ -168,8 +164,8 @@ class SetTimerFragmentTest {
 
     @Test
     fun inTheCaseOfUpdate_zeroPresetTime_showErrorOnSnackbar() = runBlockingTest {
-        val timer = Timer("timer", 18000000, ListType.DETAIL_LAYOUT, NotificationType.VIBRATION,
-            false, "preset1\n150分\n通知: 10分前\tpreset2\n150分\n通知: なし\t")
+        val timer = Timer("timer", 16200000, ListType.DETAIL_LAYOUT, NotificationType.VIBRATION,
+            false, "preset1\n150分\n通知: 10分前\tpreset2\n120分\n通知: なし\t")
         val preset1 = PresetTimer("timer", "preset1", 1, 9000000, 600000)
         val preset2 = PresetTimer("timer", "preset2", 2, 7200000)
         timerRepository.insertTimerAndPresetTimers(timer, listOf(preset1, preset2))
@@ -189,8 +185,8 @@ class SetTimerFragmentTest {
 
     @Test
     fun inTheCaseOfUpdate_validInput_setNavigateToPresetTimerListEvent() = runBlockingTest {
-        val timer = Timer("timer", 18000000, ListType.DETAIL_LAYOUT, NotificationType.VIBRATION,
-            false, "preset1\n150分\n通知: 10分前\tpreset2\n150分\n通知: なし\t")
+        val timer = Timer("timer", 16200000, ListType.DETAIL_LAYOUT, NotificationType.VIBRATION,
+            false, "preset1\n150分\n通知: 10分前\tpreset2\n120分\n通知: なし\t")
         val preset1 = PresetTimer("timer", "preset1", 1, 9000000, 600000)
         val preset2 = PresetTimer("timer", "preset2", 2, 7200000)
         timerRepository.insertTimerAndPresetTimers(timer, listOf(preset1, preset2))
@@ -212,8 +208,8 @@ class SetTimerFragmentTest {
 
     @Test
     fun setPreNotificationTime5Min1sec_displayPreNotificationTime() = runBlockingTest {
-        val timer = Timer("timer", 18000000, ListType.DETAIL_LAYOUT, NotificationType.VIBRATION,
-            false, "preset1\n150分\n通知: 10分前\tpreset2\n150分\n通知: なし\t")
+        val timer = Timer("timer", 16200000, ListType.DETAIL_LAYOUT, NotificationType.VIBRATION,
+            false, "preset1\n150分\n通知: 10分前\tpreset2\n120分\n通知: なし\t")
         val preset1 = PresetTimer("timer", "preset1", 1, 9000000, 600000)
         val preset2 = PresetTimer("timer", "preset2", 2, 7200000)
         timerRepository.insertTimerAndPresetTimers(timer, listOf(preset1, preset2))
@@ -235,8 +231,8 @@ class SetTimerFragmentTest {
 
     @Test
     fun setPreNotificationTimeZero_notDisplayPreNotificationTime() = runBlockingTest {
-        val timer = Timer("timer", 18000000, ListType.DETAIL_LAYOUT, NotificationType.VIBRATION,
-            false, "preset1\n150分\n通知: 10分前\tpreset2\n150分\n通知: なし\t")
+        val timer = Timer("timer", 16200000, ListType.DETAIL_LAYOUT, NotificationType.VIBRATION,
+            false, "preset1\n150分\n通知: 10分前\tpreset2\n120分\n通知: なし\t")
         val preset1 = PresetTimer("timer", "preset1", 1, 9000000, 600000)
         val preset2 = PresetTimer("timer", "preset2", 2, 7200000)
         timerRepository.insertTimerAndPresetTimers(timer, listOf(preset1, preset2))
@@ -261,8 +257,8 @@ class SetTimerFragmentTest {
 
     @Test
     fun clickToBackButton_setNavigateToPresetTimerListEvent() = runBlockingTest {
-        val timer = Timer("timer", 18000000, ListType.DETAIL_LAYOUT, NotificationType.VIBRATION,
-            false, "preset1\n150分\n通知: 10分前\tpreset2\n150分\n通知: なし\t")
+        val timer = Timer("timer", 16200000, ListType.DETAIL_LAYOUT, NotificationType.VIBRATION,
+            false, "preset1\n150分\n通知: 10分前\tpreset2\n120分\n通知: なし\t")
         val preset1 = PresetTimer("timer", "preset1", 1, 9000000, 600000)
         val preset2 = PresetTimer("timer", "preset2", 2, 7200000)
         timerRepository.insertTimerAndPresetTimers(timer, listOf(preset1, preset2))

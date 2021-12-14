@@ -34,7 +34,7 @@
             app:cardElevation="10dp">
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/detail_start_btn"
+                android:id="@+id/start_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="top|end"

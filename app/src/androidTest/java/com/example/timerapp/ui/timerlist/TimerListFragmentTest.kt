@@ -51,7 +51,7 @@ class TimerListFragmentTest {
     fun noTimer_DisplayInitialMessageInUi() = runBlockingTest {
         launchFragmentInContainer<TimerListFragment>(Bundle(), R.style.Theme_TimerApp)
 
-        onView(withId(R.id.initial_message)).check(matches(isDisplayed()))
+        onView(withId(R.id.initial_timer_message)).check(matches(isDisplayed()))
     }
 
     @Test
@@ -170,7 +170,7 @@ class TimerListFragmentTest {
             Navigation.setViewNavController(it.view!!, navController)
         }
 
-        onView(withId(R.id.simple_start_btn)).perform(click())
+        onView(withId(R.id.start_btn)).perform(click())
 
         verify(navController).navigate(
             TimerListFragmentDirections.actionTimerListFragmentToTimerFragment("timer1")
@@ -188,7 +188,7 @@ class TimerListFragmentTest {
             Navigation.setViewNavController(it.view!!, navController)
         }
 
-        onView(withId(R.id.detail_start_btn)).perform(click())
+        onView(withId(R.id.start_btn)).perform(click())
 
         verify(navController).navigate(
             TimerListFragmentDirections.actionTimerListFragmentToTimerFragment("timer")
@@ -201,7 +201,7 @@ class TimerListFragmentTest {
         timerRepository.insertTimer(timer1)
         launchFragmentInContainer<TimerListFragment>(Bundle(), R.style.Theme_TimerApp)
 
-        onView(withId(R.id.simple_start_btn)).perform(click())
+        onView(withId(R.id.start_btn)).perform(click())
 
         onView(withId(com.google.android.material.R.id.snackbar_text)).check(matches(isDisplayed()))
         onView(withId(com.google.android.material.R.id.snackbar_text)).check(matches(withText("タイマーが設定されていません。")))

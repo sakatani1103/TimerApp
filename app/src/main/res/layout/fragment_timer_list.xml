@@ -16,7 +16,7 @@
         android:layout_height="match_parent">
 
         <com.google.android.material.card.MaterialCardView
-            android:id="@+id/initial_message"
+            android:id="@+id/initial_timer_message"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             apps:cardCornerRadius="8dp"
