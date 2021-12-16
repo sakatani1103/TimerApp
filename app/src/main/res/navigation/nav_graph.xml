@@ -8,8 +8,8 @@
     <fragment
         android:id="@+id/timerListFragment"
         android:name="com.example.timerapp.ui.timerlist.TimerListFragment"
-        android:label="fragment_timer_list"
-        tools:layout="@layout/fragment_timer_list" >
+        android:label="@string/app_name"
+        tools:layout="@layout/fragment_timer_list">
         <action
             android:id="@+id/action_timerListFragment_to_presetTimerListFragment"
             app:destination="@id/presetTimerListFragment" />
@@ -23,8 +23,8 @@
     <fragment
         android:id="@+id/presetTimerListFragment"
         android:name="com.example.timerapp.ui.presetTimerList.PresetTimerListFragment"
-        android:label="fragment_preset_timer_list"
-        tools:layout="@layout/fragment_preset_timer_list" >
+        android:label="@string/app_name"
+        tools:layout="@layout/fragment_preset_timer_list">
         <action
             android:id="@+id/action_presetTimerListFragment_to_timerFragment"
             app:destination="@id/timerFragment" />
@@ -34,11 +34,6 @@
         <action
             android:id="@+id/action_presetTimerListFragment_to_deletePresetTimerListFragment"
             app:destination="@id/deletePresetTimerListFragment" />
-        <action
-            android:id="@+id/action_presetTimerListFragment_to_timerListFragment"
-            app:destination="@id/timerListFragment"
-            app:popUpTo="@id/timerListFragment"
-            app:popUpToInclusive="true" />
         <argument
             android:name="timerName"
             app:argType="string" />
@@ -46,21 +41,16 @@
     <fragment
         android:id="@+id/timerFragment"
         android:name="com.example.timerapp.ui.timer.TimerFragment"
-        android:label="fragment_timer"
-        tools:layout="@layout/fragment_timer" >
+        android:label="@string/app_name"
+        tools:layout="@layout/fragment_timer">
         <argument
             android:name="timerName"
             app:argType="string" />
-        <action
-            android:id="@+id/action_timerFragment_to_timerListFragment"
-            app:destination="@id/timerListFragment"
-            app:popUpTo="@id/timerListFragment"
-            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/setTimerFragment"
         android:name="com.example.timerapp.ui.setTimer.SetTimerFragment"
-        android:label="SetTimerFragment" >
+        android:label="@string/app_name">
         <argument
             android:name="presetTimerId"
             app:argType="string"
@@ -68,33 +58,17 @@
         <argument
             android:name="timerName"
             app:argType="string" />
-        <action
-            android:id="@+id/action_setTimerFragment_to_presetTimerListFragment"
-            app:destination="@id/presetTimerListFragment"
-            app:popUpTo="@id/presetTimerListFragment"
-            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/deletePresetTimerListFragment"
         android:name="com.example.timerapp.ui.deletePresetTimerList.DeletePresetTimerListFragment"
-        android:label="DeletePresetTimerListFragment" >
+        android:label="@string/app_name">
         <argument
             android:name="timerName"
             app:argType="string" />
-        <action
-            android:id="@+id/action_deletePresetTimerListFragment_to_presetTimerListFragment"
-            app:destination="@id/presetTimerListFragment"
-            app:popUpTo="@id/presetTimerListFragment"
-            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/deleteTimerListFragment"
         android:name="com.example.timerapp.ui.deleteTimerList.DeleteTimerListFragment"
-        android:label="DeleteTimerListFragment" >
-        <action
-            android:id="@+id/action_deleteTimerListFragment_to_timerListFragment"
-            app:destination="@id/timerListFragment"
-            app:popUpTo="@id/timerListFragment"
-            app:popUpToInclusive="true" />
-    </fragment>
+        android:label="@string/app_name"/>
 </navigation>

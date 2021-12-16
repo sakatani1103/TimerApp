@@ -15,8 +15,8 @@ class SetTimerViewModel(private val timerRepository: TimerRepository) : ViewMode
     val insertAndUpdatePresetTimerStatus: LiveData<Event<Resource<Map<String, String?>>>> =
         _insertAndUpdatePresetTimerStatus
 
-    private val _navigateToPresetTimer = MutableLiveData<Event<String>>()
-    val navigateToPresetTimer: LiveData<Event<String>> = _navigateToPresetTimer
+    private val _navigateToPresetTimer = MutableLiveData<Event<Boolean>>()
+    val navigateToPresetTimer: LiveData<Event<Boolean>> = _navigateToPresetTimer
 
     private val _showDialog = MutableLiveData<Event<Boolean>>()
     val showDialog: LiveData<Event<Boolean>> = _showDialog
@@ -212,12 +212,12 @@ class SetTimerViewModel(private val timerRepository: TimerRepository) : ViewMode
         currentNotificationTime.value = getNotificationFromNumberPicker(min.value!!, sec.value!!)
     }
 
-    fun navigateToPresetTimer() {
-        _navigateToPresetTimer.value = Event(currentTimer.value!!.name)
-    }
-
     fun showDialog() {
         _showDialog.value = Event(true)
+    }
+
+    fun navigateToPresetTimer() {
+        _navigateToPresetTimer.value = Event(true)
     }
 }
 

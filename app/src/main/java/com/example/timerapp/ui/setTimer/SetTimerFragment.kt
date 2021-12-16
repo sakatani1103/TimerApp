@@ -28,7 +28,7 @@ class SetTimerFragment : Fragment() {
         get() = _binding!!
 
     private val args: SetTimerFragmentArgs by navArgs()
-    private val viewModel by viewModels<SetTimerViewModel>{
+    private val viewModel by viewModels<SetTimerViewModel> {
         SetTimerViewModelFactory((requireContext().applicationContext as TimerApplication).timerRepository)
     }
 
@@ -102,19 +102,21 @@ class SetTimerFragment : Fragment() {
                     }
                     Status.SUCCESS -> {
                         result.data?.get("value")?.let {
-                            this.findNavController().navigate(SetTimerFragmentDirections.actionSetTimerFragmentToPresetTimerListFragment(it))
+                            this.findNavController().popBackStack()
                         }
                     }
                 }
             })
 
-        viewModel.navigateToPresetTimer.observe(viewLifecycleOwner, EventObserver { timerName ->
-            this.findNavController().navigate(SetTimerFragmentDirections.actionSetTimerFragmentToPresetTimerListFragment(timerName))
-        })
-
         viewModel.showDialog.observe(viewLifecycleOwner, EventObserver { boolean ->
             if (boolean) {
                 createNotificationTimeDialog()
+            }
+        })
+
+        viewModel.navigateToPresetTimer.observe(viewLifecycleOwner, EventObserver {
+            if (it) {
+                this.findNavController().popBackStack()
             }
         })
     }

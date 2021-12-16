@@ -31,6 +31,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito
+import org.mockito.Mockito.verify
 
 @MediumTest
 @ExperimentalCoroutinesApi
@@ -140,9 +141,7 @@ class SetTimerFragmentTest {
         onView(withId(R.id.numberPicker1)).perform(clickBottomCentre)
         onView(withId(R.id.save_button)).perform(click())
 
-        Mockito.verify(navController).navigate(
-            SetTimerFragmentDirections.actionSetTimerFragmentToPresetTimerListFragment("timer")
-        )
+        verify(navController).popBackStack()
     }
 
     @Test
@@ -201,9 +200,7 @@ class SetTimerFragmentTest {
         onView(withId(R.id.et_presetName)).perform(click()).perform(replaceText("updatePreset"))
         onView(withId(R.id.save_button)).perform(click())
 
-        Mockito.verify(navController).navigate(
-            SetTimerFragmentDirections.actionSetTimerFragmentToPresetTimerListFragment("timer")
-        )
+        verify(navController).popBackStack()
     }
 
     @Test
@@ -270,9 +267,7 @@ class SetTimerFragmentTest {
         }
 
         onView(withId(R.id.back_btn)).perform(click())
-        Mockito.verify(navController).navigate(
-            SetTimerFragmentDirections.actionSetTimerFragmentToPresetTimerListFragment("timer")
-        )
+        verify(navController).popBackStack()
     }
 
     private val clickTopCentre =

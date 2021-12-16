@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <import type="android.view.View"/>
+
+        <import type="android.view.View" />
+
         <variable
             name="viewModel"
             type="com.example.timerapp.ui.presetTimerList.PresetTimerListViewModel" />
@@ -20,13 +22,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/standard_margin"
+            android:background="@color/white"
+            android:clickable="true"
+            android:focusable="true"
+            android:onClick="@{() -> viewModel.navigateToTimerList()}"
             android:src="@drawable/ic_back"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:background="@color/white"
-            android:onClick="@{() -> viewModel.navigateToTimerList()}"
-            android:clickable="true"
-            android:focusable="true" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/timer_name_layout"
@@ -45,9 +47,9 @@
                 android:id="@+id/et_timer_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@={viewModel.currentTimerName}"
                 android:inputType="text"
                 android:maxLines="1"
+                android:text="@={viewModel.currentTimerName}"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
                 tools:text="基本情報技術者午前試験" />
 
@@ -56,11 +58,11 @@
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/start_btn"
-            android:onClick="@{() -> viewModel.navigateToTimer()}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/icon_margin"
             android:layout_marginEnd="@dimen/standard_margin"
+            android:onClick="@{() -> viewModel.navigateToTimer()}"
             app:backgroundTint="#ffffff"
             app:borderWidth="0dp"
             app:fabSize="mini"
@@ -75,8 +77,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/standard_margin"
-            android:text="@string/setting_title"
             android:layout_marginTop="@dimen/setting_margin"
+            android:text="@string/setting_title"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/timer_name_layout" />
 
@@ -95,11 +97,11 @@
         <Spinner
             android:id="@+id/sounds_spinner"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-            android:onItemSelected="@{(parent, view, position, id) -> viewModel.onItemSelectedNumber(position)}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:selection="@={viewModel.selectedPosition}"
             android:entries="@{viewModel.soundTypes}"
+            android:onItemSelected="@{(parent, view, position, id) -> viewModel.onItemSelectedNumber(position)}"
+            android:selection="@={viewModel.selectedPosition}"
             app:layout_constraintBaseline_toBaselineOf="@+id/setting_sound_title"
             app:layout_constraintEnd_toEndOf="parent" />
 
@@ -107,8 +109,8 @@
             android:id="@+id/divider2"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_marginTop="@dimen/standard_margin"
             android:layout_marginStart="@dimen/standard_margin"
+            android:layout_marginTop="@dimen/standard_margin"
             android:layout_marginEnd="@dimen/standard_margin"
             android:background="?android:attr/listDivider"
             app:layout_constraintEnd_toEndOf="parent"
@@ -118,12 +120,12 @@
         <Button
             android:id="@+id/save_update"
             style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:text="@string/setting_update"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/btn_margin"
             android:layout_marginTop="@dimen/btn_margin"
+            android:layout_marginEnd="@dimen/btn_margin"
             android:onClick="@{() -> viewModel.updateSettingTimer()}"
+            android:text="@string/setting_update"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/sounds_spinner" />
 

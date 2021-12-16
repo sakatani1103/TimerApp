@@ -114,9 +114,7 @@ class DeleteTimerListFragmentTest {
         ))
 
         onView(withId(R.id.delete_btn)).perform(click())
-        verify(navController).navigate(
-            DeleteTimerListFragmentDirections.actionDeleteTimerListFragmentToTimerListFragment()
-        )
+        verify(navController).popBackStack()
     }
 
     @Test
@@ -143,8 +141,6 @@ class DeleteTimerListFragmentTest {
             ))
 
         onView(withId(R.id.cancel_btn)).perform(click())
-        verify(navController).navigate(
-            DeleteTimerListFragmentDirections.actionDeleteTimerListFragmentToTimerListFragment()
-        )
+        verify(navController).popBackStack()
     }
 }

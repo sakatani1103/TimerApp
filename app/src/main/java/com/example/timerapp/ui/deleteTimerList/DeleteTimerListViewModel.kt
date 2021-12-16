@@ -1,6 +1,5 @@
 package com.example.timerapp.ui.deleteTimerList
 
-import android.util.Log
 import androidx.lifecycle.*
 import com.example.timerapp.database.Timer
 import com.example.timerapp.others.Event
@@ -42,11 +41,9 @@ class DeleteTimerListViewModel(private val timerRepository: TimerRepository) : V
         )
 
         if (updateTimer.isSelected) {
-            deleteTimerList.add(updateTimer)
+            deleteTimerList.add(timer)
         } else {
-            deleteTimerList.remove(Timer(timer.name, timer.total, timer.listType, timer.notificationType,
-            timer.isDisplay, timer.detail, true, timer.timerId))
-            Log.d("ViewModelDelete", "${deleteTimerList}")
+            deleteTimerList.remove(updateTimer)
         }
 
         viewModelScope.launch {
@@ -72,7 +69,7 @@ class DeleteTimerListViewModel(private val timerRepository: TimerRepository) : V
                 )
             }
             timerRepository.updateTimers(updateTimers)
-            _deleteTimerItemStatus.postValue(Event(Resource.success(deleteTimerList)))
+            _deleteTimerItemStatus.postValue(Event(Resource.success(updateTimers)))
         }
     }
 

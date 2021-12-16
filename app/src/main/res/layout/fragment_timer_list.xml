@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <import type="android.view.View"/>
+
+        <import type="android.view.View" />
+
         <variable
             name="viewModel"
             type="com.example.timerapp.ui.timerlist.TimerListViewModel" />
@@ -19,20 +21,20 @@
             android:id="@+id/initial_timer_message"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="@dimen/card_margin"
+            android:visibility="@{viewModel.isInitial() ? View.VISIBLE : View.GONE}"
             apps:cardCornerRadius="8dp"
             apps:cardElevation="10dp"
-            android:visibility="@{viewModel.isInitial() ? View.VISIBLE : View.GONE}"
-            android:layout_margin="@dimen/card_margin"
-            apps:layout_constraintStart_toStartOf="parent"
             apps:layout_constraintEnd_toEndOf="parent"
+            apps:layout_constraintStart_toStartOf="parent"
             apps:layout_constraintTop_toTopOf="parent">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_margin="@dimen/card_margin"
                 android:text="@string/initial_use"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-                android:layout_margin="@dimen/card_margin" />
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1" />
 
         </com.google.android.material.card.MaterialCardView>
 
@@ -49,30 +51,40 @@
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/add_list"
-            android:onClick="@{() -> viewModel.createInsertTimerDialog()}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/icon_margin"
             android:layout_marginBottom="@dimen/icon_margin"
             android:elevation="10dp"
+            android:onClick="@{() -> viewModel.createInsertTimerDialog()}"
             apps:layout_constraintBottom_toBottomOf="parent"
             apps:layout_constraintEnd_toEndOf="parent"
             apps:srcCompat="@drawable/ic_add" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/delete_list"
-            android:onClick="@{() -> viewModel.navigateToDeleteTimer()}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/icon_margin"
             android:layout_marginBottom="@dimen/icon_margin"
             android:backgroundTint="@color/white"
             android:elevation="10dp"
+            android:onClick="@{() -> viewModel.navigateToDeleteTimer()}"
             apps:borderWidth="2dp"
             apps:layout_constraintBottom_toBottomOf="parent"
             apps:layout_constraintEnd_toStartOf="@+id/add_list"
             apps:srcCompat="@drawable/ic_delete"
             apps:tint="@color/secondaryColor" />
+
+        <ImageButton
+            android:id="@+id/information"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_margin="@dimen/standard_margin"
+            android:background="@color/white"
+            android:src="@drawable/ic_info"
+            apps:layout_constraintBottom_toBottomOf="parent"
+            apps:layout_constraintStart_toStartOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 

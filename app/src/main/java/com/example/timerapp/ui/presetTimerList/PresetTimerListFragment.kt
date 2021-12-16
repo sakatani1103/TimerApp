@@ -109,6 +109,10 @@ class PresetTimerListFragment : Fragment() {
             presetTimerListAdapter.presetTimers = it
         })
 
+        viewModel.navigateToTimerList.observe(viewLifecycleOwner, EventObserver {
+          if(it){this.findNavController().popBackStack()}
+        })
+
         viewModel.navigateToTimer.observe(viewLifecycleOwner, EventObserver { result ->
             when (result.status) {
                 Status.SUCCESS ->
@@ -158,13 +162,6 @@ class PresetTimerListFragment : Fragment() {
                     Status.ERROR -> createSnackbar(result.message)
                 }
             })
-
-        viewModel.navigateToTimerList.observe(viewLifecycleOwner, EventObserver { boolean ->
-            if (boolean) {
-                this.findNavController()
-                    .navigate(PresetTimerListFragmentDirections.actionPresetTimerListFragmentToTimerListFragment())
-            }
-        })
 
         viewModel.deletePresetTimerStatus.observe(viewLifecycleOwner, EventObserver { result ->
             if (result.status == Status.SUCCESS) {

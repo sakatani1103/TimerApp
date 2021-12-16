@@ -21,11 +21,11 @@ class PresetTimerListViewModel(private val timerRepository: TimerRepository) : V
     private val _deletePresetTimerStatus = MutableLiveData<Event<Resource<PresetTimer>>>()
     val deletePresetTimerStatus: LiveData<Event<Resource<PresetTimer>>> = _deletePresetTimerStatus
 
-    private val _navigateToTimerList = MutableLiveData<Event<Boolean>>()
-    val navigateToTimerList: LiveData<Event<Boolean>> = _navigateToTimerList
-
     private val _navigateToTimer = MutableLiveData<Event<Resource<String>>>()
     val navigateToTimer: LiveData<Event<Resource<String>>> = _navigateToTimer
+
+    private val _navigateToTimerList = MutableLiveData<Event<Boolean>>()
+    val navigateToTimerList: LiveData<Event<Boolean>> = _navigateToTimerList
 
     private val _navigateToSettingTimer = MutableLiveData<Event<Resource<Map<String, String?>>>>()
     val navigateToSettingTimer: LiveData<Event<Resource<Map<String, String?>>>> =
@@ -225,7 +225,7 @@ class PresetTimerListViewModel(private val timerRepository: TimerRepository) : V
 
     // Navigation
     fun navigateToSettingTimer(presetTimerId: String?) {
-        if (presetTimerId == null){
+        if (presetTimerId == null) {
             // in the case of add
             val numberOfPresetTimers = presetTimerList.value?.count() ?: 0
             if (numberOfPresetTimers >= Constants.PRESET_TIMER_NUM) {
@@ -254,10 +254,6 @@ class PresetTimerListViewModel(private val timerRepository: TimerRepository) : V
         }
     }
 
-    fun navigateToTimerList() {
-        _navigateToTimerList.value = Event(true)
-    }
-
     fun navigateToTimer() {
         val numberOfPresetTimers = presetTimerList.value?.count() ?: 0
         if (numberOfPresetTimers == 0) {
@@ -265,6 +261,10 @@ class PresetTimerListViewModel(private val timerRepository: TimerRepository) : V
         } else {
             _navigateToTimer.value = Event(Resource.success(currentTimer.value!!.name))
         }
+    }
+
+    fun navigateToTimerList() {
+        _navigateToTimerList.value = Event(true)
     }
 }
 

@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="viewModel"
             type="com.example.timerapp.ui.setTimer.SetTimerViewModel" />
@@ -20,9 +21,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/standard_margin"
-            android:src="@drawable/ic_back"
             android:background="@color/white"
             android:onClick="@{() -> viewModel.navigateToPresetTimer()}"
+            android:src="@drawable/ic_back"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -31,19 +32,19 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/standard_margin"
             android:hint="@string/timer_name"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/back_btn">
+            app:layout_constraintTop_toBottomOf="@id/back_btn"
+            tools:layout_editor_absoluteY="32dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_presetName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:inputType="text"
                 android:maxLines="1"
-                android:text="@={viewModel.currentTimerName}"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:text="@={viewModel.currentTimerName}" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -51,14 +52,14 @@
             android:id="@+id/numberPicker1"
             android:layout_width="wrap_content"
             android:layout_height="120dp"
+            android:layout_marginStart="@dimen/standard_margin"
             android:layout_marginTop="@dimen/setting_margin"
             android:textSize="100sp"
-            android:layout_marginStart="@dimen/standard_margin"
-            app:minValue="@{0}"
-            app:maxValue="@{9}"
             android:value="@={viewModel.min1}"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/et_timer_name" />
+            app:layout_constraintTop_toBottomOf="@+id/et_timer_name"
+            app:maxValue="@{9}"
+            app:minValue="@{0}" />
 
         <NumberPicker
             android:id="@+id/numberPicker2"
@@ -66,25 +67,25 @@
             android:layout_height="120dp"
             android:layout_marginTop="@dimen/setting_margin"
             android:layout_marginBottom="2dp"
+            android:value="@={viewModel.min2}"
             app:layout_constraintBottom_toBottomOf="@+id/numberPicker1"
             app:layout_constraintStart_toEndOf="@+id/numberPicker1"
             app:layout_constraintTop_toBottomOf="@+id/et_timer_name"
             app:layout_constraintVertical_bias="0.0"
-            app:minValue="@{0}"
             app:maxValue="@{9}"
-            android:value="@={viewModel.min2}"/>
+            app:minValue="@{0}" />
 
         <NumberPicker
             android:id="@+id/numberPicker3"
             android:layout_width="wrap_content"
             android:layout_height="120dp"
             android:layout_marginTop="32dp"
+            android:value="@={viewModel.min3}"
             app:layout_constraintBottom_toBottomOf="@+id/numberPicker2"
             app:layout_constraintStart_toEndOf="@+id/numberPicker2"
             app:layout_constraintTop_toBottomOf="@+id/et_timer_name"
-            app:minValue="@{0}"
             app:maxValue="@{9}"
-            android:value="@={viewModel.min3}"/>
+            app:minValue="@{0}" />
 
         <TextView
             android:id="@+id/min_unit"
@@ -100,25 +101,25 @@
             android:layout_width="wrap_content"
             android:layout_height="120dp"
             android:layout_marginTop="@dimen/setting_margin"
+            android:value="@={viewModel.sec1}"
             app:layout_constraintEnd_toStartOf="@+id/numberPicker5"
             app:layout_constraintTop_toBottomOf="@+id/et_timer_name"
-            app:minValue="@{0}"
             app:maxValue="@{9}"
-            android:value="@={viewModel.sec1}"/>
+            app:minValue="@{0}" />
 
         <NumberPicker
             android:id="@+id/numberPicker5"
             android:layout_width="wrap_content"
             android:layout_height="120dp"
             android:layout_marginTop="@dimen/setting_margin"
+            android:layout_marginEnd="@dimen/standard_margin"
+            android:value="@={viewModel.sec2}"
             app:layout_constraintBottom_toBottomOf="@+id/numberPicker4"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/et_timer_name"
             app:layout_constraintVertical_bias="0.0"
-            android:layout_marginEnd="@dimen/standard_margin"
-            app:minValue="@{0}"
             app:maxValue="@{9}"
-            android:value="@={viewModel.sec2}"/>
+            app:minValue="@{0}" />
 
         <TextView
             android:id="@+id/sec_unit"
@@ -135,8 +136,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/setting_margin"
-            android:text="@string/setting_preset"
             android:onClick="@{() -> viewModel.showDialog()}"
+            android:text="@string/setting_preset"
             app:icon="@drawable/ic_add"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/min_unit" />

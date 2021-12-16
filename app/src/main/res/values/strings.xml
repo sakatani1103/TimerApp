@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">TimerApp</string>
+    <string name="app_name">試験勉強用タイマー</string>
     <string name="delete">削除</string>
     <string name="cancel">キャンセル</string>
     <string name="save">保存</string>
@@ -26,7 +26,10 @@
     <string name="initial_sec">00</string>
     <string name="set_min">%0$03d</string>
     <string name="set_sec">%0$02d</string>
+    <string name="detail_menu">詳細</string>
+    <string name="rule_and_policy">利用規約・プライバシーポリシー</string>
     <string name="finish_message">タイマーが終了しました。</string>
     <string name="notification_channel">タイマー通知</string>
     <string name="notification_channel_name">タイマー終了</string>
+    <string name="rule_and_policy_message">詳細内容を表示しますか。</string>
 </resources>

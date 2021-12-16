@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.addCallback
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -16,7 +17,6 @@ import com.example.timerapp.adapter.DeleteTimerListListener
 import com.example.timerapp.databinding.FragmentDeleteTimerListBinding
 import com.example.timerapp.others.EventObserver
 import com.example.timerapp.others.Status
-import com.example.timerapp.repository.DefaultTimerRepository
 
 class DeleteTimerListFragment : Fragment() {
     private var _binding: FragmentDeleteTimerListBinding? = null
@@ -46,8 +46,16 @@ class DeleteTimerListFragment : Fragment() {
 
         setupRecyclerView()
         subscribeToDeleteTimerListObservers()
-
         viewModel.start()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val callback = requireActivity().onBackPressedDispatcher.addCallback(this){
+            viewModel.cancelDeleteTimerList()
+            isEnabled = false
+        }
+        callback.isEnabled = true
     }
 
     override fun onDestroyView() {
@@ -74,7 +82,7 @@ class DeleteTimerListFragment : Fragment() {
 
         viewModel.deleteTimerItemStatus.observe(viewLifecycleOwner, EventObserver { result ->
             if (result.status == Status.SUCCESS) {
-                this.findNavController().navigate(DeleteTimerListFragmentDirections.actionDeleteTimerListFragmentToTimerListFragment())
+                this.findNavController().popBackStack()
             }
         })
     }

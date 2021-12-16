@@ -1,9 +1,9 @@
 package com.example.timerapp.ui.timerlist
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -15,13 +15,11 @@ import com.example.timerapp.R
 import com.example.timerapp.TimerApplication
 import com.example.timerapp.adapter.TimerListAdapter
 import com.example.timerapp.adapter.TimerListListener
-import com.example.timerapp.database.ListType
-import com.example.timerapp.database.Timer
 import com.example.timerapp.databinding.DialogCreateTimerBinding
 import com.example.timerapp.databinding.FragmentTimerListBinding
+import com.example.timerapp.others.Constants.URI
 import com.example.timerapp.others.EventObserver
 import com.example.timerapp.others.Status
-import com.example.timerapp.repository.DefaultTimerRepository
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 
@@ -51,12 +49,29 @@ class TimerListFragment : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
         subscribeToTimerListObservers()
         setupRecyclerView()
+        binding.information.setOnClickListener { showInfo() }
         viewModel.start()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun showInfo() {
+        MaterialAlertDialogBuilder(requireContext())
+            .setCancelable(false)
+            .setTitle(R.string.rule_and_policy)
+            .setMessage(R.string.rule_and_policy_message)
+            .setPositiveButton(R.string.ok) { _, _ -> openWebPage() }
+            .setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
+            .show()
+    }
+
+    private fun openWebPage() {
+        val uri = Uri.parse(URI)
+        val intent = Intent(Intent.ACTION_VIEW, uri)
+        startActivity(intent)
     }
 
     private fun setupRecyclerView() {

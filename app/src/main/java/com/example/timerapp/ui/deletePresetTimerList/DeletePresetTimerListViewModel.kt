@@ -1,5 +1,6 @@
 package com.example.timerapp.ui.deletePresetTimerList
 
+import android.util.Log
 import androidx.lifecycle.*
 import com.example.timerapp.database.ListType
 import com.example.timerapp.database.PresetTimer
@@ -15,9 +16,6 @@ class DeletePresetTimerListViewModel(private val timerRepository: TimerRepositor
     private val _deletePresetTimerItemStatus = MutableLiveData<Event<Resource<List<PresetTimer>>>>()
     val deletePresetTimerItemStatus: LiveData<Event<Resource<List<PresetTimer>>>> =
         _deletePresetTimerItemStatus
-
-    private val _navigateToPresetTimerList = MutableLiveData<Event<String>>()
-    val navigateToPresetTimerList : LiveData<Event<String>> = _navigateToPresetTimerList
 
     private var deletePresetTimerList = mutableListOf<PresetTimer>()
     private var residuePresetTimerList = mutableListOf<PresetTimer>()
@@ -83,12 +81,10 @@ class DeletePresetTimerListViewModel(private val timerRepository: TimerRepositor
         )
 
         if (updateTimer.isSelected) {
-            deletePresetTimerList.add(updateTimer)
+            deletePresetTimerList.add(presetTimer)
+
         } else {
-            deletePresetTimerList.remove(
-                PresetTimer(updateTimer.name, updateTimer.presetName,
-            updateTimer.timerOrder, updateTimer.presetTime, updateTimer.notificationTime, true, updateTimer.presetTimerId)
-            )
+            deletePresetTimerList.remove(updateTimer)
         }
 
         viewModelScope.launch {
@@ -104,20 +100,21 @@ class DeletePresetTimerListViewModel(private val timerRepository: TimerRepositor
             deletePresetTimerList.forEach { presetTimer ->
                 updatePresetTimers.add(
                     PresetTimer(
-                        presetTimer.name, presetTimer.presetName, presetTimer.timerOrder,
-                        presetTimer.presetTime, presetTimer.notificationTime, false, presetTimer.presetTimerId
+                        presetTimer.name,
+                        presetTimer.presetName,
+                        presetTimer.timerOrder,
+                        presetTimer.presetTime,
+                        presetTimer.notificationTime,
+                        false,
+                        presetTimer.presetTimerId
                     )
                 )
             }
             timerRepository.updatePresetTimers(updatePresetTimers)
+            _deletePresetTimerItemStatus.value = Event(Resource.success(updatePresetTimers))
         }
-        _deletePresetTimerItemStatus.value = Event(Resource.success(deletePresetTimerList))
-        deletePresetTimerList.clear()
     }
 
-    fun navigateToPresetTimerList() {
-        _navigateToPresetTimerList.value = Event(currentTimer.value!!.name)
-    }
 }
 
 @Suppress("UNCHECKED_CAST")

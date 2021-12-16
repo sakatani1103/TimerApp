@@ -88,9 +88,7 @@ class DeletePresetTimerListFragmentTest{
         ))
 
         onView(withId(R.id.preset_delete_btn)).perform(click())
-        verify(navController).navigate(
-            DeletePresetTimerListFragmentDirections.actionDeletePresetTimerListFragmentToPresetTimerListFragment("timer")
-        )
+        verify(navController).popBackStack()
     }
 
     @Test
@@ -117,9 +115,7 @@ class DeletePresetTimerListFragmentTest{
             ))
 
         onView(withId(R.id.preset_cancel_btn)).perform(click())
-        verify(navController).navigate(
-            DeletePresetTimerListFragmentDirections.actionDeletePresetTimerListFragmentToPresetTimerListFragment("timer")
-        )
+        verify(navController).popBackStack()
     }
 
 }

@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.addCallback
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -16,7 +17,6 @@ import com.example.timerapp.adapter.DeletePresetTimerListAdapter
 import com.example.timerapp.databinding.FragmentDeletePresetTimerListBinding
 import com.example.timerapp.others.EventObserver
 import com.example.timerapp.others.Status
-import com.example.timerapp.repository.DefaultTimerRepository
 
 
 class DeletePresetTimerListFragment : Fragment() {
@@ -27,7 +27,7 @@ class DeletePresetTimerListFragment : Fragment() {
     private val args: DeletePresetTimerListFragmentArgs by navArgs()
 
     private lateinit var deletePresetTimerListAdapter: DeletePresetTimerListAdapter
-    private val viewModel by viewModels<DeletePresetTimerListViewModel>{
+    private val viewModel by viewModels<DeletePresetTimerListViewModel> {
         DeletePresetTimerListViewModelFactory((requireContext().applicationContext as TimerApplication).timerRepository)
     }
 
@@ -48,6 +48,15 @@ class DeletePresetTimerListFragment : Fragment() {
         viewModel.start(args.timerName)
         setupRecyclerView()
         subscribeToDeletePresetTimerListObservers()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val callback = requireActivity().onBackPressedDispatcher.addCallback(this) {
+            viewModel.cancelDeletePresetTimerList()
+            isEnabled = false
+        }
+        callback.isEnabled = true
     }
 
     override fun onDestroyView() {
@@ -74,11 +83,8 @@ class DeletePresetTimerListFragment : Fragment() {
         })
         viewModel.deletePresetTimerItemStatus.observe(viewLifecycleOwner, EventObserver { result ->
             if (result.status == Status.SUCCESS) {
-                viewModel.navigateToPresetTimerList()
+                this.findNavController().popBackStack()
             }
-        })
-        viewModel.navigateToPresetTimerList.observe(viewLifecycleOwner, EventObserver{ timerName ->
-            this.findNavController().navigate(DeletePresetTimerListFragmentDirections.actionDeletePresetTimerListFragmentToPresetTimerListFragment(timerName))
         })
     }
 }

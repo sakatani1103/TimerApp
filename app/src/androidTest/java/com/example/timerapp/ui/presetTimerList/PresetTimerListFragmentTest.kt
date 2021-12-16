@@ -27,6 +27,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito
+import org.mockito.Mockito.verify
 
 @MediumTest
 @ExperimentalCoroutinesApi
@@ -137,6 +138,7 @@ class PresetTimerListFragmentTest {
             RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(0, swipeRight())
         )
 
+        Thread.sleep(1000)
         onView(withText("preset1")).check(doesNotExist())
         onView(withText("preset2")).check(matches(isDisplayed()))
         onView(withId(com.google.android.material.R.id.snackbar_text)).check(matches(isDisplayed()))
@@ -155,9 +157,7 @@ class PresetTimerListFragmentTest {
         }
 
         onView(withId(R.id.back_btn)).perform(click())
-        Mockito.verify(navController).navigate(
-            PresetTimerListFragmentDirections.actionPresetTimerListFragmentToTimerListFragment()
-        )
+        verify(navController).popBackStack()
     }
 
     @Test
@@ -219,7 +219,7 @@ class PresetTimerListFragmentTest {
         }
 
         onView(withId(R.id.delete_list)).perform(click())
-        Mockito.verify(navController).navigate(
+        verify(navController).navigate(
             PresetTimerListFragmentDirections.actionPresetTimerListFragmentToDeletePresetTimerListFragment("timer")
         )
     }
@@ -242,7 +242,7 @@ class PresetTimerListFragmentTest {
             RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(0, click())
         )
 
-        Mockito.verify(navController).navigate(
+        verify(navController).navigate(
             PresetTimerListFragmentDirections.actionPresetTimerListFragmentToSetTimerFragment(preset1.presetTimerId, "timer")
         )
     }
@@ -259,7 +259,7 @@ class PresetTimerListFragmentTest {
         }
 
         onView(withId(R.id.add_list)).perform(click())
-        Mockito.verify(navController).navigate(
+        verify(navController).navigate(
             PresetTimerListFragmentDirections.actionPresetTimerListFragmentToSetTimerFragment(null, "timer")
         )
     }
